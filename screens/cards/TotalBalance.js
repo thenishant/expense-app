@@ -6,8 +6,8 @@ function App() {
     return (
         <View style={styles.cardContainer}>
             <Card
-                heading="Expenses"
-                amount="₹87984"
+                heading="Balance"
+                amount="₹133768"
             />
         </View>
     );
@@ -17,7 +17,7 @@ export default App;
 
 const styles = StyleSheet.create({
     cardContainer: {
-        backgroundColor: "#e07a5f",
+        backgroundColor: "#f2cc8f",
         marginVertical: 8,
         marginHorizontal: 8,
         marginTop: 50,

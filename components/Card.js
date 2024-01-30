@@ -1,11 +1,11 @@
 import React from "react";
 import {StyleSheet, Text, View} from "react-native";
 
-function Card({heading, amount, headingStyle, amountStyle}) {
+function Card({heading, amount}) {
     return (
         <View style={styles.cardContainer}>
-            <Text style={[styles.heading, headingStyle]}>{heading}</Text>
-            <Text style={[styles.amount, amountStyle]}>{amount}</Text>
+            <Text style={styles.amount}>{amount}</Text>
+            <Text style={styles.heading}>{heading}</Text>
         </View>
     );
 }
@@ -13,21 +13,17 @@ function Card({heading, amount, headingStyle, amountStyle}) {
 export default Card;
 
 const styles = StyleSheet.create({
-    cardContainer: {
-        backgroundColor: "#bea9b4",
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        marginTop: 50,
-        width: "40%",
-        borderRadius: 15,
-    },
     heading: {
+        fontSize: 12,
+        paddingBottom: 12,
+        textAlign: "center",
+        color: "#283618"
+    },
+    amount: {
         fontSize: 20,
         fontWeight: "bold",
         textAlign: "center",
-    },
-    amount: {
-        fontSize: 18,
-        textAlign: "center",
+        marginVertical: 13,
+        color: "#003049"
     },
 });
