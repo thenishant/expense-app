@@ -1,10 +1,15 @@
 import {FlatList, Text, View} from "react-native";
 
-function ExpenseSummary() {
+function ExpenseSummary({expenses, periodName}) {
+
+    const expenseSum = expenses.reduce((sum, expense) => {
+        return sum + expense.amount
+    }, 0)
+
     return (
         <View>
-            <Text>Last 7 Days</Text>
-            <Text>177</Text>
+            <Text>{periodName}</Text>
+            <Text>{expenseSum.toFixed(2)}</Text>
         </View>
     )
 }

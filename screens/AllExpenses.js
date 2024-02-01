@@ -2,6 +2,7 @@ import {StyleSheet, Text, View} from "react-native";
 import TotalExpense from "./cards/TotalExpense";
 import TotalIncome from "./cards/TotalIncome";
 import TotalBalance from "./cards/TotalBalance";
+import ExpensesOutput from "../components/expensesOutput/ExpensesOutput";
 
 function AllExpenses() {
     return (
@@ -11,6 +12,7 @@ function AllExpenses() {
                 <TotalIncome/>
                 <TotalBalance/>
             </View>
+            <ExpensesOutput expensesPeriod={"Total"}/>
         </View>
     )
 }
