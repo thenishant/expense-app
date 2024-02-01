@@ -1,14 +1,63 @@
 import {StyleSheet, View} from 'react-native';
 import CardSection from "./screens/sections/CardSection";
+import {NavigationContainer} from "@react-navigation/native";
+import {StatusBar} from "expo-status-bar";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
+import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
+import ManageExpense from "./screens/ManageExpense";
+import RecentExpenses from "./screens/RecentExpenses";
+import AllExpenses from "./screens/AllExpenses";
+import {GlobalStyles} from "./constansts/styles";
+import {Ionicons} from '@expo/vector-icons'
 
-export default function App() {
-    return (
-        <View style={styles.fullsScreen}>
-            <CardSection/>
-        </View>
-    )
+
+const Stack = createNativeStackNavigator();
+const BottomTabs = createBottomTabNavigator();
+
+function ExpensesOverview() {
+    return <BottomTabs.Navigator screenOptions={{
+        headerStyle: {backgroundColor: GlobalStyles.colors.primary500},
+    }}>
+        <BottomTabs.Screen name={"RecentExpenses"} component={RecentExpenses}
+                           options={{
+                               title: 'Recent Expenses',
+                               tabBarLabel: 'Recent',
+                               tabBarIcon: ({color, size}) => (
+                                   <Ionicons name={'hourglass-outline'} size={size} color={color}/>)
+                           }}/>
+        <BottomTabs.Screen name={"AllExpenses"} component={AllExpenses}
+                           options={{
+                               title: 'All Expenses',
+                               tabBarLabel: 'All Expenses',
+                               tabBarIcon: ({color, size}) => (
+                                   <Ionicons name={'calendar-outline'} size={size} color={color}/>)
+                           }}/>
+        <BottomTabs.Screen name={"CardSection"} component={CardSection}
+                           options={{
+                               title: 'Profile',
+                               tabBarLabel: 'Profile',
+                               tabBarIcon: ({color, size}) => (
+                                   <Ionicons name={"person-outline"} size={size} color={color}/>)
+                           }}/>
+    </BottomTabs.Navigator>
 }
 
-const styles = StyleSheet.create({
-    fullsScreen: {backgroundColor: '#f1faee', flex: 1}
-});
+export default function App() {
+    return (<>
+        <StatusBar style={"auto"}/>
+
+        <NavigationContainer>
+            <Stack.Navigator>
+                <Stack.Screen
+                    name={"ExpensesOverview"}
+                    component={ExpensesOverview}
+                    options={{headerShown: false}}/>
+                <Stack.Screen
+                    name={"ManageExpense"}
+                    component={ManageExpense}/>
+            </Stack.Navigator>
+        </NavigationContainer>
+    </>)
+}
+
+const styles = StyleSheet.create({});
