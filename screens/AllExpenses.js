@@ -6,14 +6,16 @@ import ExpensesOutput from "../components/expensesOutput/ExpensesOutput";
 
 function AllExpenses() {
     return (
-        <View style={styles.container}>
-            <View style={styles.firstRow}>
-                <TotalExpense/>
-                <TotalIncome/>
-                <TotalBalance/>
-            </View>
+        <>
+            {/*<View style={styles.container}>*/}
+            {/*    <View style={styles.firstRow}>*/}
+            {/*        <TotalExpense/>*/}
+            {/*        <TotalIncome/>*/}
+            {/*        <TotalBalance/>*/}
+            {/*    </View>*/}
             <ExpensesOutput expensesPeriod={"Total"}/>
-        </View>
+            {/*</View>*/}
+        </>
     )
 }
 
