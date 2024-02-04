@@ -16,7 +16,7 @@ function AllExpenses() {
             {/*        <TotalIncome/>*/}
             {/*        <TotalBalance/>*/}
             {/*    </View>*/}
-            <ExpensesOutput expenses={expensesContext.expenses} expensesPeriod={"Total"}/>
+            <ExpensesOutput expenses={expensesContext.expenses} expensesPeriod={"Total"} fallbackText={"No Expenses found!!"}/>
             {/*</View>*/}
         </>
     )

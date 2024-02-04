@@ -14,7 +14,7 @@ function RecentExpenses() {
     })
 
     return (
-        <ExpensesOutput expenses={recentExpenses} expensesPeriod={"Last 7 Days"}/>
+        <ExpensesOutput expenses={recentExpenses} expensesPeriod={"Last 7 Days"} fallbackText={"No Expenses registered for last 7 days"}/>
     )
 }
 
