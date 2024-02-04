@@ -1,10 +1,12 @@
 import {StyleSheet, Text, View} from "react-native";
-import {useLayoutEffect} from "react";
+import {useContext, useLayoutEffect} from "react";
 import IconButton from "../components/UI/IconButton";
 import {GlobalStyles} from "../constansts/styles";
 import Button from "../components/UI/Button";
+import {ExpensesContext} from "../store/expenses-context";
 
 function ManageExpense({route, navigation}) {
+    const expensesContext = useContext(ExpensesContext);
     const editedExpenseId = route.params?.expenseId;
     const isEditing = !!editedExpenseId;
 
@@ -15,6 +17,7 @@ function ManageExpense({route, navigation}) {
     }, [navigation, isEditing]);
 
     function deleteExpenseHandler() {
+        expensesContext.deleteExpense(editedExpenseId)
         navigation.goBack()
     }
 
@@ -23,6 +26,15 @@ function ManageExpense({route, navigation}) {
     }
 
     function confirmHandler() {
+        if (isEditing) {
+            expensesContext.updateExpense(editedExpenseId, {
+                desc: 'Updated Test', amount: 20, date: new Date("2024-02-01")
+            })
+        } else {
+            expensesContext.addExpense({
+                desc: 'Added Test', amount: 450, date: new Date("2024-02-01")
+            })
+        }
         navigation.goBack()
     }
 
@@ -32,8 +44,7 @@ function ManageExpense({route, navigation}) {
             <Button onPress={confirmHandler} style={styles.button}>{isEditing ? 'Update' : 'Add'}</Button>
         </View>
         {isEditing && (<View style={styles.deleteContainer}>
-            <IconButton icon={'trash'} color={GlobalStyles.colors.error500} size={36} onPress={() => {
-            }}
+            <IconButton icon={'trash'} color={GlobalStyles.colors.error500} size={36} onPress={deleteExpenseHandler}
             />
         </View>)}
     </View>)
