@@ -1,8 +1,7 @@
-import {StyleSheet, Text, TextInput, View} from "react-native";
+import {StyleSheet, View} from "react-native";
 import {useContext, useLayoutEffect} from "react";
 import IconButton from "../components/UI/IconButton";
 import {GlobalStyles} from "../constansts/styles";
-import Button from "../components/UI/Button";
 import {ExpensesContext} from "../store/expenses-context";
 import ExpenseForm from "../components/manageExpense/ExpenseForm";
 
@@ -10,6 +9,9 @@ function ManageExpense({route, navigation}) {
     const expensesContext = useContext(ExpensesContext);
     const editedExpenseId = route.params?.expenseId;
     const isEditing = !!editedExpenseId;
+
+    const selectedExpense = expensesContext.expenses.find(
+        (expense) => expense.id === editedExpenseId)
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -26,21 +28,20 @@ function ManageExpense({route, navigation}) {
         navigation.goBack()
     }
 
-    function confirmHandler() {
+    function confirmHandler(expenseData) {
         if (isEditing) {
-            expensesContext.updateExpense(editedExpenseId, {
-                desc: 'Updated Test', amount: 20, date: new Date("2024-02-01")
-            })
+            expensesContext.updateExpense(editedExpenseId, expenseData)
         } else {
-            expensesContext.addExpense({
-                desc: 'Added Test', amount: 450, date: new Date("2024-02-01")
-            })
+            expensesContext.addExpense(expenseData)
         }
         navigation.goBack()
     }
 
     return (<View style={styles.container}>
-        <ExpenseForm onCancel={cancelHandler} submitButonLabel={isEditing ? 'Update' : 'Add'}/>
+        <ExpenseForm onCancel={cancelHandler}
+                     submitButtonLabel={isEditing ? 'Update' : 'Add'}
+                     onSubmit={confirmHandler}
+                     defaultValues={selectedExpense}/>
         {isEditing && (<View style={styles.deleteContainer}>
             <IconButton icon={'trash'} color={GlobalStyles.colors.error500} size={36} onPress={deleteExpenseHandler}
             />
