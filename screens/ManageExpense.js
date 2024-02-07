@@ -4,14 +4,14 @@ import IconButton from "../components/UI/IconButton";
 import {GlobalStyles} from "../constansts/styles";
 import {ExpensesContext} from "../store/expenses-context";
 import ExpenseForm from "../components/manageExpense/ExpenseForm";
+import {storeExpense} from "../util/http";
 
 function ManageExpense({route, navigation}) {
     const expensesContext = useContext(ExpensesContext);
     const editedExpenseId = route.params?.expenseId;
     const isEditing = !!editedExpenseId;
 
-    const selectedExpense = expensesContext.expenses.find(
-        (expense) => expense.id === editedExpenseId)
+    const selectedExpense = expensesContext.expenses.find((expense) => expense.id === editedExpenseId)
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -32,6 +32,7 @@ function ManageExpense({route, navigation}) {
         if (isEditing) {
             expensesContext.updateExpense(editedExpenseId, expenseData)
         } else {
+            storeExpense(expenseData)
             expensesContext.addExpense(expenseData)
         }
         navigation.goBack()
