@@ -1,11 +1,14 @@
 import axios from "axios";
 
+const firebaseBackendURL = process.env.EXPO_PUBLIC_FIREBASE_BACKEND_URL;
+
 export async function storeExpense(expenseData) {
-    await axios.post(process.env.EXPO_PUBLIC_FIREBASE_BACKEND_URL + "/expenses.json", expenseData)
+    const response = await axios.post(firebaseBackendURL + "/expenses.json", expenseData);
+    return response.data.name
 }
 
 export async function fetchExpense() {
-    const response = await axios.get(process.env.EXPO_PUBLIC_FIREBASE_BACKEND_URL + "/expenses.json");
+    const response = await axios.get(firebaseBackendURL + "/expenses.json");
 
     const expenses = []
     for (const key in response.data) {
@@ -18,4 +21,12 @@ export async function fetchExpense() {
         expenses.push(expenseObject)
     }
     return expenses
+}
+
+export async function updateExpense(id, expenseData) {
+    return await axios.put(firebaseBackendURL + `/expenses/${id}.json`, expenseData);
+}
+
+export async function deleteExpense(id) {
+    return await axios.delete(firebaseBackendURL + `/expenses/${id}.json`);
 }
