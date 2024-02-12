@@ -1,7 +1,7 @@
 import {Pressable, StyleSheet, Text, View} from "react-native";
 import {GlobalStyles} from "../../constansts/styles";
-import {getFormattedDate} from "../../util/Date";
 import {useNavigation} from "@react-navigation/native";
+import {getFormattedDate} from "../../util/Date";
 
 function ExpenseItem({id, desc, amount, date}) {
 
@@ -11,19 +11,17 @@ function ExpenseItem({id, desc, amount, date}) {
         navigation.navigate("ManageExpense", {expenseId: id})
     }
 
-    return (
-        <Pressable onPress={expensePressHandler} style={({pressed}) => pressed && styles.pressed}>
-            <View style={styles.expenseItem}>
-                <View>
-                    <Text style={[styles.textBase, styles.desc]}>{desc}</Text>
-                    <Text style={styles.textBase}>{getFormattedDate(date)}</Text>
-                </View>
-                <View style={styles.amountContainer}>
-                    <Text style={styles.amount}>{amount}</Text>
-                </View>
+    return (<Pressable onPress={expensePressHandler} style={({pressed}) => pressed && styles.pressed}>
+        <View style={styles.expenseItem}>
+            <View>
+                <Text style={[styles.textBase, styles.desc]}>{desc}</Text>
+                <Text style={styles.textBase}>{getFormattedDate(date)}</Text>
             </View>
-        </Pressable>
-    )
+            <View style={styles.amountContainer}>
+                <Text style={styles.amount}>{amount}</Text>
+            </View>
+        </View>
+    </Pressable>)
 
 }
 
@@ -41,28 +39,20 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         shadowOffset: {width: 1, height: 1},
         shadowOpacity: 0.4
-    },
-    textBase: {
+    }, textBase: {
         color: GlobalStyles.colors.primary50
-    },
-    desc: {
-        fontSize: 16,
-        marginBottom: 4,
-        fontWeight: "bold"
-    },
-    amountContainer: {
+    }, desc: {
+        fontSize: 16, marginBottom: 4, fontWeight: "bold"
+    }, amountContainer: {
         paddingHorizontal: 12,
         paddingVertical: 4,
         backgroundColor: "white",
         justifyContent: "center",
         alignItems: 'center',
         borderRadius: 4
-    },
-    amount: {
-        color: GlobalStyles.colors.primary500,
-        fontWeight: "bold"
-    },
-    pressed: {
+    }, amount: {
+        color: GlobalStyles.colors.primary500, fontWeight: "bold"
+    }, pressed: {
         opacity: 0.75
     }
 });
