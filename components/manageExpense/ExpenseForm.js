@@ -1,12 +1,19 @@
+// ExpenseForm.js
+
 import React, {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Input from "./Input";
 import Button from "../UI/Button";
 import CustomDatePicker from "../UI/DatePickerNative";
-import {GlobalStyles} from "../../constansts/styles";
 import {getFormattedDate} from "../../util/Date";
+import Chooser from "../UI/Chooser";
+import {GlobalStyles} from "../../constansts/styles";
+import TextSelector from "../UI/Chooser";
 
 function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
+    const texts = ["Text 1", "Text 2", "Text 3", "Text 4", "Text 5", "Text 6", "Text 7", "Text 8", "Text 9", "Text 10"];
+    const text2 = ["Text 11", "Text 12", "Text 13", "Text 14", "Text 15", "Text 16", "Text 17", "Text 18", "Text 19", "Text 10"];
+
     const [inputs, setInputs] = useState({
         amount: {value: defaultValues ? defaultValues.amount.toString() : '', isValid: true},
         date: {value: getFormattedDate(new Date()), isValid: true},
@@ -41,52 +48,55 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     const formIsValid = !inputs.amount.isValid || !inputs.desc.isValid;
 
     return (<View style={styles.form}>
-            <Text style={styles.title}>Your Expense</Text>
-            <View style={styles.inputsRow}>
-                <Input
-                    style={styles.rowInput}
-                    label={"Amount"}
-                    inValid={!inputs.amount.isValid}
-                    textInputConfig={{
-                        keyboardType: 'decimal-pad',
-                        onChangeText: changeHandler.bind(this, 'amount'),
-                        value: inputs.amount.value,
-                    }}
-                />
-                <CustomDatePicker
-                    style={styles.rowInput}
-                    label={"Date"}
-                    onChange={changeHandler.bind(this, 'date')}
-                    textInputConfig={{
-                        value: inputs.date.value,
-                    }}
-                />
-            </View>
+        <View style={styles.inputsRow}>
             <Input
-                label={"Description"}
-                inValid={!inputs.desc.isValid}
+                style={styles.rowInput}
+                label={"Amount"}
+                inValid={!inputs.amount.isValid}
                 textInputConfig={{
-                    multiline: true, onChangeText: changeHandler.bind(this, 'desc'), value: inputs.desc.value
+                    keyboardType: 'decimal-pad',
+                    onChangeText: changeHandler.bind(this, 'amount'),
+                    value: inputs.amount.value,
+                    placeholder: "Enter amount"
                 }}
             />
-            {formIsValid && (
-                <Text style={styles.errorText}>Invalid input values - please check your entered data</Text>)}
-            <View style={styles.buttons}>
-                <Button mode={'flat'} onPress={onCancel} style={styles.button}>Cancel</Button>
-                <Button onPress={submitHandler} style={styles.button}>{submitButtonLabel}</Button>
-            </View>
-        </View>);
+            <CustomDatePicker
+                style={styles.rowInput}
+                label={"Date"}
+                onChange={changeHandler.bind(this, 'date')}
+                textInputConfig={{
+                    value: inputs.date.value,
+                }}
+            />
+        </View>
+        <View>
+            <TextSelector label={"Type"} data={texts}/>
+            <TextSelector label={"Category"} data={text2}/>
+        </View>
+        <Input
+            label={"Description"}
+            inValid={!inputs.desc.isValid}
+            textInputConfig={{
+                multiline: true, onChangeText: changeHandler.bind(this, 'desc'), value: inputs.desc.value
+            }}
+        />
+        {formIsValid && (<Text style={styles.errorText}>Invalid input values - please check your entered data</Text>)}
+        <View style={styles.buttons}>
+            <Button mode={'flat'} onPress={onCancel} style={styles.button}>Cancel</Button>
+            <Button onPress={submitHandler} style={styles.button}>{submitButtonLabel}</Button>
+        </View>
+    </View>);
 }
 
 export default ExpenseForm;
 
 const styles = StyleSheet.create({
     form: {
-        marginTop: 40,
+        marginTop: 8,
     }, title: {
         fontWeight: 'bold', fontSize: 20, color: 'black', marginVertical: 24, textAlign: 'center'
     }, inputsRow: {
-        flexDirection: "row", justifyContent: "space-between"
+        flexDirection: "row", justifyContent: "flex-start"
     }, rowInput: {
         flex: 1
     }, buttons: {
