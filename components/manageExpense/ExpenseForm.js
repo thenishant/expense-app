@@ -6,9 +6,9 @@ import Input from "./Input";
 import Button from "../UI/Button";
 import CustomDatePicker from "../UI/DatePickerNative";
 import {getFormattedDate} from "../../util/Date";
-import Chooser from "../UI/Chooser";
+import Chooser from "../UI/TextSelector";
 import {GlobalStyles} from "../../constansts/styles";
-import TextSelector from "../UI/Chooser";
+import TextSelector from "../UI/TextSelector";
 
 function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     const texts = ["Text 1", "Text 2", "Text 3", "Text 4", "Text 5", "Text 6", "Text 7", "Text 8", "Text 9", "Text 10"];
