@@ -37,20 +37,22 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
         const amountIsValid = !isNaN(expenseData.amount) && expenseData.amount > 0;
         const descIsValid = expenseData.desc.trim().length > 0;
         const categoryIsValid = expenseData.category.trim().length > 0;
+        const typeIsValid = expenseData.type.trim().length > 0;
 
-        if (!amountIsValid || !descIsValid || !categoryIsValid) {
+        if (!amountIsValid || !descIsValid || !categoryIsValid || !typeIsValid) {
             setInputs((currentInput) => ({
                 ...currentInput,
                 amount: {...currentInput.amount, isValid: amountIsValid},
                 desc: {...currentInput.desc, isValid: descIsValid},
-                category: {...currentInput.category, isValid: categoryIsValid}
+                category: {...currentInput.category, isValid: categoryIsValid},
+                type: {...currentInput.type, isValid: typeIsValid}
             }));
             return;
         }
         onSubmit(expenseData);
     }
 
-    const formIsValid = !inputs.amount.isValid || !inputs.desc.isValid || !inputs.category.isValid;
+    const formIsValid = !inputs.amount.isValid || !inputs.desc.isValid || !inputs.category.isValid || !inputs.type.isValid;
 
     return (<View style={styles.form}>
         <View style={styles.inputsRow}>
@@ -78,6 +80,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
             <TextSelector
                 label={"Type"}
                 data={texts}
+                inValid={!inputs.type.isValid}
                 config={{
                     value: inputs.type.value, onChangeText: changeHandler.bind(this, 'type')
                 }}
@@ -85,6 +88,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
 
             <TextSelector
                 label={"Category"}
+                inValid={!inputs.category.isValid}
                 data={text2}
                 config={{
                     value: inputs.category.value, onChangeText: changeHandler.bind(this, 'category')
