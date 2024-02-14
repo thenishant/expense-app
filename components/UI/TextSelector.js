@@ -1,20 +1,29 @@
 import React, {useState} from 'react';
-import {Dimensions, Modal, Pressable, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, Modal, Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import {GlobalStyles} from "../../constansts/styles";
 
-const TextSelector = ({label, data}) => {
+const TextSelector = ({label, data, config, inValid}) => {
     const [modalVisible, setModalVisible] = useState(false);
-    const [selectedText, setSelectedText] = useState('');
+
+    const inputStyles = [styles.input]
+
+    if (inValid) inputStyles.push(styles.invalidInput)
 
     const handleTextSelection = (text) => {
-        setSelectedText(text);
+        if (config && config.onChangeText) {
+            config.onChangeText(text);
+        }
         setModalVisible(false);
     };
 
     return (<View style={styles.container}>
         <Pressable onPress={() => setModalVisible(true)}>
             <Text style={styles.label}>{label}</Text>
-            <Text style={styles.input}>{selectedText}</Text>
+            <TextInput
+                onPressIn={() => setModalVisible(true)}
+                style={inputStyles}
+                {...config}
+            />
         </Pressable>
         <Modal
             animationType="slide"
@@ -63,7 +72,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     }, textButton: {
         margin: 8, padding: 10, borderWidth: 1, height: 40, justifyContent: 'center', alignItems: 'center',
-    },
+    }, invalidInput: {
+        backgroundColor: GlobalStyles.colors.error50
+    }
 });
 
 export default TextSelector;
