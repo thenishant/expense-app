@@ -19,6 +19,7 @@ export async function fetchExpense() {
             desc: response.data[key].desc,
             type: response.data[key].type,
             category: response.data[key].category,
+            paymentMode: response.data[key].paymentMode
         }
         expenses.push(expenseObject)
     }
