@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     container: {
         marginHorizontal: 4, marginVertical: 8
     }, label: {
-        fontSize: 12, color: GlobalStyles.colors.primary400, marginBottom: 4
+        fontSize: 12, color: GlobalStyles.colors.black700, marginBottom: 4
     }, date:{
         color:GlobalStyles.colors.primary700
     }

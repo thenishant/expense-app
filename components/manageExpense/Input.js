@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     inputContainer: {
         marginHorizontal: 4, marginVertical: 8
     }, label: {
-        fontSize: 12, color: GlobalStyles.colors.primary400, marginBottom: 4
+        fontSize: 12, color: GlobalStyles.colors.black700, marginBottom: 4
     }, input: {
         backgroundColor: GlobalStyles.colors.primary100,
         color: GlobalStyles.colors.primary700,
