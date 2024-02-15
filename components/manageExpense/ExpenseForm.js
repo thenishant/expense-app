@@ -6,10 +6,11 @@ import CustomDatePicker from "../UI/DatePickerNative";
 import {getFormattedDate} from "../../util/Date";
 import TextSelector from "../UI/TextSelector";
 import {GlobalStyles} from "../../constansts/styles";
+import {forwardAsync} from "@babel/core/lib/gensync-utils/async";
 
 function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
-    const texts = ["Text 1", "Text 2", "Text 3", "Text 4", "Text 5", "Text 6", "Text 7", "Text 8", "Text 9", "Text 10"];
-    const text2 = ["Text 11", "Text 12", "Text 13", "Text 14", "Text 15", "Text 16", "Text 17", "Text 18", "Text 19", "Text 10"];
+    const categories = [""];
+    const types = ["Text 11", "Text 12", "Text 13", "Text 14", "Text 15", "Text 16", "Text 17", "Text 18", "Text 19", "Text 10"];
 
     const [inputs, setInputs] = useState({
         amount: {value: defaultValues ? defaultValues.amount.toString() : '', isValid: true},
@@ -79,19 +80,25 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
         <View>
             <TextSelector
                 label={"Type"}
-                data={texts}
+                data={categories}
                 inValid={!inputs.type.isValid}
                 config={{
-                    value: inputs.type.value, onChangeText: changeHandler.bind(this, 'type')
+                    value: inputs.type.value,
+                    onChangeText: changeHandler.bind(this, 'type'),
+                    placeholder: "Select type",
+                    editable: false
                 }}
             />
 
             <TextSelector
                 label={"Category"}
                 inValid={!inputs.category.isValid}
-                data={text2}
+                data={types}
                 config={{
-                    value: inputs.category.value, onChangeText: changeHandler.bind(this, 'category')
+                    value: inputs.category.value,
+                    onChangeText: changeHandler.bind(this, 'category'),
+                    placeholder: "Select category",
+                    editable: false
                 }}
             />
         </View>
@@ -99,7 +106,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
             label={"Description"}
             inValid={!inputs.desc.isValid}
             textInputConfig={{
-                multiline: true, onChangeText: changeHandler.bind(this, 'desc'), value: inputs.desc.value
+                multiline: true, onChangeText: changeHandler.bind(this, 'desc'), value: inputs.desc.value,
             }}
         />
         {formIsValid && (<Text style={styles.errorText}>Invalid input values - please check your entered data</Text>)}
