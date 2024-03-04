@@ -3,10 +3,9 @@ import {StyleSheet, Text, View} from 'react-native';
 import Input from "./Input";
 import Button from "../UI/Button";
 import CustomDatePicker from "../UI/DatePickerNative";
-import {getCurrentDate, getFormattedDate} from "../../util/Date";
+import {getCurrentDate} from "../../util/Date";
 import TextSelector from "../UI/TextSelector";
 import {GlobalStyles} from "../../constansts/styles";
-import moment from "moment/moment";
 
 function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     const categories = ["Expense", "Income"];
