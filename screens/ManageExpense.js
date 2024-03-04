@@ -4,7 +4,7 @@ import IconButton from "../components/UI/IconButton";
 import {GlobalStyles} from "../constansts/styles";
 import {ExpensesContext} from "../store/expenses-context";
 import ExpenseForm from "../components/manageExpense/ExpenseForm";
-import {deleteExpense, storeExpense, updateExpense} from "../util/http";
+import {createExpense, deleteExpense, updateExpense} from "../util/http";
 import LoadingOverlay from "../components/UI/LoadingOverlay";
 import ErrorOverlay from "../components/UI/ErrorOverlay";
 
@@ -50,7 +50,7 @@ function ManageExpense({route, navigation}) {
                 expensesContext.updateExpense(editedExpenseId, expenseData)
                 await updateExpense(editedExpenseId, expenseData)
             } else {
-                const id = await storeExpense(expenseData);
+                const id = await createExpense(expenseData);
                 expensesContext.addExpense({...expenseData, id: id})
             }
             navigation.goBack()

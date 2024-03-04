@@ -3,8 +3,9 @@ import {getDateMinusDays} from "../util/Date";
 import {ExpensesContext} from "../store/expenses-context";
 import ExpensesOutput from "../components/expensesOutput/ExpensesOutput";
 import {fetchExpense} from "../util/http";
-import LoadingOverlay from "../components/UI/LoadingOverlay";
 import ErrorOverlay from "../components/UI/ErrorOverlay";
+import moment from "moment";
+import LoadingOverlay from "../components/UI/LoadingOverlay.js";
 
 function RecentExpenses() {
     const [isFetching, setIsFetching] = useState(true)
@@ -34,16 +35,14 @@ function RecentExpenses() {
     const recentExpenses = expensesContext.expenses.filter((expense) => {
         const today = new Date();
         const date7DaysAgo = getDateMinusDays(today, 7);
+        const expenseDate = moment(expense.date).toDate();
 
-        return (expense.date >= date7DaysAgo) && (expense.date <= today)
+        return (expenseDate >= date7DaysAgo) && (expenseDate <= today)
     })
 
-    return (
-        <ExpensesOutput expenses={recentExpenses} expensesPeriod={"Last 7 Days"}
+    return (<ExpensesOutput expenses={recentExpenses} expensesPeriod={"Last 7 Days"}
                             fallbackText={"No Expenses registered for last 7 days"}
-        />
-
-    )
+    />)
 
 }
 

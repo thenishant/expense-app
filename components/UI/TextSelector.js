@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Dimensions, Modal, Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import {GlobalStyles} from "../../constansts/styles";
 
 const TextSelector = ({label, data, config, inValid}) => {
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalHeight, setModalHeight] = useState(0);
 
     const inputStyles = [styles.input]
 
@@ -15,6 +16,12 @@ const TextSelector = ({label, data, config, inValid}) => {
         }
         setModalVisible(false);
     };
+
+    useEffect(() => {
+        const {height} = Dimensions.get('window');
+        const calculatedModalHeight = data.length * 10 + 100; // Adjust 40 and 100 according to your design
+        setModalHeight(calculatedModalHeight);
+    }, [data]);
 
     return (<View style={styles.container}>
         <Pressable onPress={() => setModalVisible(true)}>
@@ -32,7 +39,7 @@ const TextSelector = ({label, data, config, inValid}) => {
             onRequestClose={() => setModalVisible(false)}
         >
             <View style={styles.modalContainer}>
-                <View style={styles.modalContent}>
+                <View style={[styles.modalContent, {height: modalHeight}]}>
                     {data.map((item, index) => (
                         <Pressable style={styles.textButton} key={index} onPress={() => handleTextSelection(item)}>
                             <Text>{item}</Text>
@@ -43,14 +50,11 @@ const TextSelector = ({label, data, config, inValid}) => {
     </View>);
 };
 
-const {height} = Dimensions.get('window');
-const modalHeight = height / 3;
-
 const styles = StyleSheet.create({
     container: {
         marginHorizontal: 4, marginVertical: 8
     }, label: {
-        fontSize: 12, color: 'black', marginBottom: 4
+        fontSize: 12, color: GlobalStyles.colors.black700, marginBottom: 4
     }, input: {
         backgroundColor: GlobalStyles.colors.primary100,
         color: GlobalStyles.colors.primary700,
@@ -63,7 +67,6 @@ const styles = StyleSheet.create({
     }, modalContent: {
         backgroundColor: 'white',
         width: '100%',
-        height: modalHeight,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         padding: 20,
