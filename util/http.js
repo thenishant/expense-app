@@ -35,17 +35,12 @@ export async function updateExpense(id, expenseData) {
         category: expenseData.category,
         amount: expenseData.amount,
         desc: expenseData.desc,
-        paymentMode: expenseData.paymentMode
+        paymentMode: expenseData.paymentMode,
+        date: expenseData.date
     }
-    console.log(id)
-    console.log(data)
-    const axiosResponse = await axios.put(EXPRESS_URL + `/api/expense/update`, data, {headers: {id: id}});
-
-    console.log(axiosResponse.data)
-
-    return axiosResponse
+    return await axios.patch(EXPRESS_URL + `/api/expense/update`, data, {headers: {"id": id}})
 }
 
 export async function deleteExpense(id) {
-    return await axios.delete(EXPRESS_URL + `/api/expense/${id}`, {headers: {id: id}});
+    return await axios.delete(EXPRESS_URL + `/api/expense/${id}`, {headers: {"id": id}});
 }
