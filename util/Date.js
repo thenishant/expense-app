@@ -7,3 +7,7 @@ export function getDateMinusDays(date, days) {
 export function getFormattedDate(date) {
     return moment(date).format('DD-MM-YYYY')
 }
+
+export function getCurrentDate() {
+    return moment(new Date(), 'DD/MM/YYYY').toDate()
+}

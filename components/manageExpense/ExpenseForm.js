@@ -3,9 +3,10 @@ import {StyleSheet, Text, View} from 'react-native';
 import Input from "./Input";
 import Button from "../UI/Button";
 import CustomDatePicker from "../UI/DatePickerNative";
-import {getFormattedDate} from "../../util/Date";
+import {getCurrentDate, getFormattedDate} from "../../util/Date";
 import TextSelector from "../UI/TextSelector";
 import {GlobalStyles} from "../../constansts/styles";
+import moment from "moment/moment";
 
 function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     const categories = ["Expense", "Income"];
@@ -14,7 +15,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
 
     const [inputs, setInputs] = useState({
         amount: {value: defaultValues ? defaultValues.amount.toString() : '', isValid: true},
-        date: {value: getFormattedDate(new Date()), isValid: true},
+        date: {value: getCurrentDate(), isValid: true},
         desc: {value: defaultValues ? defaultValues.desc : '', isValid: true},
         type: {value: defaultValues ? defaultValues.type : '', isValid: true},
         category: {value: defaultValues ? defaultValues.category : '', isValid: true},
