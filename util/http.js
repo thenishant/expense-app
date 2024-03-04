@@ -1,4 +1,5 @@
 import axios from "axios";
+import moment from "moment";
 
 const firebaseBackendURL = process.env.EXPO_PUBLIC_FIREBASE_BACKEND_URL;
 const EXPRESS_URL = process.env.EXPO_PUBLIC_EXPRESS_URL;
@@ -9,7 +10,8 @@ export async function createExpense(expenseData) {
 }
 
 export async function fetchExpense() {
-    const response = await axios.get(EXPRESS_URL + "/api/expense/getAllTransactionsForAMonth?month=Mar");
+    const month = moment().format('MMM');
+    const response = await axios.get(EXPRESS_URL + `/api/expense/getAllTransactionsForAMonth?month=${month}`);
 
     const expenses = []
     for (const key of response.data['allExpenses']) {
@@ -29,7 +31,11 @@ export async function fetchExpense() {
 
 export async function updateExpense(id, expenseData) {
     const data = {
-        type: expenseData.type, category: expenseData.category, amount: expenseData.amount, desc: expenseData.desc, paymentMode: expenseData.paymentMode
+        type: expenseData.type,
+        category: expenseData.category,
+        amount: expenseData.amount,
+        desc: expenseData.desc,
+        paymentMode: expenseData.paymentMode
     }
     console.log(id)
     console.log(data)
