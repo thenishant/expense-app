@@ -1,25 +1,26 @@
 import axios from "axios";
 
 const firebaseBackendURL = process.env.EXPO_PUBLIC_FIREBASE_BACKEND_URL;
+const EXPRESS_URL = process.env.EXPO_PUBLIC_EXPRESS_URL;
 
-export async function storeExpense(expenseData) {
-    const response = await axios.post(firebaseBackendURL + "/expenses.json", expenseData);
+export async function createExpense(expenseData) {
+    const response = await axios.post(EXPRESS_URL + "/api/expense/create", expenseData);
     return response.data.name
 }
 
 export async function fetchExpense() {
-    const response = await axios.get(firebaseBackendURL + "/expenses.json");
+    const response = await axios.get(EXPRESS_URL + "/api/expense/getAllTransactionsForAMonth?month=Mar");
 
     const expenses = []
-    for (const key in response.data) {
+    for (const key of response.data['allExpenses']) {
         const expenseObject = {
-            id: key,
-            amount: response.data[key].amount,
-            date: new Date(response.data[key].date),
-            desc: response.data[key].desc,
-            type: response.data[key].type,
-            category: response.data[key].category,
-            paymentMode: response.data[key].paymentMode
+            id: key._id,
+            amount: key.amount,
+            category: key.category,
+            date: key.date,
+            desc: key.desc,
+            type: key.type,
+            paymentMode: key.paymentMode
         }
         expenses.push(expenseObject)
     }
@@ -27,9 +28,18 @@ export async function fetchExpense() {
 }
 
 export async function updateExpense(id, expenseData) {
-    return await axios.put(firebaseBackendURL + `/expenses/${id}.json`, expenseData);
+    const data = {
+        type: expenseData.type, category: expenseData.category, amount: expenseData.amount, desc: expenseData.desc, paymentMode: expenseData.paymentMode
+    }
+    console.log(id)
+    console.log(data)
+    const axiosResponse = await axios.put(EXPRESS_URL + `/api/expense/update`, data, {headers: {id: id}});
+
+    console.log(axiosResponse.data)
+
+    return axiosResponse
 }
 
 export async function deleteExpense(id) {
-    return await axios.delete(firebaseBackendURL + `/expenses/${id}.json`);
+    return await axios.delete(EXPRESS_URL + `/api/expense/${id}`, {headers: {id: id}});
 }

@@ -8,8 +8,8 @@ import TextSelector from "../UI/TextSelector";
 import {GlobalStyles} from "../../constansts/styles";
 
 function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
-    const categories = ["Income", "Expense", "Investment", "Lending"];
-    const paymentMode = ["Bank", "Credit Card", "Cash"]
+    const categories = ["Expense", "Income"];
+    const paymentModes = ["Credit Card", "Cash", "Bank Account"]
     const types = ["Text 11", "Text 12", "Text 13", "Text 14", "Text 15", "Text 16"];
 
     const [inputs, setInputs] = useState({
@@ -50,7 +50,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                 desc: {...currentInput.desc, isValid: descIsValid},
                 category: {...currentInput.category, isValid: categoryIsValid},
                 type: {...currentInput.type, isValid: typeIsValid},
-                paymentMode: {...currentInput.paymentMode, isValid: typeIsValid}
+                paymentMode: {...currentInput.paymentMode, isValid: paymentModeIsValid}
             }));
             return;
         }
@@ -108,7 +108,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
             <TextSelector
                 label={"Payment mode"}
                 inValid={!inputs.paymentMode.isValid}
-                data={paymentMode}
+                data={paymentModes}
                 config={{
                     value: inputs.paymentMode.value,
                     onChangeText: changeHandler.bind(this, 'paymentMode'),
