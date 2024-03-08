@@ -19,7 +19,7 @@ const TextSelector = ({label, data, config, inValid}) => {
 
     useEffect(() => {
         const {height} = Dimensions.get('window');
-        const calculatedModalHeight = data.length * 10 + 100; // Adjust 40 and 100 according to your design
+        const calculatedModalHeight = data.length * 12 + 100;
         setModalHeight(calculatedModalHeight);
     }, [data]);
 
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
         flex: 1, justifyContent: 'flex-end', alignItems: 'center',
     }, modalContent: {
         backgroundColor: 'white',
-        width: '100%',
+        width: '110%',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         padding: 20,

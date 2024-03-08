@@ -10,7 +10,6 @@ import {GlobalStyles} from "../../constansts/styles";
 function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     const categories = ["Expense", "Income"];
     const paymentModes = ["Credit Card", "Cash", "Bank Account"]
-    const types = ["Text 11", "Text 12", "Text 13", "Text 14", "Text 15", "Text 16"];
 
     const [inputs, setInputs] = useState({
         amount: {value: defaultValues ? defaultValues.amount.toString() : '', isValid: true},
@@ -59,6 +58,13 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
 
     const formIsValid = !inputs.amount.isValid || !inputs.desc.isValid || !inputs.category.isValid || !inputs.type.isValid || !inputs.paymentMode.isValid;
 
+    let typeData = [];
+    if (inputs.type.value === 'Expense') {
+        typeData = ['Investment', 'Loan', 'Alcohol', 'Shopping', 'Grocery', 'Dinning', 'Leisure', 'Home related', 'Travel'];
+    } else if (inputs.type.value === 'Income') {
+        typeData = ['Interest', 'ROI', 'Salary', 'Credit Exchange'];
+    }
+
     return (<View style={styles.form}>
         <View style={styles.inputsRow}>
             <Input
@@ -97,7 +103,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
             <TextSelector
                 label={"Category"}
                 inValid={!inputs.category.isValid}
-                data={types}
+                data={typeData.sort()}
                 config={{
                     value: inputs.category.value,
                     onChangeText: changeHandler.bind(this, 'category'),
