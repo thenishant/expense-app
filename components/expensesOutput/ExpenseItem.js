@@ -45,8 +45,7 @@ const styles = StyleSheet.create({
     }, desc: {
         fontSize: 16, marginBottom: 4, fontWeight: "bold"
     }, amountContainer: {
-        paddingHorizontal: 12,
-        paddingVertical: 4,
+        paddingHorizontal: 15,
         backgroundColor: "white",
         justifyContent: "center",
         alignItems: 'center',
