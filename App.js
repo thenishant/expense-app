@@ -1,4 +1,4 @@
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import CardSection from "./screens/sections/CardSection";
 import {NavigationContainer} from "@react-navigation/native";
 import {StatusBar} from "expo-status-bar";
@@ -30,6 +30,13 @@ function ExpensesOverview() {
                 }}
             />
     })}>
+        <BottomTabs.Screen name={"CardSection"} component={CardSection}
+                           options={{
+                               title: 'Dashboard',
+                               tabBarLabel: 'Dashboard',
+                               tabBarIcon: ({color, size}) => (
+                                   <Ionicons name={"grid-outline"} size={size} color={color}/>)
+                           }}/>
         <BottomTabs.Screen name={"RecentExpenses"} component={RecentExpenses}
                            options={{
                                title: 'Recent Expenses',
@@ -43,13 +50,6 @@ function ExpensesOverview() {
                                tabBarLabel: 'All Expenses',
                                tabBarIcon: ({color, size}) => (
                                    <Ionicons name={'calendar-outline'} size={size} color={color}/>)
-                           }}/>
-        <BottomTabs.Screen name={"CardSection"} component={CardSection}
-                           options={{
-                               title: 'Profile',
-                               tabBarLabel: 'Profile',
-                               tabBarIcon: ({color, size}) => (
-                                   <Ionicons name={"person-outline"} size={size} color={color}/>)
                            }}/>
     </BottomTabs.Navigator>
 }

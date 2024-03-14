@@ -5,13 +5,13 @@ const firebaseBackendURL = process.env.EXPO_PUBLIC_FIREBASE_BACKEND_URL;
 const EXPRESS_URL = process.env.EXPO_PUBLIC_EXPRESS_URL;
 
 export async function createExpense(expenseData) {
-    const response = await axios.post(EXPRESS_URL + "/api/expense/create", expenseData);
+    const response = await axios.post(EXPRESS_URL + "expense/create", expenseData);
     return response.data.name
 }
 
 export async function fetchExpense() {
     const month = moment().format('MMM');
-    const response = await axios.get(EXPRESS_URL + `/api/expense/getAllTransactionsForAMonth?month=${month}`);
+    const response = await axios.get(EXPRESS_URL + `expense/getAllTransactionsForAMonth?month=${month}`);
 
     const expenses = []
     for (const key of response.data['allExpenses']) {
@@ -38,9 +38,9 @@ export async function updateExpense(id, expenseData) {
         paymentMode: expenseData.paymentMode,
         date: expenseData.date
     }
-    return await axios.patch(EXPRESS_URL + `/api/expense/update`, data, {headers: {"id": id}})
+    return await axios.patch(EXPRESS_URL + `expense/update`, data, {headers: {"id": id}})
 }
 
 export async function deleteExpense(id) {
-    return await axios.delete(EXPRESS_URL + `/api/expense/${id}`, {headers: {"id": id}});
+    return await axios.delete(EXPRESS_URL + `expense/${id}`, {headers: {"id": id}});
 }
