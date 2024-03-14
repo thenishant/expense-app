@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
 import Input from "./Input";
 import Button from "../UI/Button";
 import CustomDatePicker from "../UI/DatePickerNative";
@@ -27,6 +27,8 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     }
 
     function submitHandler() {
+        Keyboard.dismiss();
+
         const expenseData = {
             amount: +inputs.amount.value,
             date: inputs.date.value,
@@ -60,82 +62,89 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
 
     let typeData = [];
     if (inputs.type.value === 'Expense') {
-        typeData = ['Investment', 'Loan', 'Alcohol', 'Shopping', 'Grocery', 'Dinning', 'Leisure', 'Home related', 'Travel'];
+        typeData = ['Investment', 'Loan', 'Alcohol', 'Shopping', 'Grocery', 'Dining', 'Leisure', 'Home related', 'Travel'];
     } else if (inputs.type.value === 'Income') {
         typeData = ['Interest', 'ROI', 'Salary', 'Credit Exchange'];
     }
 
-    return (<View style={styles.form}>
-        <View style={styles.inputsRow}>
-            <Input
-                style={styles.rowInput}
-                label={"Amount"}
-                inValid={!inputs.amount.isValid}
-                textInputConfig={{
-                    keyboardType: 'decimal-pad',
-                    onChangeText: changeHandler.bind(this, 'amount'),
-                    value: inputs.amount.value,
-                    placeholder: "Enter amount"
-                }}
-            />
-            <CustomDatePicker
-                style={styles.rowInput}
-                label={"Date"}
-                onChange={changeHandler.bind(this, 'date')}
-                textInputConfig={{
-                    value: inputs.date.value,
-                }}
-            />
-        </View>
-        <View>
-            <TextSelector
-                label={"Type"}
-                data={categories}
-                inValid={!inputs.type.isValid}
-                config={{
-                    value: inputs.type.value,
-                    onChangeText: changeHandler.bind(this, 'type'),
-                    placeholder: "Select type",
-                    editable: false
-                }}
-            />
+    return (<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.form}>
+            <View style={styles.inputsRow}>
+                <Input
+                    style={styles.rowInput}
+                    label={"Amount"}
+                    inValid={!inputs.amount.isValid}
+                    textInputConfig={{
+                        keyboardType: 'decimal-pad',
+                        onChangeText: changeHandler.bind(this, 'amount'),
+                        value: inputs.amount.value,
+                        placeholder: "Enter amount",
+                        autoFocus: false
+                    }}
+                />
+                <CustomDatePicker
+                    style={styles.rowInput}
+                    label={"Date"}
+                    onChange={changeHandler.bind(this, 'date')}
+                    textInputConfig={{
+                        value: inputs.date.value,
+                    }}
+                />
+            </View>
+            <View>
+                <TextSelector
+                    label={"Type"}
+                    data={categories}
+                    inValid={!inputs.type.isValid}
+                    config={{
+                        value: inputs.type.value,
+                        onChangeText: changeHandler.bind(this, 'type'),
+                        placeholder: "Select type",
+                        editable: false
+                    }}
+                />
 
-            <TextSelector
-                label={"Category"}
-                inValid={!inputs.category.isValid}
-                data={typeData.sort()}
-                config={{
-                    value: inputs.category.value,
-                    onChangeText: changeHandler.bind(this, 'category'),
-                    placeholder: "Select category",
-                    editable: false
+                <TextSelector
+                    label={"Category"}
+                    inValid={!inputs.category.isValid}
+                    data={typeData.sort()}
+                    config={{
+                        value: inputs.category.value,
+                        onChangeText: changeHandler.bind(this, 'category'),
+                        placeholder: "Select category",
+                        editable: false
+                    }}
+                />
+                <TextSelector
+                    label={"Payment mode"}
+                    inValid={!inputs.paymentMode.isValid}
+                    data={paymentModes}
+                    config={{
+                        value: inputs.paymentMode.value,
+                        onChangeText: changeHandler.bind(this, 'paymentMode'),
+                        placeholder: "Select payment mode",
+                        editable: false
+                    }}
+                />
+            </View>
+            <Input
+                label={"Description"}
+                inValid={!inputs.desc.isValid}
+                textInputConfig={{
+                    multiline: true,
+                    onChangeText: changeHandler.bind(this, 'desc'),
+                    value: inputs.desc.value,
+                    blurOnSubmit: true
                 }}
             />
-            <TextSelector
-                label={"Payment mode"}
-                inValid={!inputs.paymentMode.isValid}
-                data={paymentModes}
-                config={{
-                    value: inputs.paymentMode.value,
-                    onChangeText: changeHandler.bind(this, 'paymentMode'),
-                    placeholder: "Select payment mode",
-                    editable: false
-                }}
-            />
+            {formIsValid && (
+                <Text style={styles.errorText}>Invalid input values - please check your entered data</Text>)}
+            <View style={styles.buttons}>
+                <Button mode={'flat'} onPress={onCancel} style={styles.button}>Cancel</Button>
+                <Button onPress={submitHandler} style={styles.button}>{submitButtonLabel}</Button>
+            </View>
         </View>
-        <Input
-            label={"Description"}
-            inValid={!inputs.desc.isValid}
-            textInputConfig={{
-                multiline: true, onChangeText: changeHandler.bind(this, 'desc'), value: inputs.desc.value,
-            }}
-        />
-        {formIsValid && (<Text style={styles.errorText}>Invalid input values - please check your entered data</Text>)}
-        <View style={styles.buttons}>
-            <Button mode={'flat'} onPress={onCancel} style={styles.button}>Cancel</Button>
-            <Button onPress={submitHandler} style={styles.button}>{submitButtonLabel}</Button>
-        </View>
-    </View>);
+    </TouchableWithoutFeedback>);
 }
 
 export default ExpenseForm;
