@@ -1,39 +1,17 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {StyleSheet, View} from "react-native";
 import Card from "../../components/UI/Card";
-import moment from "moment";
-import axios from "axios";
-import {apiEndpoints, buildUrl} from "../../constansts/Endpoints";
 
-function App() {
-
-    const [responseJson, setResponseJson] = useState(null);
-
-    const totalExpenseInAMonthHandler = async () => {
-        try {
-            const month = moment().format('MMM');
-            const response = await axios.get(buildUrl(`${apiEndpoints.transactionsInAMonth}?month=${month}`));
-            const data = await response.data;
-            const balance = data['balance'];
-            setResponseJson(balance);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    useEffect(() => {
-        totalExpenseInAMonthHandler();
-    }, []);
-
+function TotalBalance({amount}) {
     return (<View style={styles.cardContainer}>
         <Card
             heading="Balance"
-            amount={`₹ ${responseJson}`}
+            amount={amount}
         />
     </View>);
 }
 
-export default App;
+export default TotalBalance;
 
 const styles = StyleSheet.create({
     cardContainer: {
