@@ -1,13 +1,22 @@
-import React, {useState, useEffect} from "react";
-import {StyleSheet, View, ScrollView, RefreshControl} from "react-native";
+import React, {useEffect, useState} from "react";
+import {RefreshControl, ScrollView, StyleSheet, View} from "react-native";
 import TotalExpense from "../cards/TotalExpense";
 import TotalBalance from "../cards/TotalBalance";
 import TotalIncome from "../cards/TotalIncome";
 import moment from "moment";
 import axios from "axios";
 import {apiEndpoints, buildUrl} from "../../constansts/Endpoints";
+import CustomDonutPieChart from "../../components/charts/PieChart";
 
 function CardSection() {
+    const chartData = [
+        {x: 'Cats', y: 25, color: 'yellow'},
+        {x: 'Dogs', y: 50, color: 'green'},
+        {x: 'Birds', y: 75, color: 'orange'},
+        {x: 'snake', y: 100, color: 'pink'},
+        {x: 'Human', y: 125, color: 'aqua'}
+    ];
+
     const [refreshing, setRefreshing] = useState(false);
     const [response, setResponse] = useState({
         sumOfIncome: 0, sumOfExpense: 0, balance: 0
@@ -51,6 +60,11 @@ function CardSection() {
             <TotalExpense amount={response.sumOfExpense}/>
             <TotalIncome amount={response.sumOfIncome}/>
             <TotalBalance amount={response.balance}/>
+        </View>
+        <View>
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <CustomDonutPieChart chartData={chartData}/>
+            </View>
         </View>
     </ScrollView>);
 }
