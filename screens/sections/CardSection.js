@@ -6,17 +6,9 @@ import TotalIncome from "../cards/TotalIncome";
 import moment from "moment";
 import axios from "axios";
 import {apiEndpoints, buildUrl} from "../../constansts/Endpoints";
-import CustomDonutPieChart from "../../components/charts/PieChart";
+import ExpensePerMonthChart from "../charts/ExpensePerMonthChart";
 
 function CardSection() {
-    const chartData = [
-        {x: 'Cats', y: 25, color: 'yellow'},
-        {x: 'Dogs', y: 50, color: 'green'},
-        {x: 'Birds', y: 75, color: 'orange'},
-        {x: 'snake', y: 100, color: 'pink'},
-        {x: 'Human', y: 125, color: 'aqua'}
-    ];
-
     const [refreshing, setRefreshing] = useState(false);
     const [response, setResponse] = useState({
         sumOfIncome: 0, sumOfExpense: 0, balance: 0
@@ -62,9 +54,7 @@ function CardSection() {
             <TotalBalance amount={response.balance}/>
         </View>
         <View>
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <CustomDonutPieChart chartData={chartData}/>
-            </View>
+            <ExpensePerMonthChart/>
         </View>
     </ScrollView>);
 }
@@ -73,7 +63,7 @@ export default CardSection;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1, marginTop: -20,
+        flex: 1, marginTop: -20, backgroundColor: '#eef4f8'
     }, firstRow: {
         flexDirection: "row", justifyContent: "center",
     },

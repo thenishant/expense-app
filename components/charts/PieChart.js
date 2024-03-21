@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import {Dimensions, Text, View} from 'react-native';
-import {VictoryLegend, VictoryPie} from 'victory-native';
+import {Dimensions, FlatList, Text, TouchableOpacity, View} from 'react-native';
+import {VictoryPie} from 'victory-native';
 
 function CustomDonutPieChart({chartData}) {
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -12,7 +12,50 @@ function CustomDonutPieChart({chartData}) {
 
     const {width} = Dimensions.get("window");
 
-    return (<View>
+    function renderExpenseSummary() {
+        let data = chartData
+
+        const renderItem = ({item}) => {
+            return (<TouchableOpacity style={{
+                flexDirection: 'row',
+                height: 40,
+                paddingHorizontal: 8,
+                borderRadius: 10,
+                backgroundColor: (selectedCategory && selectedCategory.x === item.x) ? item.color : '#f2f2f2',
+                width: 350
+            }}
+                                      onPress={() => {
+                                          let categoryName = item.x
+                                          setSelectCategoryByName(categoryName)
+                                      }}>
+                <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+                    <View
+                        style={{
+                            width: 20,
+                            height: 20,
+                            borderRadius: 5,
+                            backgroundColor: (selectedCategory && selectedCategory.x === item.x) ? 'white' : item.color,
+                        }}>
+                    </View>
+                    <Text style={{
+                        marginLeft: 10, color: (selectedCategory && selectedCategory.x === item.x) ? 'black' : '#194868'
+                    }}>{item.x}</Text>
+                </View>
+                <View style={{
+                    justifyContent: 'center',
+                    color: (selectedCategory && selectedCategory.x === item.x) ? 'white' : '#194868'
+                }}>
+                    <Text>{'₹'} {item.y}</Text>
+                </View>
+            </TouchableOpacity>)
+        }
+
+        return (<View style={{padding: 8}}>
+            <FlatList data={data} renderItem={renderItem} keyExtractor={item => `${item.x}`}/>
+        </View>)
+    }
+
+    return (<View style={{alignItems: 'center', justifyContent: 'center', marginTop: 280, marginBottom: -280}}>
         <VictoryPie
             data={chartData}
             radius={({datum}) => (selectedCategory && selectedCategory.x === datum.x) ? width * 0.4 : width * 0.4 - 10}
@@ -33,20 +76,10 @@ function CustomDonutPieChart({chartData}) {
                 }
             }]}
         />
-        <VictoryLegend
-            x={150}
-            y={50}
-            orientation="vertical"
-            gutter={20}
-            style={{border: {stroke: 'black'}, title: {fontSize: 20}}}
-            data={chartData.map((item, index) => ({
-                name: `${item.x}      ${item.y} - ${((item.y / chartData.reduce((acc, item) => acc + item.y, 0)) * 100).toFixed(0)}%`,
-                symbol: {fill: item.color},
-                labels: {fill: selectedCategory && selectedCategory.name === item.name ? 'red' : 'black'}
-            }))}
-            colorScale={chartData.map(item => item.color)}
-        />
-        <View style={{position: 'absolute', top: '25%', left: '42%'}}>
+        <View>
+            {renderExpenseSummary()}
+        </View>
+        <View style={{position: 'absolute', top: '-3%', left: '42%'}}>
             <Text style={{textAlign: 'center'}}>{chartData.length}</Text>
             <Text style={{textAlign: 'center'}}>Expenses</Text>
         </View>
