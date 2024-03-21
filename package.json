@@ -29,7 +29,9 @@
     "react-native-modal": "^13.0.1",
     "react-native-reanimated": "^3.8.0",
     "react-native-safe-area-context": "^4.9.0",
-    "react-native-screens": "^3.29.0"
+    "react-native-screens": "^3.29.0",
+    "react-native-svg": "^15.1.0",
+    "victory-native": "^36.9.2"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0"

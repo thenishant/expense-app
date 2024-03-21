@@ -9,7 +9,7 @@ import {GlobalStyles} from "../../constansts/styles";
 
 function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     const categories = ["Expense", "Income"];
-    const paymentModes = ["Credit Card", "Cash", "Bank Account"]
+    const paymentModes = ["Credit Card", "Cash", "Bank Account"];
 
     const [inputs, setInputs] = useState({
         amount: {value: defaultValues ? defaultValues.amount.toString() : '', isValid: true},
@@ -56,6 +56,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
             return;
         }
         onSubmit(expenseData);
+
     }
 
     const formIsValid = !inputs.amount.isValid || !inputs.desc.isValid || !inputs.category.isValid || !inputs.type.isValid || !inputs.paymentMode.isValid;
@@ -65,6 +66,21 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
         typeData = ['Investment', 'Loan', 'Alcohol', 'Shopping', 'Grocery', 'Dining', 'Leisure', 'Home related', 'Travel'];
     } else if (inputs.type.value === 'Income') {
         typeData = ['Interest', 'ROI', 'Salary', 'Credit Exchange'];
+    }
+
+    let paymentMode = null;
+    if (inputs.type.value === 'Expense') {
+        paymentMode = (<TextSelector
+            label={"Payment mode"}
+            inValid={!inputs.paymentMode.isValid}
+            data={paymentModes}
+            config={{
+                value: inputs.paymentMode.value,
+                onChangeText: changeHandler.bind(this, 'paymentMode'),
+                placeholder: "Select payment mode",
+                editable: false
+            }}
+        />);
     }
 
     return (<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -103,7 +119,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                         editable: false
                     }}
                 />
-
+                {paymentMode}
                 <TextSelector
                     label={"Category"}
                     inValid={!inputs.category.isValid}
@@ -112,17 +128,6 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                         value: inputs.category.value,
                         onChangeText: changeHandler.bind(this, 'category'),
                         placeholder: "Select category",
-                        editable: false
-                    }}
-                />
-                <TextSelector
-                    label={"Payment mode"}
-                    inValid={!inputs.paymentMode.isValid}
-                    data={paymentModes}
-                    config={{
-                        value: inputs.paymentMode.value,
-                        onChangeText: changeHandler.bind(this, 'paymentMode'),
-                        placeholder: "Select payment mode",
                         editable: false
                     }}
                 />
