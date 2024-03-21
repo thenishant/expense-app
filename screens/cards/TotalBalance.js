@@ -15,7 +15,7 @@ export default TotalBalance;
 
 const styles = StyleSheet.create({
     cardContainer: {
-        backgroundColor: "#80ed99",
+        backgroundColor: "#ffebc6",
         marginVertical: 8,
         shadowOpacity: 0.2,
         shadowRadius: 2,
