@@ -4,10 +4,11 @@ import axios from "axios";
 import {apiEndpoints, buildUrl} from "../../constansts/Endpoints";
 import CustomDonutPieChart from "../../components/charts/PieChart";
 import {StyleSheet, Text, View} from "react-native";
+import {getCurrentMonth} from "../../util/Date";
 
 function ExpensePerMonthChart() {
     const [expenseCategory, setExpenseCategory] = useState([]);
-    const currentMonth = moment().format('MMM');
+    const currentMonth = getCurrentMonth();
     const expenseCategoryHandler = async () => {
         const response = await axios.get(buildUrl(`${apiEndpoints.monthlyTransactions}?month=${currentMonth}`));
         try {

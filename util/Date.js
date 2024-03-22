@@ -11,3 +11,7 @@ export function getFormattedDate(date) {
 export function getCurrentDate() {
     return moment(new Date(), 'DD/MM/YYYY').toDate()
 }
+
+export function getCurrentMonth() {
+    return moment().format('MMM');
+}
