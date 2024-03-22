@@ -20,7 +20,7 @@ export default ExpenseSummary
 const styles = StyleSheet.create({
         container: {
             padding: 8,
-            backgroundColor: GlobalStyles.colors.primary50,
+            backgroundColor: GlobalStyles.colors.primary100,
             borderRadius: 6,
             flexDirection: "row",
             justifyContent: "space-between",
@@ -28,11 +28,12 @@ const styles = StyleSheet.create({
         },
         period: {
             fontSize: 12,
-            color: GlobalStyles.colors.primary400
+            fontWeight: "bold",
+            color: GlobalStyles.colors.black700
         }, sum: {
             fontWeight: "bold",
             fontSize: 16,
-            color: GlobalStyles.colors.primary500
+            color: GlobalStyles.colors.black700
         }
     })
 ;

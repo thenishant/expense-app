@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {Dimensions, FlatList, Text, TouchableOpacity, View} from 'react-native';
 import {VictoryPie} from 'victory-native';
+import {GlobalStyles} from "../../constansts/styles";
 
 function CustomDonutPieChart({chartData}) {
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -45,7 +46,7 @@ function CustomDonutPieChart({chartData}) {
                     justifyContent: 'center',
                     color: (selectedCategory && selectedCategory.x === item.x) ? 'white' : '#194868'
                 }}>
-                    <Text>{'₹'} {item.y}</Text>
+                    <Text>{GlobalStyles.characters.rupee} {item.y}</Text>
                 </View>
             </TouchableOpacity>)
         }

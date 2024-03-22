@@ -11,6 +11,11 @@ export const GlobalStyles = {
         gray500: "#ced4da",
         error500: "#e63946",
         error50: "#ff8fa5",
-        black700:"#283618"
+        black700: "#283618",
+        red100: '#ec8385',
+        green100: '#78c6a3'
+    },
+    characters: {
+        rupee: '₹'
     }
 }
