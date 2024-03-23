@@ -11,15 +11,18 @@ function ExpenseItem({id, desc, amount, date, type, category}) {
         navigation.navigate("ManageExpense", {expenseId: id})
     }
 
+    const backgroundColor = type === "Expense" ? GlobalStyles.colors.red100 : GlobalStyles.colors.green100;
+    const color = type === "Expense" ? GlobalStyles.colors.red100 : GlobalStyles.colors.green100;
+
     return (<Pressable onPress={expensePressHandler} style={({pressed}) => pressed && styles.pressed}>
-        <View style={styles.expenseItem}>
+        <View style={[styles.expenseItem, {backgroundColor}]}>
             <View>
                 <Text style={[styles.textBase, styles.desc]}>{desc}</Text>
                 <Text style={styles.textBase}>{getFormattedDate(date)}</Text>
                 <Text style={styles.textBase}>{category}</Text>
             </View>
             <View style={styles.amountContainer}>
-                <Text style={styles.amount}>{amount}</Text>
+                <Text style={[styles.amount, {color}]}>{GlobalStyles.characters.rupee} {amount}</Text>
             </View>
         </View>
     </Pressable>)
@@ -32,7 +35,6 @@ const styles = StyleSheet.create({
     expenseItem: {
         padding: 12,
         marginVertical: 8,
-        backgroundColor: GlobalStyles.colors.primary500,
         flexDirection: "row",
         justifyContent: "space-between",
         borderRadius: 6,
@@ -45,13 +47,9 @@ const styles = StyleSheet.create({
     }, desc: {
         fontSize: 16, marginBottom: 4, fontWeight: "bold"
     }, amountContainer: {
-        paddingHorizontal: 15,
-        backgroundColor: "white",
-        justifyContent: "center",
-        alignItems: 'center',
-        borderRadius: 4
+        paddingHorizontal: 15, backgroundColor: "white", justifyContent: "center", alignItems: 'center', borderRadius: 4
     }, amount: {
-        color: GlobalStyles.colors.primary500, fontWeight: "bold"
+        fontWeight: "bold", fontSize:15
     }, pressed: {
         opacity: 0.75
     }
