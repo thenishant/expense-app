@@ -7,6 +7,8 @@ import moment from "moment";
 import axios from "axios";
 import {apiEndpoints, buildUrl} from "../../constansts/Endpoints";
 import ExpensePerMonthChart from "../charts/ExpensePerMonthChart";
+import IncomeVsExpenseChart from "../charts/IncomeVsExpenseChart";
+import PaymentModePerMonth from "../charts/PaymentMode";
 
 function CardSection() {
     const [refreshing, setRefreshing] = useState(false);
@@ -55,6 +57,8 @@ function CardSection() {
         </View>
         <View>
             <ExpensePerMonthChart/>
+            <IncomeVsExpenseChart/>
+            <PaymentModePerMonth/>
         </View>
     </ScrollView>);
 }
