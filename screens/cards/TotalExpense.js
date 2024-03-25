@@ -15,6 +15,6 @@ export default TotalExpense;
 
 const styles = StyleSheet.create({
     cardContainer: {
-        backgroundColor: "#ffb100", marginVertical: 8, marginHorizontal: 8, marginTop: 50, width: 110, borderRadius: 20,
+        backgroundColor: "#fee719", marginVertical: 8, marginHorizontal: 8, marginTop: 50, width: 110, borderRadius: 20,
     },
 });

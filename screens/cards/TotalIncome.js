@@ -15,6 +15,6 @@ export default TotalIncome;
 
 const styles = StyleSheet.create({
     cardContainer: {
-        backgroundColor: "#f194b4", marginVertical: 8, marginHorizontal: 8, marginTop: 50, width: 110, borderRadius: 20,
+        backgroundColor: "#00ffcc", marginVertical: 8, marginHorizontal: 8, marginTop: 50, width: 110, borderRadius: 20,
     },
 });

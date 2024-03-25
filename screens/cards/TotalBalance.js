@@ -15,13 +15,6 @@ export default TotalBalance;
 
 const styles = StyleSheet.create({
     cardContainer: {
-        backgroundColor: "#ffebc6",
-        marginVertical: 8,
-        shadowOpacity: 0.2,
-        shadowRadius: 2,
-        marginHorizontal: 8,
-        marginTop: 50,
-        width: 110,
-        borderRadius: 20,
+        backgroundColor: "#00ccff", marginVertical: 8, marginHorizontal: 8, marginTop: 50, width: 110, borderRadius: 20,
     },
 });
