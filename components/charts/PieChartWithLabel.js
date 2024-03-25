@@ -3,7 +3,7 @@ import {Dimensions, FlatList, Text, TouchableOpacity, View} from 'react-native';
 import {VictoryPie} from 'victory-native';
 import {GlobalStyles} from "../../constansts/styles";
 
-function PieChart({chartData, centerData}) {
+function PieChartWithLabel({chartData}) {
     const [selectedCategory, setSelectedCategory] = useState(null);
 
     function setSelectCategoryByName(name) {
@@ -60,8 +60,8 @@ function PieChart({chartData, centerData}) {
         <VictoryPie
             data={chartData}
             radius={({datum}) => (selectedCategory && selectedCategory.x === datum.x) ? width * 0.4 : width * 0.4 - 10}
-            // innerRadius={70}
-            labelRadius={({innerRadius}) => (width * 0.3 + innerRadius) / 2.5}
+            innerRadius={70}
+            labelRadius={({innerRadius}) => (width * 0.4 + innerRadius) / 2.5}
 
             colorScale={chartData.map(item => item.color)}
             events={[{
@@ -81,10 +81,10 @@ function PieChart({chartData, centerData}) {
             {renderExpenseSummary()}
         </View>
         <View style={{position: 'absolute', top: '-3%', left: '42%'}}>
-            {/*<Text style={{textAlign: 'center'}}>{chartData.length}</Text>*/}
-            {/*<Text style={{textAlign: 'center'}}>Expenses</Text>*/}
+            <Text style={{textAlign: 'center'}}>{chartData.length}</Text>
+            <Text style={{textAlign: 'center'}}>Expenses</Text>
         </View>
     </View>);
 }
 
-export default PieChart;
+export default PieChartWithLabel;
