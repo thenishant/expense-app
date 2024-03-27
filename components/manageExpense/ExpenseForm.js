@@ -13,7 +13,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
 
     const [inputs, setInputs] = useState({
         amount: {value: defaultValues ? defaultValues.amount.toString() : '', isValid: true},
-        date: {value: getCurrentDate(), isValid: true},
+        date: {value: defaultValues ? new Date(defaultValues.date) : getCurrentDate(), isValid: true},
         desc: {value: defaultValues ? defaultValues.desc : '', isValid: true},
         type: {value: defaultValues ? defaultValues.type : '', isValid: true},
         category: {value: defaultValues ? defaultValues.category : '', isValid: true},
@@ -102,7 +102,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                     style={styles.rowInput}
                     label={"Date"}
                     onChange={changeHandler.bind(this, 'date')}
-                    textInputConfig={{
+                    config={{
                         value: inputs.date.value,
                     }}
                 />
