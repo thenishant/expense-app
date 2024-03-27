@@ -28,9 +28,7 @@ function PaymentModePerMonth() {
         x: item.name, y: item.amount, color: categoryColors[index % categoryColors.length]
     }));
 
-    console.log(transformedData)
     return (<View>
-        {/*<Text style={styles.text}>{'Category wise expenses this month'}</Text>*/}
         {transformedData && (<View style={styles.chart}>
             <PieChart chartData={transformedData}/>
         </View>)}
