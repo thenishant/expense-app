@@ -5,7 +5,11 @@ export function getDateMinusDays(date, days) {
 }
 
 export function getFormattedDate(date) {
-    return moment(date).format('DD-MM-YYYY')
+    return moment(date).format('DD-MMM-YYYY')
+}
+
+export function getFormattedDateAsDate(date) {
+    return moment(date, 'DD-MMM-YYYY').toDate()
 }
 
 export function getCurrentDate() {
