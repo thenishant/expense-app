@@ -2,17 +2,13 @@ import RNDateTimePicker from "@react-native-community/datetimepicker";
 import React, {useState} from "react";
 import {StyleSheet, Text, View} from "react-native";
 import {GlobalStyles} from "../../constansts/styles";
-import moment from "moment";
-import {getCurrentDate} from "../../util/Date";
 
 const CustomDatePicker = ({label, config, onChange}) => {
-    const [date, setDate] = useState(getCurrentDate());
+    const [date, setDate] = useState();
     const [mode, setMode] = useState('date');
-    const [show, setShow] = useState(false);
 
     const onChangeInternal = (event, selectedDate) => {
         const currentDate = selectedDate || date;
-        setShow(false);
         setDate(currentDate);
         onChange(currentDate);
     };
