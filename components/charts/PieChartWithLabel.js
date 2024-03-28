@@ -43,10 +43,18 @@ function PieChartWithLabel({chartData}) {
                     }}>{item.x}</Text>
                 </View>
                 <View style={{
-                    justifyContent: 'center',
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'flex-end',
                     color: (selectedCategory && selectedCategory.x === item.x) ? 'white' : '#194868'
                 }}>
                     <Text>{GlobalStyles.characters.rupee} {item.y}</Text>
+                </View>
+                <View style={{
+                    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'
+                }}>
+                    <Text>{item.percent}%</Text>
                 </View>
             </TouchableOpacity>)
         }
@@ -80,7 +88,7 @@ function PieChartWithLabel({chartData}) {
         <View>
             {renderExpenseSummary()}
         </View>
-        <View style={{position: 'absolute', top: '-3%', left: '42%'}}>
+        <View style={{position: 'absolute', top: '-2%', left: '42%'}}>
             <Text style={{textAlign: 'center'}}>{chartData.length}</Text>
             <Text style={{textAlign: 'center'}}>Expenses</Text>
         </View>
