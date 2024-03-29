@@ -26,7 +26,7 @@ function ExpensePerMonthChart() {
 
     const transformedData = Object.entries(expenseCategory).map(([category, item], index) => ({
         x: item.category, y: item.amount, color: categoryColors[index % categoryColors.length], percent: item.percent
-    }));
+    })).sort((a, b) => b.percent - a.percent);
 
     return (<View>
         {transformedData && (<View style={styles.chart}>
