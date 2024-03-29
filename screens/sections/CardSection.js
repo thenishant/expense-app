@@ -10,21 +10,15 @@ import Card from "../../components/UI/Card";
 
 function CardSection() {
     const [refreshing, setRefreshing] = useState(false);
-    const [response, setResponse] = useState({
+    const [transactionsInAMonth, setTransactionsInAMonth] = useState({
         sumOfIncome: 0, sumOfExpense: 0, balance: 0
     });
 
     const fetchData = async () => {
         try {
             const month = moment().format('MMM');
-            const response = await axios.get(buildUrl(`${apiEndpoints.transactionsInAMonth}?month=${month}`));
-            const responseData = response.data;
-            const sumOfIncome = responseData.sumOfIncome || 0;
-            const sumOfExpense = responseData.sumOfExpense || 0;
-            const balance = responseData.balance || 0;
-            setResponse({
-                sumOfIncome, sumOfExpense, balance
-            });
+            const transactionsInAMonthResponse = await axios.get(buildUrl(`${apiEndpoints.transactionsInAMonth}?month=${month}`));
+            setTransactionsInAMonth(transactionsInAMonthResponse.data);
         } catch (error) {
             console.error(error);
         } finally {
@@ -49,9 +43,9 @@ function CardSection() {
         />}
     >
         <View style={styles.firstRow}>
-            <Card style={styles.expenseAmount} amount={response.sumOfExpense} heading={'Expenses'}/>
-            <Card style={styles.incomeAmount} amount={response.sumOfIncome} heading={'Income'}/>
-            <Card style={styles.balanceAmount} amount={response.balance} heading={'Balance'}/>
+            <Card style={styles.expenseAmount} amount={transactionsInAMonth.sumOfExpense} heading={'Expenses'}/>
+            <Card style={styles.incomeAmount} amount={transactionsInAMonth.sumOfIncome} heading={'Income'}/>
+            <Card style={styles.balanceAmount} amount={transactionsInAMonth.balance} heading={'Balance'}/>
         </View>
         <View>
             <ExpensePerMonthChart/>
