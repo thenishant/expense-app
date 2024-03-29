@@ -1,14 +1,12 @@
 import React, {useEffect, useState} from "react";
 import {RefreshControl, ScrollView, StyleSheet, View} from "react-native";
-import TotalExpense from "../cards/TotalExpense";
-import TotalBalance from "../cards/TotalBalance";
-import TotalIncome from "../cards/TotalIncome";
 import moment from "moment";
 import axios from "axios";
 import {apiEndpoints, buildUrl} from "../../constansts/Endpoints";
 import ExpensePerMonthChart from "../charts/ExpensePerMonthChart";
 import IncomeVsExpenseChart from "../charts/IncomeVsExpenseChart";
 import PaymentModePerMonth from "../charts/PaymentMode";
+import Card from "../../components/UI/Card";
 
 function CardSection() {
     const [refreshing, setRefreshing] = useState(false);
@@ -51,9 +49,9 @@ function CardSection() {
         />}
     >
         <View style={styles.firstRow}>
-            <TotalExpense amount={response.sumOfExpense}/>
-            <TotalIncome amount={response.sumOfIncome}/>
-            <TotalBalance amount={response.balance}/>
+            <Card style={styles.expenseAmount} amount={response.sumOfExpense} heading={'Expenses'}/>
+            <Card style={styles.incomeAmount} amount={response.sumOfIncome} heading={'Income'}/>
+            <Card style={styles.balanceAmount} amount={response.balance} heading={'Balance'}/>
         </View>
         <View>
             <ExpensePerMonthChart/>
@@ -70,5 +68,11 @@ const styles = StyleSheet.create({
         flex: 1, marginTop: -20, backgroundColor: '#eef4f8'
     }, firstRow: {
         flexDirection: "row", justifyContent: "center",
-    },
+    }, incomeAmount: {
+        color: '#70e000'
+    }, expenseAmount: {
+        color: '#ef233c'
+    }, balanceAmount: {
+        color: '#00b4d8'
+    }
 });

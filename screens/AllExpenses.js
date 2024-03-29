@@ -1,7 +1,4 @@
 import {StyleSheet, Text, View} from "react-native";
-import TotalExpense from "./cards/TotalExpense";
-import TotalIncome from "./cards/TotalIncome";
-import TotalBalance from "./cards/TotalBalance";
 import ExpensesOutput from "../components/expensesOutput/ExpensesOutput";
 import {useContext} from "react";
 import {ExpensesContext} from "../store/expenses-context";
