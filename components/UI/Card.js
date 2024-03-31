@@ -13,7 +13,7 @@ export default Card;
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#fff', marginVertical: 8, marginHorizontal: 8, marginTop: 50, width: 110, borderRadius: 20,
+        backgroundColor: '#fff', margin: 8, borderRadius: 20, alignItems: 'center', justifyContent: 'center', flex: 1
     }, heading: {
         fontSize: 12, paddingBottom: 12, textAlign: "center", color: "#283618"
     }, amount: {

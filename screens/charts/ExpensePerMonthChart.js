@@ -28,7 +28,7 @@ function ExpensePerMonthChart() {
         x: item.category, y: item.amount, color: categoryColors[index % categoryColors.length], percent: item.percent
     })).sort((a, b) => b.percent - a.percent);
 
-    return (<View>
+    return (<View style={styles.container}>
         {transformedData && (<View style={styles.chart}>
             <PieChartWithLabel chartData={transformedData}/>
         </View>)}
@@ -40,5 +40,7 @@ export default ExpensePerMonthChart
 const styles = StyleSheet.create({
     chart: {flex: 1, alignItems: 'center', justifyContent: 'center'}, text: {
         padding: 8, marginTop: 20, marginBottom: -20, marginLeft: '17%', fontWeight: "bold",
+    }, container: {
+        backgroundColor: '#ffffff', margin: 8, borderRadius: 20, alignItems: 'center', justifyContent: 'center', flex: 1
     }
 });
