@@ -22,7 +22,7 @@ function PieChart({chartData, centerData}) {
                 height: 40,
                 paddingHorizontal: 8,
                 borderRadius: 10,
-                backgroundColor: (selectedCategory && selectedCategory.x === item.x) ? item.color : '#f2f2f2',
+                backgroundColor: (selectedCategory && selectedCategory.x === item.x) ? item.color : '#ffffff',
                 width: 350
             }}
                                       onPress={() => {
