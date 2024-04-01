@@ -7,16 +7,25 @@ import {getCurrentMonth} from "../../util/Date";
 
 function ExpensePerMonthChart() {
     const [expenseCategory, setExpenseCategory] = useState([]);
+    const [expense, setExpense] = useState([])
     const currentMonth = getCurrentMonth();
     const expenseCategoryHandler = async () => {
-        const response = await axios.get(buildUrl(`${apiEndpoints.monthlyTransactions}?month=${currentMonth}`));
+        const response = await axios.get(buildUrl(`${apiEndpoints.transactionsInAMonth}?month=${currentMonth}`));
         try {
-            const responseData = response.data[currentMonth]?.Expenses;
-            setExpenseCategory(responseData);
+            const allExpensesResponse = response.data.allExpenses;
+            setExpense(allExpensesResponse)
+            const totalExpenseSum = allExpensesResponse.reduce((total, expense) => total + expense.amount, 0);
+            const expensesByCategory = Object.entries(allExpensesResponse.reduce((acc, expense) => {
+                acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
+                return acc;
+            }, {})).map(([category, amount]) => ({
+                category, amount, percent: ((amount / totalExpenseSum) * 100).toFixed(1)
+            }));
+            setExpenseCategory(expensesByCategory);
         } catch (error) {
             console.error(error);
         }
-    };
+    }
 
     useEffect(() => {
         expenseCategoryHandler();
