@@ -30,7 +30,8 @@ function ExpensePerMonthChart() {
 
     return (<View style={styles.container}>
         {transformedData && (<View style={styles.chart}>
-            <PieChartWithLabel chartData={transformedData}/>
+            <PieChartWithLabel chartData={transformedData} chartName={'Expenses'}
+                               chartPercent={expense.length}/>
         </View>)}
     </View>);
 }

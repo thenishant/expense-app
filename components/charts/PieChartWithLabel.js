@@ -3,7 +3,7 @@ import {Dimensions, FlatList, Text, TouchableOpacity, View} from 'react-native';
 import {VictoryPie} from 'victory-native';
 import {GlobalStyles} from "../../constansts/styles";
 
-function PieChartWithLabel({chartData}) {
+function PieChartWithLabel({chartData, chartName, chartPercent}) {
     const [selectedCategory, setSelectedCategory] = useState(null);
 
     function setSelectCategoryByName(name) {
@@ -11,7 +11,9 @@ function PieChartWithLabel({chartData}) {
         setSelectedCategory(category[0])
     }
 
-    const {width} = Dimensions.get("window");
+    const width = 420;
+    // const {width} = Dimensions.get("window");
+    // console.log(width)
 
     function renderExpenseSummary() {
         let data = chartData
@@ -88,9 +90,9 @@ function PieChartWithLabel({chartData}) {
         <View>
             {renderExpenseSummary()}
         </View>
-        <View style={{position: 'absolute', top: '-2%', left: '42%'}}>
-            <Text style={{textAlign: 'center'}}>{chartData.length}</Text>
-            <Text style={{textAlign: 'center'}}>Expenses</Text>
+        <View style={{position: 'absolute', top: '-3%', left: '44%'}}>
+            <Text style={{textAlign: 'center'}}>{chartPercent}</Text>
+            <Text style={{textAlign: 'center'}}>{chartName}</Text>
         </View>
     </View>);
 }

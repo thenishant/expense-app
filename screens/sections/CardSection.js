@@ -54,7 +54,8 @@ function CardSection() {
         />}>
         <View>
             <View style={styles.expenseSummary}>
-                <ExpenseSummary expenses={[{amount: lastMonthTransaction.expense}]} periodName={'Last month'}/>
+                <ExpenseSummary expenses={[{amount: lastMonthTransaction.expense, type: "Expense"}]}
+                                periodName="Last month"/>
             </View>
             <View style={styles.firstRow}>
                 <Card style={styles.expenseAmount} amount={currentMonthTransactions.expense} heading={'Expenses'}/>
