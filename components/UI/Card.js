@@ -4,7 +4,7 @@ import {GlobalStyles} from "../../constansts/styles";
 
 function Card({heading, amount, style}) {
     return (<View style={styles.container}>
-        <Text style={[styles.amount, style]}>{GlobalStyles.characters.rupee} {amount}</Text>
+        <Text style={[styles.amount, style]}>{GlobalStyles.characters.rupee}{amount}</Text>
         <Text style={styles.heading}>{heading}</Text>
     </View>);
 }

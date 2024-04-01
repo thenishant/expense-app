@@ -46,7 +46,7 @@ function PieChart({chartData, centerData}) {
                     justifyContent: 'center',
                     color: (selectedCategory && selectedCategory.x === item.x) ? 'white' : '#194868'
                 }}>
-                    <Text>{GlobalStyles.characters.rupee} {item.y}</Text>
+                    <Text>{GlobalStyles.characters.rupee}{item.y}</Text>
                 </View>
             </TouchableOpacity>)
         }

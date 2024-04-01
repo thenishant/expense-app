@@ -22,7 +22,7 @@ function ExpenseItem({id, desc, amount, date, type, category}) {
                 <Text style={styles.textBase}>{category}</Text>
             </View>
             <View style={styles.amountContainer}>
-                <Text style={[styles.amount, {color}]}>{GlobalStyles.characters.rupee} {amount}</Text>
+                <Text style={[styles.amount, {color}]}>{GlobalStyles.characters.rupee}{amount}</Text>
             </View>
         </View>
     </Pressable>)

@@ -49,7 +49,7 @@ function PieChartWithLabel({chartData}) {
                     justifyContent: 'flex-end',
                     color: (selectedCategory && selectedCategory.x === item.x) ? 'white' : '#194868'
                 }}>
-                    <Text>{GlobalStyles.characters.rupee} {item.y}</Text>
+                    <Text>{GlobalStyles.characters.rupee}{item.y}</Text>
                 </View>
                 <View style={{
                     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'
