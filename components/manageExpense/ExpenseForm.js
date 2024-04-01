@@ -42,16 +42,17 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
         const descIsValid = expenseData.desc.trim().length > 0;
         const categoryIsValid = expenseData.category.trim().length > 0;
         const typeIsValid = expenseData.type.trim().length > 0;
-        const paymentModeIsValid = expenseData.paymentMode.trim().length > 0;
+        // const paymentModeIsValid = expenseData.paymentMode.trim().length > 0;
 
-        if (!amountIsValid || !descIsValid || !categoryIsValid || !typeIsValid || !paymentModeIsValid) {
+        if (!amountIsValid || !descIsValid || !categoryIsValid || !typeIsValid) {
             setInputs((currentInput) => ({
                 ...currentInput,
                 amount: {...currentInput.amount, isValid: amountIsValid},
                 desc: {...currentInput.desc, isValid: descIsValid},
                 category: {...currentInput.category, isValid: categoryIsValid},
-                type: {...currentInput.type, isValid: typeIsValid},
-                paymentMode: {...currentInput.paymentMode, isValid: paymentModeIsValid}
+                type: {
+                    ...currentInput.type, isValid: typeIsValid
+                }, // paymentMode: {...currentInput.paymentMode, isValid: paymentModeIsValid}
             }));
             return;
         }
