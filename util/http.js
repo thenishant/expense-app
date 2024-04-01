@@ -13,9 +13,8 @@ export async function fetchExpense() {
     const month = moment().format('MMM');
     const response = await axios.get(EXPRESS_URL + `expense/getAllTransactionsForAMonth?month=${month}`);
 
-    const expenses = []
-    for (const key of response.data['allExpenses']) {
-        const expenseObject = {
+    return (response.data['allExpenses'] || []).concat(response.data['allIncomes'] || [])
+        .map(key => ({
             id: key._id,
             amount: key.amount,
             category: key.category,
@@ -23,10 +22,7 @@ export async function fetchExpense() {
             desc: key.desc,
             type: key.type,
             paymentMode: key.paymentMode
-        }
-        expenses.push(expenseObject)
-    }
-    return expenses
+        }));
 }
 
 export async function updateExpense(id, expenseData) {
