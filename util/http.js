@@ -18,11 +18,11 @@ export async function fetchExpense() {
             id: key._id,
             amount: key.amount,
             category: key.category,
-            date: key.date,
+            date: new Date(key.date),
             desc: key.desc,
             type: key.type,
             paymentMode: key.paymentMode
-        }));
+        })).sort((a, b) => a.date - b.date);
 }
 
 export async function updateExpense(id, expenseData) {
