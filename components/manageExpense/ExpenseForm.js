@@ -6,8 +6,11 @@ import CustomDatePicker from "../UI/DatePickerNative";
 import {getCurrentDate} from "../../util/Date";
 import TextSelector from "../UI/TextSelector";
 import {GlobalStyles} from "../../constansts/styles";
+import ModalComponent from "../UI/ModalComponent";
+import convertToTableData from "../../util/Table";
 
 function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
+    const [modalVisible, setModalVisible] = useState(false);
     const categories = ["Expense", "Income"];
     const paymentModes = ["Credit Card", "Cash", "Bank Account"];
 
@@ -21,9 +24,10 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     });
 
     function changeHandler(inputIdentifier, enteredValue) {
-        setInputs((currentInput) => ({
+        setInputs(currentInput => ({
             ...currentInput, [inputIdentifier]: {value: enteredValue, isValid: true}
         }));
+        setModalVisible(false);
     }
 
     function submitHandler() {
@@ -42,31 +46,27 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
         const descIsValid = expenseData.desc.trim().length > 0;
         const categoryIsValid = expenseData.category.trim().length > 0;
         const typeIsValid = expenseData.type.trim().length > 0;
-        // const paymentModeIsValid = expenseData.paymentMode.trim().length > 0;
 
         if (!amountIsValid || !descIsValid || !categoryIsValid || !typeIsValid) {
-            setInputs((currentInput) => ({
+            setInputs(currentInput => ({
                 ...currentInput,
                 amount: {...currentInput.amount, isValid: amountIsValid},
                 desc: {...currentInput.desc, isValid: descIsValid},
                 category: {...currentInput.category, isValid: categoryIsValid},
-                type: {
-                    ...currentInput.type, isValid: typeIsValid
-                }, // paymentMode: {...currentInput.paymentMode, isValid: paymentModeIsValid}
+                type: {...currentInput.type, isValid: typeIsValid}
             }));
             return;
         }
         onSubmit(expenseData);
-
     }
 
     const formIsValid = !inputs.amount.isValid || !inputs.desc.isValid || !inputs.category.isValid || !inputs.type.isValid || !inputs.paymentMode.isValid;
 
     let typeData = [];
     if (inputs.type.value === 'Expense') {
-        typeData = ['Investment', 'Loan', 'Alcohol', 'Shopping', 'Grocery', 'Dining', 'Leisure', 'Home related', 'Travel'];
+        typeData = convertToTableData(['Investment', 'Loan', 'Alcohol', 'Shopping', 'Grocery', 'Dining', 'Leisure', 'Home related', 'Travel']);
     } else if (inputs.type.value === 'Income') {
-        typeData = ['Interest', 'ROI', 'Salary', 'Credit Exchange'];
+        typeData = convertToTableData(['Interest', 'ROI', 'Salary', 'Credit Exchange']);
     }
 
     let paymentMode = null;
@@ -84,8 +84,28 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
         />);
     }
 
+    let category = null;
+    if (inputs.type.value) {
+        category = (<View>
+            <Input
+                label={"Category"}
+                inValid={!inputs.category.isValid}
+                textInputConfig={{
+                    editable: false,
+                    value: inputs.category.value,
+                    onTouchStart: () => setModalVisible(true),
+                    placeholder: "Select category",
+                }}
+            />
+            <ModalComponent visible={modalVisible} data={typeData}
+                            onClose={() => setModalVisible(false)}
+                            onItemClick={changeHandler.bind(this, 'category')} modalTitle={'Select category'}/>
+        </View>)
+    }
+
     return (<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.form}>
+
             <View style={styles.inputsRow}>
                 <Input
                     style={styles.rowInput}
@@ -121,17 +141,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                     }}
                 />
                 {paymentMode}
-                <TextSelector
-                    label={"Category"}
-                    inValid={!inputs.category.isValid}
-                    data={typeData.sort()}
-                    config={{
-                        value: inputs.category.value,
-                        onChangeText: changeHandler.bind(this, 'category'),
-                        placeholder: "Select category",
-                        editable: false
-                    }}
-                />
+                {category}
             </View>
             <Input
                 label={"Description"}
