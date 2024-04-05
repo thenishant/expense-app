@@ -22,7 +22,7 @@ function PieChart({chartData, centerData}) {
                 height: 40,
                 paddingHorizontal: 8,
                 borderRadius: 10,
-                backgroundColor: (selectedCategory && selectedCategory.x === item.x) ? item.color : '#f2f2f2',
+                backgroundColor: (selectedCategory && selectedCategory.x === item.x) ? item.color : '#ffffff',
                 width: 350
             }}
                                       onPress={() => {
@@ -46,7 +46,7 @@ function PieChart({chartData, centerData}) {
                     justifyContent: 'center',
                     color: (selectedCategory && selectedCategory.x === item.x) ? 'white' : '#194868'
                 }}>
-                    <Text>{GlobalStyles.characters.rupee} {item.y}</Text>
+                    <Text>{GlobalStyles.characters.rupee}{item.y}</Text>
                 </View>
             </TouchableOpacity>)
         }

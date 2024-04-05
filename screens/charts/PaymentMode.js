@@ -28,7 +28,7 @@ function PaymentModePerMonth() {
         x: item.name, y: item.amount, color: categoryColors[index % categoryColors.length]
     }));
 
-    return (<View>
+    return (<View style={styles.container}>
         {transformedData && (<View style={styles.chart}>
             <PieChart chartData={transformedData}/>
         </View>)}
@@ -40,5 +40,8 @@ export default PaymentModePerMonth
 const styles = StyleSheet.create({
     chart: {flex: 1, alignItems: 'center', justifyContent: 'center'}, text: {
         padding: 8, marginTop: 20, marginBottom: -20, marginLeft: '17%', fontWeight: "bold",
+    },
+    container: {
+        backgroundColor: '#ffffff', margin: 8, borderRadius: 20, alignItems: 'center', justifyContent: 'center', flex: 1
     }
 });

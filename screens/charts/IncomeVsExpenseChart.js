@@ -1,8 +1,8 @@
 import {useEffect, useState} from "react";
 import {apiEndpoints, buildUrl} from "../../constansts/Endpoints";
 import axios from "axios";
-import {View} from "react-native";
-import {VictoryChart, VictoryLine} from "victory-native";
+import {StyleSheet, View} from "react-native";
+import {VictoryBar, VictoryChart, VictoryGroup, VictoryTooltip} from "victory-native";
 import {formatThousands} from "../../util/Numbers";
 
 function IncomeVsExpenseChart() {
@@ -24,31 +24,37 @@ function IncomeVsExpenseChart() {
 
     const incomeExpenseMapping = incomeVsExpense.map(item => ({
         expense: item.expense, income: item.income, month: item.month
-    }));
+    })).reverse().slice(-5);
 
-    return (<View>
+    return (<View style={styles.container}>
         <VictoryChart>
-            <VictoryLine
-                style={{
-                    data: {stroke: "#ef233c"}, parent: {border: "2px solid #ccc"}
-                }}
-                data={incomeExpenseMapping.map(item => ({x: item.month, y: formatThousands(item.expense)}))}
-                animate={{
-                    duration: 2000, onLoad: {duration: 1000}
-                }}
-            />
-            <VictoryLine
-                style={{
-                    data: {stroke: "#70e000"}, parent: {border: "2px solid #ccc"}
-                }}
-                data={incomeExpenseMapping.map(item => ({x: item.month, y: formatThousands(item.income)}))}
-                animate={{
-                    duration: 2000, onLoad: {duration: 1000}
-                }}
-            />
+            <VictoryGroup offset={20}
+                          colorScale={["#ef233c", "#70e000"]}>
+                <VictoryBar
+                    data={incomeExpenseMapping.map(item => ({x: item.month, y: formatThousands(item.expense)}))}
+                    labels={({datum}) => `${datum.y}K`}
+                    labelComponent={<VictoryTooltip/>}
+                    animate={{
+                        duration: 2000, onLoad: {duration: 1000}
+                    }}
+                />
+                <VictoryBar
+                    data={incomeExpenseMapping.map(item => ({x: item.month, y: formatThousands(item.income)}))}
+                    labels={({datum}) => `${datum.y}K`}
+                    labelComponent={<VictoryTooltip/>}
+                    animate={{
+                        duration: 2000, onLoad: {duration: 1000}
+                    }}
+                />
+            </VictoryGroup>
         </VictoryChart>
     </View>);
-
 }
 
 export default IncomeVsExpenseChart
+
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: '#ffffff', margin: 8, borderRadius: 20, alignItems: 'center', justifyContent: 'center', flex: 1
+    }
+});
