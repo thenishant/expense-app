@@ -1,7 +1,8 @@
 import React from 'react';
-import {Modal, Text, TouchableOpacity, View, StyleSheet} from 'react-native';
+import {Modal, Text, TouchableOpacity, View, StyleSheet, Image} from 'react-native';
+import {SvgUri} from 'react-native-svg';
 
-const ModalComponent = ({visible, data, onClose, onItemClick, modalTitle}) => {
+const ModalComponent = ({visible, data, onClose, onItemClick, modalTitle, showSvg}) => {
     return (<Modal
         animationType="fade"
         transparent={true}
@@ -18,11 +19,16 @@ const ModalComponent = ({visible, data, onClose, onItemClick, modalTitle}) => {
                 </View>
                 <View style={styles.table}>
                     {data.map((row, rowIndex) => (<View key={rowIndex} style={styles.row}>
-                        {row.map((cell, cellIndex) => (
-                            <TouchableOpacity key={cellIndex} onPress={() => onItemClick(cell)}
-                                              style={styles.cell}>
-                                <Text style={styles.text}>{cell}</Text>
-                            </TouchableOpacity>))}
+                        {row.map((cell, cellIndex) => (<TouchableOpacity
+                            key={cellIndex}
+                            onPress={() => onItemClick(cell)}
+                            style={styles.cell}
+                        >
+                            {showSvg ? (<>
+                                <Image style={{width: 40, height: 40, margin: 8}} source={(cell.split(' '))}/>
+                                <Text style={styles.text}>{cell.split(' ')[1]}</Text>
+                            </>) : (<Text style={styles.text}>{cell.split(' ').pop()}</Text>)}
+                        </TouchableOpacity>))}
                     </View>))}
                 </View>
             </View>
@@ -47,7 +53,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     }, cell: {
         flex: 1, padding: 15, alignItems: 'center', borderWidth: 1, borderColor: '#ccc', justifyContent: 'center'
-
     }, text: {
         textAlign: 'center', color: 'black'
     },
