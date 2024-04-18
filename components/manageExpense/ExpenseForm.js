@@ -6,7 +6,7 @@ import CustomDatePicker from "../UI/DatePickerNative";
 import {getCurrentDate} from "../../util/Date";
 import {GlobalStyles} from "../../constansts/styles";
 import ModalComponent from "../UI/ModalComponent";
-import {convertToTableDataWithIcon} from "../../util/Table";
+import {convertToTable} from "../../util/Table";
 
 function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     const [modalData, setModalData] = useState([]);
@@ -61,31 +61,15 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
 
     const formIsValid = !inputs.amount.isValid || !inputs.desc.isValid || !inputs.category.isValid || !inputs.type.isValid || !inputs.paymentMode.isValid;
 
-    const categoryData = [{
-        'Investment': 'investment.png',
-        'Loan': 'loan.png',
-        'Alcohol': 'alcohol.png',
-        'Shopping': 'shopping.png',
-        'Grocery': 'grocery.png',
-        'Dining': 'dining.png',
-        'Leisure': 'leisure.png',
-        'Home related': 'home.png',
-        'Travel': 'travel.png'
-    }];
+    const categoryData = ['🏦 Loan', '🍺 Alcohol', '🛍️ Shopping', '🥗 Grocery', '🍽 Restaurant', '🏕️ Leisure', '🏠 Home', '🚗 Transport', '🎁 Gift', '🍔 Eatery', '💹 Investment'];
 
-    const types = [{
-        'Expense': 'expense.png', 'Income': 'income.png'
-    }];
+    const types = ['🟥 Expense', '🟩 Income'];
 
-    const paymentModeData = [{
-        "Credit Card": "card.png", "Cash": 'cash.png', "Bank Account": 'bank.png'
-    }];
+    const paymentModeData = ["💳 Credit Card", "💵 Cash", "🏛️ Bank Account"];
 
-    const incomeCategory = [{
-        'Interest': 'investment.png', 'ROI': 'loan.png', 'Salary': 'alcohol.png', 'Credit Exchange': 'shopping.png',
-    }]
+    const incomeCategory = ['Interest', 'ROI', 'Salary', 'Credit Exchange']
 
-    let categories = inputs.type.value === 'Expense' ? convertToTableDataWithIcon(categoryData) : convertToTableDataWithIcon(incomeCategory);
+    let categories = inputs.type.value === 'Expense' ? convertToTable(categoryData) : convertToTable(incomeCategory);
 
     let paymentMode = null;
 
@@ -100,10 +84,8 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     };
 
     const handleItemClick = (selectedItem) => {
-        changeHandler(selectedInput, selectedItem.split('.png ').pop());
+        changeHandler(selectedInput, selectedItem.replace(/\p{Emoji}/gu, '').trim());
     };
-
-    console.log(inputs.date.value)
 
     const type = <><Input
         label={"Type"}
@@ -111,7 +93,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
         textInputConfig={{
             editable: false,
             value: inputs.type.value,
-            onTouchStart: () => openModal('type', convertToTableDataWithIcon(types)),
+            onTouchStart: () => openModal('type', convertToTable(types)),
             placeholder: "Select type",
         }}
     /></>;
@@ -123,7 +105,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                 inValid={!inputs.paymentMode.isValid}
                 textInputConfig={{
                     editable: false, value: inputs.paymentMode.value, onTouchStart: () => {
-                        openModal('paymentMode', convertToTableDataWithIcon(paymentModeData));
+                        openModal('paymentMode', convertToTable(paymentModeData));
                     }, placeholder: "Select Payment mode",
                 }}
             />
@@ -195,7 +177,6 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                 data={modalData}
                 onClose={closeModal}
                 onItemClick={handleItemClick}
-                showSvg={true}
                 modalTitle={'Select option'}
             />
         </View>
