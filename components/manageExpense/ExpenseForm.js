@@ -139,7 +139,6 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                         onChangeText: changeHandler.bind(this, 'amount'),
                         value: inputs.amount.value,
                         placeholder: "Enter amount",
-                        autoFocus: false
                     }}
                 />
                 <CustomDatePicker
@@ -161,6 +160,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                 inValid={!inputs.desc.isValid}
                 textInputConfig={{
                     multiline: true,
+                    placeholder: "Enter desc",
                     onChangeText: changeHandler.bind(this, 'desc'),
                     value: inputs.desc.value,
                     blurOnSubmit: true

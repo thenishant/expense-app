@@ -23,7 +23,7 @@ const ModalComponent = ({visible, data, onClose, onItemClick, modalTitle}) => {
                             key={cellIndex}
                             onPress={() => onItemClick(cell)}
                             style={styles.cell}>
-                                <Text style={styles.text}>{cell}</Text>
+                            <Text style={styles.text}>{cell}</Text>
                         </TouchableOpacity>))}
                     </View>))}
                 </View>
@@ -48,9 +48,9 @@ const styles = StyleSheet.create({
     }, row: {
         flexDirection: 'row',
     }, cell: {
-        flex: 1, padding: 15, alignItems: 'center', borderWidth: 1, borderColor: '#ccc', justifyContent: 'center'
+        flex: 1, padding: 18, alignItems: 'center', borderWidth: 1, borderColor: '#ccc', justifyContent: 'center'
     }, text: {
-        textAlign: 'center', color: 'black'
+        textAlign: 'center', color: 'black', fontSize: 16
     },
 });
 
