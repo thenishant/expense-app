@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {Text, View, StyleSheet, TouchableOpacity} from "react-native";
 import {getCurrentDate} from "../../util/Date";
+import {GlobalStyles} from "../../constansts/styles";
 
 function MonthYearHeader({onMonthChange}) {
     const [currentDate, setCurrentDate] = useState(getCurrentDate());
@@ -48,6 +49,6 @@ const styles = StyleSheet.create({
     }, arrow: {
         fontSize: 20,
     }, disabledArrow: {
-        color: 'gray', // You can adjust the color of the disabled arrow
+        color: GlobalStyles.colors.gray300,
     },
 });
