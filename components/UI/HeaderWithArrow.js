@@ -18,13 +18,18 @@ function MonthYearHeader({onMonthChange}) {
         return `${currentMonth} ${currentYear}`;
     };
 
+    const isCurrentMonth = () => {
+        const today = new Date();
+        return currentDate.getMonth() === today.getMonth() && currentDate.getFullYear() === today.getFullYear();
+    };
+
     return (<View style={styles.container}>
         <TouchableOpacity onPress={() => handleArrowClick('left')}>
             <Text style={styles.arrow}>{'\u25C0'}</Text>
         </TouchableOpacity>
         <Text style={styles.header}>{currentMonthYear()}</Text>
-        <TouchableOpacity onPress={() => handleArrowClick('right')}>
-            <Text style={styles.arrow}>{'\u25B6'}</Text>
+        <TouchableOpacity onPress={() => handleArrowClick('right')} disabled={isCurrentMonth()}>
+            <Text style={[styles.arrow, isCurrentMonth() && styles.disabledArrow]}>{'\u25B6'}</Text>
         </TouchableOpacity>
     </View>);
 }
@@ -42,5 +47,7 @@ const styles = StyleSheet.create({
         fontSize: 20, fontWeight: 'bold', marginLeft: 10, marginRight: 10,
     }, arrow: {
         fontSize: 20,
+    }, disabledArrow: {
+        color: 'gray', // You can adjust the color of the disabled arrow
     },
 });
