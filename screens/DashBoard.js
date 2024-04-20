@@ -27,7 +27,7 @@ function DashBoard() {
         <CardSection selectedMonth={selectedMonth}/>
         <ExpensePerMonthChart selectedMonth={selectedMonth}/>
         <IncomeVsExpenseChart/>
-        <PaymentModePerMonth refreshing={refreshing}/>
+        <PaymentModePerMonth refreshing={refreshing} selectedMonth={selectedMonth}/>
     </ScrollView>);
 }
 

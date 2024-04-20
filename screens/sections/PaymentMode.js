@@ -4,12 +4,17 @@ import {StyleSheet, View} from "react-native";
 import {getMonth} from "../../util/Date";
 import PieChart from "../../components/charts/PieChart";
 import {apiEndpoints, buildUrl} from "../../constansts/Endpoints";
+import LoadingOverlay from "../../components/UI/LoadingOverlay";
+import ErrorOverlay from "../../components/UI/ErrorOverlay";
 
-function PaymentModePerMonth({refreshing}) {
+function PaymentModePerMonth({refreshing, selectedMonth}) {
     const [expenseCategory, setExpenseCategory] = useState([]);
-    const currentMonth = getMonth();
+    const [isFetching, setIsFetching] = useState(true);
+    const [error, setError] = useState('');
+    const currentMonth = getMonth(selectedMonth);
 
     const expenseCategoryHandler = async () => {
+        setIsFetching(true)
         try {
             const response = await axios.get(buildUrl(`${apiEndpoints.paymentMode}?month=${currentMonth}`));
             const responseData = response.data;
@@ -17,11 +22,12 @@ function PaymentModePerMonth({refreshing}) {
         } catch (error) {
             console.error(error);
         }
+        setIsFetching(false)
     };
 
     useEffect(() => {
         expenseCategoryHandler();
-    }, [refreshing]);
+    }, [refreshing, selectedMonth]);
 
     const categoryColors = ["#f15bb5", "#fee440", "#00bbf9", "#00f5d4", "#f79256", "#90fe00", "#cc17ff", "#ff0000", "#adb5bd"];
 
@@ -29,8 +35,12 @@ function PaymentModePerMonth({refreshing}) {
         x: item.name, y: item.amount, color: categoryColors[index % categoryColors.length]
     }));
 
+    if (isFetching) return <LoadingOverlay/>
+
+    if (!isFetching && error) return <ErrorOverlay message={error}/>
+
     return (<View style={styles.container}>
-        {transformedData && (<View style={styles.chart}>
+        {transformedData.length > 0 && (<View style={styles.chart}>
             <PieChart chartData={transformedData}/>
         </View>)}
     </View>);
