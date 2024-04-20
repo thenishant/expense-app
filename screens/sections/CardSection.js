@@ -15,10 +15,6 @@ function CardSection({selectedMonth}) {
     const [error, setError] = useState('')
     const [currentMonthTransactions, setCurrentMonthTransactions] = useState(initialFigures);
 
-    useEffect(() => {
-        fetchData();
-    }, [selectedMonth]);
-
     const fetchData = async () => {
         setIsFetching(true)
         try {
