@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {StyleSheet, View} from "react-native";
-import {getCurrentMonth} from "../../util/Date";
+import {getMonth} from "../../util/Date";
 import PieChart from "../../components/charts/PieChart";
 import {apiEndpoints, buildUrl} from "../../constansts/Endpoints";
 
 function PaymentModePerMonth({refreshing}) {
     const [expenseCategory, setExpenseCategory] = useState([]);
-    const currentMonth = getCurrentMonth();
+    const currentMonth = getMonth();
 
     const expenseCategoryHandler = async () => {
         try {

@@ -3,12 +3,12 @@ import axios from "axios";
 import {apiEndpoints, buildUrl} from "../../constansts/Endpoints";
 import PieChartWithLabel from "../../components/charts/PieChartWithLabel";
 import {StyleSheet, View} from "react-native";
-import {getCurrentMonth} from "../../util/Date";
+import {getMonth} from "../../util/Date";
 
 function ExpensePerMonthChart() {
     const [expenseCategory, setExpenseCategory] = useState([]);
     const [expense, setExpense] = useState([])
-    const currentMonth = getCurrentMonth();
+    const currentMonth = getMonth();
     const expenseCategoryHandler = async () => {
         const response = await axios.get(buildUrl(`${apiEndpoints.transactionsInAMonth}?month=${currentMonth}`));
         try {

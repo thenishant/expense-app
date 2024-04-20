@@ -19,3 +19,7 @@ export function getCurrentDate(date?: string) {
 export function getCurrentMonth() {
     return moment().format('MMM');
 }
+
+export function getMonth(date) {
+    return date ? moment(date).format('MMM') : moment().format('MMM');
+}
