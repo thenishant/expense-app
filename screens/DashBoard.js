@@ -25,7 +25,7 @@ function DashBoard() {
     >
         <MonthYearHeader onMonthChange={handleMonthChange}/>
         <CardSection selectedMonth={selectedMonth}/>
-        <ExpensePerMonthChart/>
+        <ExpensePerMonthChart selectedMonth={selectedMonth}/>
         <IncomeVsExpenseChart/>
         <PaymentModePerMonth refreshing={refreshing}/>
     </ScrollView>);
