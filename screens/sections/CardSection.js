@@ -9,7 +9,7 @@ import ErrorOverlay from "../../components/UI/ErrorOverlay";
 
 function CardSection({selectedMonth}) {
     const initialFigures = {
-        income: 0, expense: 0, balance: 0
+        income: 0, expense: 0, balance: 0, investment: 0
     };
     const [isFetching, setIsFetching] = useState(true)
     const [error, setError] = useState('')
@@ -40,6 +40,7 @@ function CardSection({selectedMonth}) {
         {currentMonthTransactions ? (<View style={styles.firstRow}>
             <Card style={styles.expenseAmount} amount={currentMonthTransactions.expense} heading={'Expenses'}/>
             <Card style={styles.incomeAmount} amount={currentMonthTransactions.income} heading={'Income'}/>
+            <Card style={styles.investmentAmount} amount={currentMonthTransactions.investment} heading={'Investments'}/>
             <Card style={styles.balanceAmount} amount={currentMonthTransactions.balance} heading={'Balance'}/>
         </View>) : (<ErrorOverlay message={`No expense details found for ${getMonth(selectedMonth)}`}/>)}
     </View>);
@@ -63,6 +64,8 @@ const styles = StyleSheet.create({
     }, expenseAmount: {
         color: '#ef233c'
     }, balanceAmount: {
-        color: '#00b4d8'
+        color: '#01befe'
+    }, investmentAmount: {
+        color: '#ff7b00'
     }
 });
