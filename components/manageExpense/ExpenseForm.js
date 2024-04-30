@@ -63,9 +63,9 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
 
     const categoryData = ['🏦 Loan', '🍺 Alcohol', '🛍️ Shopping', '🥗 Grocery', '🍽 Restaurant', '🏕️ Leisure', '🏠 Home', '🚗 Transport', '🎁 Gift', '🍔 Eatery', '💹 Investment'];
 
-    const types = ['🟥 Expense', '🟩 Income'];
+    const types = ['🟥 Expense', '🟩 Income', '🟨 Investment'];
 
-    const paymentModeData = ["💳 Credit Card", "💵 Cash", "🏛️ Bank Account"];
+    const paymentModeData = ["💳 Credit Card", "💵 Cash", "🏛️ Bank"];
 
     const incomeCategory = ['Interest', 'ROI', 'Salary', 'Credit Exchange']
 
