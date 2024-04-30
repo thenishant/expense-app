@@ -1,9 +1,7 @@
-const convertToTableData = (data) => {
-    const tableData = [];
-    for (let i = 0; i < data.length; i += 3) {
-        tableData.push(data.slice(i, i + 3));
+export function convertToTable(tableData) {
+    const rowData = [];
+    for (let i = 0; i < tableData.length; i += 3) {
+        rowData.push(tableData.slice(i, i + 3));
     }
-    return tableData;
+    return rowData;
 }
-
-export default convertToTableData

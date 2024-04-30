@@ -22,7 +22,7 @@ export async function fetchExpense() {
             desc: key.desc,
             type: key.type,
             paymentMode: key.paymentMode
-        })).sort((a, b) => a.date - b.date);
+        }))
 }
 
 export async function updateExpense(id, expenseData) {

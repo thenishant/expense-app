@@ -4,15 +4,14 @@ import Input from "./Input";
 import Button from "../UI/Button";
 import CustomDatePicker from "../UI/DatePickerNative";
 import {getCurrentDate} from "../../util/Date";
-import TextSelector from "../UI/TextSelector";
 import {GlobalStyles} from "../../constansts/styles";
 import ModalComponent from "../UI/ModalComponent";
-import convertToTableData from "../../util/Table";
+import {convertToTable} from "../../util/Table";
 
 function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
+    const [modalData, setModalData] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
-    const categories = ["Expense", "Income"];
-    const paymentModes = ["Credit Card", "Cash", "Bank Account"];
+    const [selectedInput, setSelectedInput] = useState('');
 
     const [inputs, setInputs] = useState({
         amount: {value: defaultValues ? defaultValues.amount.toString() : '', isValid: true},
@@ -62,26 +61,55 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
 
     const formIsValid = !inputs.amount.isValid || !inputs.desc.isValid || !inputs.category.isValid || !inputs.type.isValid || !inputs.paymentMode.isValid;
 
-    let typeData = [];
-    if (inputs.type.value === 'Expense') {
-        typeData = convertToTableData(['Investment', 'Loan', 'Alcohol', 'Shopping', 'Grocery', 'Dining', 'Leisure', 'Home related', 'Travel']);
-    } else if (inputs.type.value === 'Income') {
-        typeData = convertToTableData(['Interest', 'ROI', 'Salary', 'Credit Exchange']);
-    }
+    const categoryData = ['🏦 Loan', '🍺 Alcohol', '🛍️ Shopping', '🥗 Grocery', '🍽 Restaurant', '🏕️ Leisure', '🏠 Home', '🚗 Transport', '🎁 Gift', '🍔 Eatery', '💹 Investment'];
+
+    const types = ['🟥 Expense', '🟩 Income', '🟨 Investment'];
+
+    const paymentModeData = ["💳 Credit Card", "💵 Cash", "🏛️ Bank"];
+
+    const incomeCategory = ['Interest', 'ROI', 'Salary', 'Credit Exchange']
+
+    let categories = inputs.type.value === 'Expense' ? convertToTable(categoryData) : convertToTable(incomeCategory);
 
     let paymentMode = null;
+
+    const openModal = (inputIdentifier, data) => {
+        setSelectedInput(inputIdentifier);
+        setModalData(data);
+        setModalVisible(true);
+    };
+
+    const closeModal = () => {
+        setModalVisible(false);
+    };
+
+    const handleItemClick = (selectedItem) => {
+        changeHandler(selectedInput, selectedItem.replace(/\p{Emoji}/gu, '').trim());
+    };
+
+    const type = <><Input
+        label={"Type"}
+        inValid={!inputs.type.isValid}
+        textInputConfig={{
+            editable: false,
+            value: inputs.type.value,
+            onTouchStart: () => openModal('type', convertToTable(types)),
+            placeholder: "Select type",
+        }}
+    /></>;
+
     if (inputs.type.value === 'Expense') {
-        paymentMode = (<TextSelector
-            label={"Payment mode"}
-            inValid={!inputs.paymentMode.isValid}
-            data={paymentModes}
-            config={{
-                value: inputs.paymentMode.value,
-                onChangeText: changeHandler.bind(this, 'paymentMode'),
-                placeholder: "Select payment mode",
-                editable: false
-            }}
-        />);
+        paymentMode = (<>
+            <Input
+                label={"Payment Mode"}
+                inValid={!inputs.paymentMode.isValid}
+                textInputConfig={{
+                    editable: false, value: inputs.paymentMode.value, onTouchStart: () => {
+                        openModal('paymentMode', convertToTable(paymentModeData));
+                    }, placeholder: "Select Payment mode",
+                }}
+            />
+        </>);
     }
 
     let category = null;
@@ -91,21 +119,16 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                 label={"Category"}
                 inValid={!inputs.category.isValid}
                 textInputConfig={{
-                    editable: false,
-                    value: inputs.category.value,
-                    onTouchStart: () => setModalVisible(true),
-                    placeholder: "Select category",
+                    editable: false, value: inputs.category.value, onTouchStart: () => {
+                        openModal('category', categories);
+                    }, placeholder: "Select category",
                 }}
             />
-            <ModalComponent visible={modalVisible} data={typeData}
-                            onClose={() => setModalVisible(false)}
-                            onItemClick={changeHandler.bind(this, 'category')} modalTitle={'Select category'}/>
-        </View>)
+        </View>);
     }
 
     return (<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.form}>
-
             <View style={styles.inputsRow}>
                 <Input
                     style={styles.rowInput}
@@ -116,7 +139,6 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                         onChangeText: changeHandler.bind(this, 'amount'),
                         value: inputs.amount.value,
                         placeholder: "Enter amount",
-                        autoFocus: false
                     }}
                 />
                 <CustomDatePicker
@@ -129,17 +151,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                 />
             </View>
             <View>
-                <TextSelector
-                    label={"Type"}
-                    data={categories}
-                    inValid={!inputs.type.isValid}
-                    config={{
-                        value: inputs.type.value,
-                        onChangeText: changeHandler.bind(this, 'type'),
-                        placeholder: "Select type",
-                        editable: false
-                    }}
-                />
+                {type}
                 {paymentMode}
                 {category}
             </View>
@@ -148,6 +160,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                 inValid={!inputs.desc.isValid}
                 textInputConfig={{
                     multiline: true,
+                    placeholder: "Enter desc",
                     onChangeText: changeHandler.bind(this, 'desc'),
                     value: inputs.desc.value,
                     blurOnSubmit: true
@@ -159,6 +172,13 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                 <Button mode={'flat'} onPress={onCancel} style={styles.button}>Cancel</Button>
                 <Button onPress={submitHandler} style={styles.button}>{submitButtonLabel}</Button>
             </View>
+            <ModalComponent
+                visible={modalVisible}
+                data={modalData}
+                onClose={closeModal}
+                onItemClick={handleItemClick}
+                modalTitle={'Select option'}
+            />
         </View>
     </TouchableWithoutFeedback>);
 }

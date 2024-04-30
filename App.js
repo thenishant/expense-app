@@ -11,6 +11,7 @@ import {GlobalStyles} from "./constansts/styles";
 import {Ionicons} from '@expo/vector-icons'
 import IconButton from "./components/UI/IconButton";
 import ExpenseContextProvider from "./store/expenses-context";
+import DashBoard from "./screens/DashBoard";
 
 
 const Stack = createNativeStackNavigator();
@@ -30,7 +31,7 @@ function ExpensesOverview() {
                 }}
             />
     })}>
-        <BottomTabs.Screen name={"CardSection"} component={CardSection}
+        <BottomTabs.Screen name={"Dashboard"} component={DashBoard}
                            options={{
                                title: 'Dashboard',
                                tabBarLabel: 'Dashboard',
