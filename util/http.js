@@ -1,7 +1,6 @@
 import axios from "axios";
 import moment from "moment";
 
-const firebaseBackendURL = process.env.EXPO_PUBLIC_FIREBASE_BACKEND_URL;
 const EXPRESS_URL = process.env.EXPO_PUBLIC_EXPRESS_URL;
 
 export async function createExpense(expenseData) {
