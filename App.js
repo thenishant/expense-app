@@ -1,58 +1,67 @@
-import {StyleSheet} from 'react-native';
-import CardSection from "./screens/sections/CardSection";
 import {NavigationContainer} from "@react-navigation/native";
 import {StatusBar} from "expo-status-bar";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import ManageExpense from "./screens/ManageExpense";
-import RecentExpenses from "./screens/RecentExpenses";
 import AllExpenses from "./screens/AllExpenses";
 import {GlobalStyles} from "./constansts/styles";
 import {Ionicons} from '@expo/vector-icons'
 import IconButton from "./components/UI/IconButton";
 import ExpenseContextProvider from "./store/expenses-context";
 import DashBoard from "./screens/DashBoard";
-
+import Budget from "./screens/Budget";
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
 
 function ExpensesOverview() {
-    return <BottomTabs.Navigator screenOptions={({navigation}) => ({
-        headerStyle: {backgroundColor: GlobalStyles.colors.primary500},
-        headerTintColor: 'white',
-        headerRight: ({tintColor}) =>
-            <IconButton
-                icon={"add"}
-                size={24}
-                color={tintColor}
-                onPress={() => {
-                    navigation.navigate("ManageExpense")
-                }}
-            />
-    })}>
-        <BottomTabs.Screen name={"Dashboard"} component={DashBoard}
-                           options={{
-                               title: 'Dashboard',
-                               tabBarLabel: 'Dashboard',
-                               tabBarIcon: ({color, size}) => (
-                                   <Ionicons name={"grid-outline"} size={size} color={color}/>)
-                           }}/>
-        <BottomTabs.Screen name={"RecentExpenses"} component={RecentExpenses}
-                           options={{
-                               title: 'Recent Expenses',
-                               tabBarLabel: 'Recent',
-                               tabBarIcon: ({color, size}) => (
-                                   <Ionicons name={'hourglass-outline'} size={size} color={color}/>)
-                           }}/>
-        <BottomTabs.Screen name={"AllExpenses"} component={AllExpenses}
-                           options={{
-                               title: 'All Expenses',
-                               tabBarLabel: 'All Expenses',
-                               tabBarIcon: ({color, size}) => (
-                                   <Ionicons name={'calendar-outline'} size={size} color={color}/>)
-                           }}/>
-    </BottomTabs.Navigator>
+    return (<BottomTabs.Navigator screenOptions={{
+        headerStyle: {backgroundColor: GlobalStyles.colors.primary500}, headerTintColor: 'white'
+    }}>
+        <BottomTabs.Screen
+            name={"Dashboard"}
+            component={DashBoard}
+            options={({navigation, route}) => ({
+                title: 'Dashboard',
+                tabBarLabel: 'Dashboard',
+                tabBarIcon: ({color, size}) => (<Ionicons name={"grid-outline"} size={size} color={color}/>),
+                headerRight: ({tintColor}) => (<IconButton
+                    icon={"add"}
+                    size={28}
+                    color={tintColor}
+                    onPress={() => {
+                        navigation.navigate("ManageExpense")
+                    }}
+                />)
+            })}
+        />
+        <BottomTabs.Screen
+            name={"Budget"}
+            component={Budget}
+            options={({navigation, route}) => ({
+                title: 'Budget',
+                tabBarLabel: 'Budget',
+                tabBarIcon: ({color, size}) => (<Ionicons name={"calculator-outline"} size={size} color={color}/>),
+                headerRight: ({tintColor}) => (<IconButton
+                    icon={"add"}
+                    size={28}
+                    color={tintColor}
+                    onPress={() => {
+                        navigation.navigate("ManageExpense")
+                    }}
+                />)
+            })}
+        />
+        <BottomTabs.Screen
+            name={"AllExpenses"}
+            component={AllExpenses}
+            options={{
+                title: 'All Expenses',
+                tabBarLabel: 'All Expenses',
+                tabBarIcon: ({color, size}) => (<Ionicons name={'calendar-outline'} size={size} color={color}/>)
+            }}
+        />
+    </BottomTabs.Navigator>);
 }
 
 export default function App() {
@@ -61,8 +70,7 @@ export default function App() {
         <ExpenseContextProvider>
             <NavigationContainer>
                 <Stack.Navigator screenOptions={{
-                    headerStyle: {backgroundColor: GlobalStyles.colors.primary500},
-                    headerTintColor: 'white',
+                    headerStyle: {backgroundColor: GlobalStyles.colors.primary500}, headerTintColor: 'white',
                 }}>
                     <Stack.Screen
                         name={"ExpensesOverview"}
@@ -76,7 +84,5 @@ export default function App() {
                 </Stack.Navigator>
             </NavigationContainer>
         </ExpenseContextProvider>
-    </>)
+    </>);
 }
-
-const styles = StyleSheet.create({});
