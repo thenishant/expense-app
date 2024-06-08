@@ -1,33 +1,13 @@
-import {StyleSheet, Text, View} from "react-native";
 import ExpensesOutput from "../components/expensesOutput/ExpensesOutput";
 import {useContext} from "react";
 import {ExpensesContext} from "../store/expenses-context";
 
 function AllExpenses() {
     const expensesContext = useContext(ExpensesContext);
-    return (
-        <>
-            {/*<View style={styles.container}>*/}
-            {/*    <View style={styles.firstRow}>*/}
-            {/*        <TotalExpense/>*/}
-            {/*        <TotalIncome/>*/}
-            {/*        <TotalBalance/>*/}
-            {/*    </View>*/}
-            <ExpensesOutput expenses={expensesContext.expenses} expensesPeriod={"Total"} fallbackText={"No Expenses found!!"}/>
-            {/*</View>*/}
-        </>
-    )
+    return (<>
+        <ExpensesOutput expenses={expensesContext.expenses}
+                        expensesPeriod={"Total"} fallbackText={"No Expenses found!!"}/>
+    </>)
 }
 
 export default AllExpenses
-
-const styles = StyleSheet.create({
-    container: {
-        flexDirection: "column",
-        marginTop: 10
-    },
-    firstRow: {
-        flexDirection: "row",
-        justifyContent: "center",
-    },
-});

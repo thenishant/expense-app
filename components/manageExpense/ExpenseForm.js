@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
-import Input from "./Input";
+import Input from "../UI/Input";
 import Button from "../UI/Button";
 import CustomDatePicker from "../UI/DatePickerNative";
 import {getCurrentDate} from "../../util/Date";
@@ -61,11 +61,11 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
 
     const formIsValid = !inputs.amount.isValid || !inputs.desc.isValid || !inputs.category.isValid || !inputs.type.isValid || !inputs.paymentMode.isValid;
 
-    const categoryData = ['🏦 Loan', '🍺 Alcohol', '🛍️ Shopping', '🥗 Grocery', '🍽 Restaurant', '🏕️ Leisure', '🏠 Home', '🚗 Transport', '🎁 Gift', '🍔 Eatery', '💹 Investment'];
+    const categoryData = ['🏦 Loan', '🍺 Alcohol', '🛍️ Shopping', '🥗 Grocery', '🍽 Restaurant', '🏕️ Leisure', '🏠 Home', '🚗 Transport', '🎁 Gift', '🍔 Eatery', '🏥 Insurance', '🩺 Medical'];
 
     const types = ['🟥 Expense', '🟩 Income', '🟨 Investment'];
 
-    const paymentModeData = ["💳 Credit Card", "💵 Cash", "🏛️ Bank"];
+    const paymentModeData = ["💳 Credit Card", "🏛 Bank Account", "💵 Cash"];
 
     const incomeCategory = ['Interest', 'ROI', 'Salary', 'Credit Exchange']
 

@@ -11,9 +11,7 @@ function PieChartWithLabel({chartData, chartName, chartPercent}) {
         setSelectedCategory(category[0])
     }
 
-    const width = 420;
-    // const {width} = Dimensions.get("window");
-    // console.log(width)
+    const {width} = Dimensions.get("window");
 
     function renderExpenseSummary() {
         let data = chartData

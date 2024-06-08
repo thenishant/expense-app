@@ -43,7 +43,7 @@ function ExpensePerMonthChart({selectedMonth}) {
 
     const transformedData = Object.entries(expenseCategory).map(([category, item], index) => ({
         x: item.category, y: item.amount, color: categoryColors[index % categoryColors.length], percent: item.percent
-    })).sort((a, b) => b.percent - a.percent);
+    }));
 
     if (isFetching) return <LoadingOverlay/>
 
