@@ -91,7 +91,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
         label={"Type"}
         inValid={!inputs.type.isValid}
         textInputConfig={{
-            editable: false,
+            // editable: false,
             value: inputs.type.value,
             onTouchStart: () => openModal('type', convertToTable(types)),
             placeholder: "Select type",
@@ -104,7 +104,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                 label={"Payment Mode"}
                 inValid={!inputs.paymentMode.isValid}
                 textInputConfig={{
-                    editable: false, value: inputs.paymentMode.value, onTouchStart: () => {
+                    value: inputs.paymentMode.value, onTouchStart: () => {
                         openModal('paymentMode', convertToTable(paymentModeData));
                     }, placeholder: "Select Payment mode",
                 }}
@@ -119,7 +119,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                 label={"Category"}
                 inValid={!inputs.category.isValid}
                 textInputConfig={{
-                    editable: false, value: inputs.category.value, onTouchStart: () => {
+                    value: inputs.category.value, onTouchStart: () => {
                         openModal('category', categories);
                     }, placeholder: "Select category",
                 }}

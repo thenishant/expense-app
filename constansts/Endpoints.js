@@ -6,6 +6,8 @@ export const apiEndpoints = {
     createCategory: 'category/new',
     paymentMode: 'expense/getPaymentModeForExpenseForAMonth',
     monthlyTransactions: 'expense/getMonthlyTransactions',
+    createBudget: 'budget/create',
+    allBudget:'budget/allBudget'
 };
 
 export function buildUrl(apiEndpoint) {

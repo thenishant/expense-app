@@ -10,6 +10,7 @@ import IconButton from "./components/UI/IconButton";
 import ExpenseContextProvider from "./store/expenses-context";
 import DashBoard from "./screens/DashBoard";
 import Budget from "./screens/Budget";
+import CategoryContextProvider from "./store/category-context";
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -68,21 +69,23 @@ export default function App() {
     return (<>
         <StatusBar style={"auto"}/>
         <ExpenseContextProvider>
-            <NavigationContainer>
-                <Stack.Navigator screenOptions={{
-                    headerStyle: {backgroundColor: GlobalStyles.colors.primary500}, headerTintColor: 'white',
-                }}>
-                    <Stack.Screen
-                        name={"ExpensesOverview"}
-                        component={ExpensesOverview}
-                        options={{headerShown: false}}/>
-                    <Stack.Screen
-                        name={"ManageExpense"}
-                        component={ManageExpense}
-                        options={{presentation: 'modal'}}
-                    />
-                </Stack.Navigator>
-            </NavigationContainer>
+            <CategoryContextProvider>
+                <NavigationContainer>
+                    <Stack.Navigator screenOptions={{
+                        headerStyle: {backgroundColor: GlobalStyles.colors.primary500}, headerTintColor: 'white',
+                    }}>
+                        <Stack.Screen
+                            name={"ExpensesOverview"}
+                            component={ExpensesOverview}
+                            options={{headerShown: false}}/>
+                        <Stack.Screen
+                            name={"ManageExpense"}
+                            component={ManageExpense}
+                            options={{presentation: 'modal'}}
+                        />
+                    </Stack.Navigator>
+                </NavigationContainer>
+            </CategoryContextProvider>
         </ExpenseContextProvider>
     </>);
 }
