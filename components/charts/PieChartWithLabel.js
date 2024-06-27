@@ -64,13 +64,13 @@ function PieChartWithLabel({chartData, chartName, chartPercent}) {
         </View>)
     }
 
-    return (<View style={{alignItems: 'center', justifyContent: 'center', marginTop: 280, marginBottom: -280}}>
+    return <View style={{alignItems: 'center', justifyContent: 'center', marginTop: 280, marginBottom: -280}}>
         <VictoryPie
             data={chartData}
-            radius={({datum}) => (selectedCategory && selectedCategory.x === datum.x) ? width * 0.4 : width * 0.4 - 10}
+            radius={({datum}) => selectedCategory && selectedCategory.x === datum.x ? width * 0.4 : width * 0.4 - 10}
             innerRadius={70}
             labelRadius={({innerRadius}) => (width * 0.4 + innerRadius) / 2.5}
-
+            style={{ labels: { fill: "transparent"}}}
             colorScale={chartData.map(item => item.color)}
             events={[{
                 target: "data", eventHandlers: {
@@ -92,7 +92,7 @@ function PieChartWithLabel({chartData, chartName, chartPercent}) {
             <Text style={{textAlign: 'center'}}>{chartPercent}</Text>
             <Text style={{textAlign: 'center'}}>{chartName}</Text>
         </View>
-    </View>);
+    </View>;
 }
 
 export default PieChartWithLabel;

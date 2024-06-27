@@ -22,7 +22,7 @@ function ExpensesOverview() {
         <BottomTabs.Screen
             name={"Dashboard"}
             component={DashBoard}
-            options={({navigation, route}) => ({
+            options={({navigation}) => ({
                 title: 'Dashboard',
                 tabBarLabel: 'Dashboard',
                 tabBarIcon: ({color, size}) => (<Ionicons name={"grid-outline"} size={size} color={color}/>),
@@ -39,7 +39,7 @@ function ExpensesOverview() {
         <BottomTabs.Screen
             name={"Budget"}
             component={Budget}
-            options={({navigation, route}) => ({
+            options={({navigation}) => ({
                 title: 'Budget',
                 tabBarLabel: 'Budget',
                 tabBarIcon: ({color, size}) => (<Ionicons name={"calculator-outline"} size={size} color={color}/>),
@@ -60,6 +60,15 @@ function ExpensesOverview() {
                 title: 'All Expenses',
                 tabBarLabel: 'All Expenses',
                 tabBarIcon: ({color, size}) => (<Ionicons name={'calendar-outline'} size={size} color={color}/>)
+            }}
+        />
+        <BottomTabs.Screen
+            name={"More"}
+            component={AllExpenses}
+            options={{
+                title: 'More',
+                tabBarLabel: 'More',
+                tabBarIcon: ({color, size}) => (<Ionicons name={'shuffle-outline'} size={size} color={color}/>)
             }}
         />
     </BottomTabs.Navigator>);
