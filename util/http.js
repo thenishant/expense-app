@@ -10,14 +10,15 @@ export async function createExpense(expenseData) {
 
 export async function fetchExpense() {
     const month = moment().format('MMM');
-    const response = await axios.get(EXPRESS_URL + `expense/getAllTransactionsForAMonth?month=${month}`);
+    const year = moment().format('YYYY');
+    const response = await axios.get(EXPRESS_URL + `expense/transactions?month=${month}&year=${year}`);
 
-    return (response.data['allExpenses'] || []).concat(response.data['allIncomes'] || [])
+    return (response.data['expenses'] || []).concat(response.data['investments'] || []).concat(response.data['incomes'] || [])
         .map(key => ({
             id: key._id,
             amount: key.amount,
             category: key.category,
-            date: new Date(key.date),
+            date: key.date,
             desc: key.desc,
             type: key.type,
             paymentMode: key.paymentMode

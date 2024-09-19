@@ -3,14 +3,14 @@ import {Text, View, StyleSheet, TouchableOpacity} from "react-native";
 import {getCurrentDate} from "../../util/Date";
 import {GlobalStyles} from "../../constansts/styles";
 
-function MonthYearHeader({onMonthChange}) {
+function MonthYearHeader({onChange}) {
     const [currentDate, setCurrentDate] = useState(getCurrentDate());
 
     const handleArrowClick = (direction) => {
         const newDate = getCurrentDate(currentDate);
         direction === 'left' ? newDate.setMonth(newDate.getMonth() - 1) : newDate.setMonth(newDate.getMonth() + 1);
         setCurrentDate(newDate);
-        onMonthChange(newDate);
+        onChange(newDate);
     };
 
     const currentMonthYear = () => {
