@@ -23,3 +23,7 @@ export function getCurrentMonth() {
 export function getMonth(date) {
     return date ? moment(date).format('MMM') : moment().format('MMM');
 }
+
+export function getYear(date) {
+    return date ? moment(date).format('YYYY') : moment().format('YYYY');
+}

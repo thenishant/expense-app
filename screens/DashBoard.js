@@ -10,11 +10,12 @@ import {ExpensesContext} from "../store/expenses-context";
 import {CategoryContext} from "../store/category-context";
 import {apiEndpoints, buildUrl} from "../constansts/Endpoints";
 import axios from "axios";
-import {getMonth} from "../util/Date";
+import {getMonth, getYear} from "../util/Date";
 
 function DashBoard() {
     const [refreshing, setRefreshing] = useState(false);
     const [selectedMonth, setSelectedMonth] = useState(new Date());
+    const [selectedYear, setSelectedYear] = useState(new Date());
     const [isFetching, setIsFetching] = useState(true)
     const [error, setError] = useState('')
     const expensesContext = useContext(ExpensesContext);
@@ -38,28 +39,29 @@ function DashBoard() {
 
     useEffect(() => {
         const month = getMonth(selectedMonth);
+        const year = getYear(selectedYear);
         const expenseCategoryHandler = async () => {
             setIsFetching(true);
             let expensesByCategory = [];
             try {
-                const response = await axios.get(buildUrl(`${apiEndpoints.transactionsInAMonth}?month=${month}`));
-                const allExpensesResponse = response.data.allExpenses;
-                const totalExpenseSum = allExpensesResponse.reduce((total, expense) => total + expense.amount, 0);
-                expensesByCategory = Object.entries(allExpensesResponse.reduce((acc, expense) => {
+                const response = await axios.get(buildUrl(`${apiEndpoints.transactionsInAMonth}?month=${month}&year=${year}`));
+                const allExpensesResponse = response.data;
+                const totalExpenseAmount = allExpensesResponse.Expense;
+                expensesByCategory = Object.entries(allExpensesResponse.transactionsByType.Expense.reduce((acc, expense) => {
                     acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
                     return acc;
                 }, {})).map(([category, amount]) => ({
-                    category, amount, percent: ((amount / totalExpenseSum) * 100).toFixed(1)
+                    category, amount, percent: ((amount / totalExpenseAmount) * 100).toFixed(1)
                 }));
                 categoryContext.setCategory(expensesByCategory);
             } catch (error) {
-                setError(`Error fetching expense data for ${month}`);
+                setError(`Error fetching expense data for ${month} ${year}`);
                 console.error(error);
             }
             setIsFetching(false);
         }
         expenseCategoryHandler();
-    }, [selectedMonth, categoryContext]);
+    }, [selectedMonth, selectedYear]);
 
     const onRefresh = () => {
         setRefreshing(true);
@@ -68,12 +70,13 @@ function DashBoard() {
 
     const handleMonthChange = (newDate) => {
         setSelectedMonth(newDate);
+        setSelectedYear(newDate);
     };
 
     return (<ScrollView
         style={styles.container}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
-        <MonthYearHeader onMonthChange={handleMonthChange}/>
+        <MonthYearHeader onChange={handleMonthChange}/>
         <CardSection selectedMonth={selectedMonth}/>
         <ExpensePerMonthChart selectedMonth={selectedMonth}/>
         <IncomeVsExpenseChart/>
