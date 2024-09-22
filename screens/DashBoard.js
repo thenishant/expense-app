@@ -7,6 +7,7 @@ import {getCategoryTransactionResponse, getTransactionsResponse} from "../util/h
 import {ExpensesContext} from "../store/expenses-context";
 import {CategoryContext} from "../store/category-context";
 import {getMonth, getYear} from "../util/Date";
+import IncomeVsExpenseChart from "./sections/IncomeVsExpenseChart";
 
 function DashBoard() {
     const [refreshing, setRefreshing] = useState(false);
@@ -53,7 +54,7 @@ function DashBoard() {
         <MonthYearHeader onChange={handleMonthChange}/>
         <CardSection selectedMonth={selectedMonth}/>
         <ExpensePerMonthChart selectedMonth={selectedMonth}/>
-        {/*<IncomeVsExpenseChart/>*/}
+        <IncomeVsExpenseChart/>
         {/*<PaymentModePerMonth refreshing={refreshing} selectedMonth={selectedMonth}/>*/}
     </ScrollView>);
 }

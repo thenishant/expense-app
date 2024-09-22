@@ -1,6 +1,6 @@
 export const apiEndpoints = {
     transactionsInAMonth: 'expense/transactions',
-    monthlyExpense: 'expense/monthlyExpense',
+    summary: 'expense/summary',
     allCategories: 'category/getAllCategories',
     createExpense: 'expense/create',
     createCategory: 'category/new',
