@@ -44,3 +44,8 @@ export async function getCategoryTransactionResponse(month, year) {
     const response = await axios.get(buildUrl(`${apiEndpoints.categoryTransactions}?month=${month}&year=${year}`));
     return response.data;
 }
+
+export async function getSummary() {
+    const response = await axios.get(buildUrl(apiEndpoints.summary))
+    return response.data;
+}

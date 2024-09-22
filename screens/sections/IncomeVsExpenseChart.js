@@ -1,18 +1,14 @@
 import {useEffect, useState} from "react";
-import {apiEndpoints, buildUrl} from "../../constansts/Endpoints";
-import axios from "axios";
 import {StyleSheet, View} from "react-native";
 import {VictoryBar, VictoryChart, VictoryGroup, VictoryTooltip} from "victory-native";
 import {formatThousands} from "../../util/Numbers";
+import {getSummary} from "../../util/http";
 
 function IncomeVsExpenseChart() {
     const [incomeVsExpense, setIncomeVsExpense] = useState([]);
     const incomeVsExpenseChartHandler = async () => {
-        const response = await axios.get(buildUrl(apiEndpoints.monthlyExpense))
-
         try {
-            const data = response.data;
-            setIncomeVsExpense(data);
+            setIncomeVsExpense(await getSummary());
         } catch (error) {
             console.error(error);
         }
