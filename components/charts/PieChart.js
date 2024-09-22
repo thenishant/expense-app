@@ -52,7 +52,7 @@ function PieChart({chartData, centerData}) {
         }
 
         return (<View style={{padding: 8}}>
-            <FlatList data={data} renderItem={renderItem} keyExtractor={item => `${item.x}`}/>
+            <FlatList scrollEnabled={false} data={data} renderItem={renderItem} keyExtractor={item => `${item.x}`}/>
         </View>)
     }
 
@@ -80,9 +80,9 @@ function PieChart({chartData, centerData}) {
         <View>
             {renderExpenseSummary()}
         </View>
-        <View style={{position: 'absolute', top: '-3%', left: '42%'}}>
-            {/*<Text style={{textAlign: 'center'}}>{chartData.length}</Text>*/}
-            {/*<Text style={{textAlign: 'center'}}>Expenses</Text>*/}
+        <View style={{position: 'absolute', top: '-2%', left: '42%'}}>
+            <Text style={{textAlign: 'center', fontWeight: 'bold',fontSize: 20}}>{chartData.length}</Text>
+            <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Expenses</Text>
         </View>
     </View>);
 }

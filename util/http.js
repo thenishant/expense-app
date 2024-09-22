@@ -1,5 +1,5 @@
 import axios from "axios";
-import moment from "moment";
+import {apiEndpoints, buildUrl} from "../constansts/Endpoints";
 
 const EXPRESS_URL = process.env.EXPO_PUBLIC_EXPRESS_URL;
 
@@ -8,12 +8,11 @@ export async function createExpense(expenseData) {
     return response.data.name
 }
 
-export async function fetchExpense() {
-    const month = moment().format('MMM');
-    const year = moment().format('YYYY');
+export async function getTransactionsResponse(month, year) {
     const response = await axios.get(EXPRESS_URL + `expense/transactions?month=${month}&year=${year}`);
+    let data = response.data['transactions'];
 
-    return (response.data['expenses'] || []).concat(response.data['investments'] || []).concat(response.data['incomes'] || [])
+    return (data['Expense'] || []).concat(data['Investment'] || []).concat(data['Income'] || [])
         .map(key => ({
             id: key._id,
             amount: key.amount,
@@ -39,4 +38,9 @@ export async function updateExpense(id, expenseData) {
 
 export async function deleteExpense(id) {
     return await axios.delete(EXPRESS_URL + `expense/${id}`, {headers: {"id": id}});
+}
+
+export async function getCategoryTransactionResponse(month, year) {
+    const response = await axios.get(buildUrl(`${apiEndpoints.categoryTransactions}?month=${month}&year=${year}`));
+    return response.data;
 }
