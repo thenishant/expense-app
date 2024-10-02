@@ -7,10 +7,10 @@ import AllExpenses from "./screens/AllExpenses";
 import {GlobalStyles} from "./constansts/styles";
 import {Ionicons} from '@expo/vector-icons'
 import IconButton from "./components/UI/IconButton";
-import ExpenseContextProvider from "./store/expenses-context";
 import DashBoard from "./screens/DashBoard";
 import Budget from "./screens/Budget";
 import CategoryContextProvider from "./store/category-context";
+import {ExpenseContextProvider} from "./store/expenses-context";
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();

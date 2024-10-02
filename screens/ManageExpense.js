@@ -15,7 +15,10 @@ function ManageExpense({route, navigation}) {
     const editedExpenseId = route.params?.expenseId;
     const isEditing = !!editedExpenseId;
 
-    const selectedExpense = expensesContext.expenses.find((expense) => expense.id === editedExpenseId)
+
+    const selectedExpense = Array.isArray(expensesContext.expenses)
+        ? expensesContext.expenses.find((expense) => expense.id === editedExpenseId)
+        : null;
 
     useLayoutEffect(() => {
         navigation.setOptions({

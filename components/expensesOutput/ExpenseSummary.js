@@ -5,9 +5,13 @@ function ExpenseSummary({expenses, periodName}) {
 
     const expenseArray = typeof expenses === 'number' ? [{amount: expenses}] : expenses;
 
-    const expenseSum = expenseArray
-        .filter(expense => expense.type === 'Expense')
-        .reduce((sum, expense) => sum + expense.amount, 0);
+
+    const expenseSum = Array.isArray(expenseArray)
+        ? expenseArray
+            .filter(expense => expense.type === 'Expense')
+            .reduce((sum, expense) => sum + expense.amount, 0)
+        : 0;
+
 
     return (<View style={styles.container}>
         <Text style={styles.period}>{periodName}</Text>

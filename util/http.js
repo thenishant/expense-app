@@ -4,24 +4,20 @@ import {apiEndpoints, buildUrl} from "../constansts/Endpoints";
 const EXPRESS_URL = process.env.EXPO_PUBLIC_EXPRESS_URL;
 
 export async function createExpense(expenseData) {
+
+
     const response = await axios.post(EXPRESS_URL + "expense/create", expenseData);
     return response.data.name
 }
 
 export async function getTransactionsResponse(month, year) {
     const response = await axios.get(EXPRESS_URL + `expense/transactions?month=${month}&year=${year}`);
-    let data = response.data['transactions'];
+    return response.data;
+}
 
-    return (data['Expense'] || []).concat(data['Investment'] || []).concat(data['Income'] || [])
-        .map(key => ({
-            id: key._id,
-            amount: key.amount,
-            category: key.category,
-            date: key.date,
-            desc: key.desc,
-            type: key.type,
-            paymentMode: key.paymentMode
-        }))
+export async function getTransactionsPaymentMode() {
+    const response = await axios.get(EXPRESS_URL + `expense/transactions?month=${month}&year=${year}`);
+    let data = response.data['transactions'];
 }
 
 export async function updateExpense(id, expenseData) {
