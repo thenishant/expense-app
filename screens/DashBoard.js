@@ -8,6 +8,7 @@ import {CategoryContext} from "../store/category-context";
 import {getMonth, getYear} from "../util/Date";
 import IncomeVsExpenseChart from "./sections/IncomeVsExpenseChart";
 import PaymentModePerMonth from "./sections/PaymentMode";
+import CardSection from "./sections/CardSection";
 
 function DashBoard() {
     const [refreshing, setRefreshing] = useState(false);
@@ -24,19 +25,7 @@ function DashBoard() {
         async function getExpenses() {
             setIsFetching(true);
             const response = await getTransactionsResponse(month, year);
-
-            const transactions = {
-                Expense: response.transactions.Expense || [],
-                Income: response.transactions.Income || [],
-                Investment: response.transactions.Investment || []
-            };
-
-            const paymentMode = response.paymentMode || {}; // Assuming response.paymentMode is an object
-
-            expensesContext.setExpenses({
-                transactions, paymentMode
-            });
-
+            expensesContext.setExpenses(response)
             setIsFetching(false);
         }
 
@@ -50,7 +39,6 @@ function DashBoard() {
         expenseCategoryHandler();
     }, [selectedMonth, selectedYear]);
 
-    // console.log('--',expensesContext.expenses)
     const onRefresh = () => {
         setRefreshing(true);
         setRefreshing(false);
@@ -65,9 +53,9 @@ function DashBoard() {
         style={styles.container}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
         <MonthYearHeader onChange={handleMonthChange}/>
-        {/*<CardSection selectedMonth={selectedMonth}/>*/}
+        <CardSection selectedMonth={selectedMonth}/>
         <ExpensePerMonthChart selectedMonth={selectedMonth}/>
-        <IncomeVsExpenseChart/>
+        {/*<IncomeVsExpenseChart/>*/}
         <PaymentModePerMonth refreshing={refreshing} selectedMonth={selectedMonth}/>
     </ScrollView>);
 }
