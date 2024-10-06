@@ -1,36 +1,31 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {StyleSheet, View} from "react-native";
-import axios from "axios";
 import Card from "../../components/UI/Card";
-import {apiEndpoints, buildUrl} from "../../constansts/Endpoints";
 import {getMonth} from "../../util/Date";
 import LoadingOverlay from "../../components/UI/LoadingOverlay";
 import ErrorOverlay from "../../components/UI/ErrorOverlay";
+import {ExpensesContext} from "../../store/expenses-context";
 
 function CardSection({selectedMonth}) {
     const initialFigures = {
-        income: 0, expense: 0, balance: 0, investment: 0
+        income: 0, expense: 0, investment: 0, balance: 0,
     };
     const [isFetching, setIsFetching] = useState(true)
     const [error, setError] = useState('')
     const [currentMonthTransactions, setCurrentMonthTransactions] = useState(initialFigures);
-
-    const fetchData = async () => {
-        setIsFetching(true)
-        try {
-            const month = getMonth(selectedMonth);
-            const monthlyTransactions = await axios.get(buildUrl(`${apiEndpoints.monthlyExpense}`))
-            const response = monthlyTransactions.data.find(item => item.month === month)
-            setCurrentMonthTransactions(response);
-        } catch (error) {
-            console.error(error);
-        }
-        setIsFetching(false)
-    };
+    const expensesContext = useContext(ExpensesContext);
 
     useEffect(() => {
-        fetchData();
-    }, [selectedMonth]);
+        const transactions = expensesContext.expenses.reduce((acc, {amount, type}) => {
+            acc[type] = (acc[type] || 0) + amount;
+            return acc;
+        }, {Expense: 0, Income: 0, Investment: 0});
+
+        transactions.Balance = transactions.Income - (transactions.Expense + transactions.Investment);
+
+        setCurrentMonthTransactions(transactions);
+        setIsFetching(false);
+    }, [expensesContext.expenses]);
 
     if (isFetching) return <LoadingOverlay/>
 
@@ -38,10 +33,10 @@ function CardSection({selectedMonth}) {
 
     return (<View style={styles.container}>
         {currentMonthTransactions ? (<View style={styles.firstRow}>
-            <Card style={styles.expenseAmount} amount={currentMonthTransactions.expense} heading={'Expenses'}/>
-            <Card style={styles.incomeAmount} amount={currentMonthTransactions.income} heading={'Income'}/>
-            <Card style={styles.investmentAmount} amount={currentMonthTransactions.investment} heading={'Investments'}/>
-            <Card style={styles.balanceAmount} amount={currentMonthTransactions.balance} heading={'Balance'}/>
+            <Card style={styles.expenseAmount} amount={currentMonthTransactions.Expense} heading={'Expense'}/>
+            <Card style={styles.incomeAmount} amount={currentMonthTransactions.Income} heading={'Income'}/>
+            <Card style={styles.investmentAmount} amount={currentMonthTransactions.Investment} heading={'Investment'}/>
+            <Card style={styles.balanceAmount} amount={currentMonthTransactions.Balance} heading={'Balance'}/>
         </View>) : (<ErrorOverlay message={`No expense details found for ${getMonth(selectedMonth)}`}/>)}
     </View>);
 }

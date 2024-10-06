@@ -5,21 +5,22 @@ import LoadingOverlay from "../../components/UI/LoadingOverlay";
 import {CategoryContext} from "../../store/category-context";
 import {ExpensesContext} from "../../store/expenses-context";
 
-function ExpensePerMonthChart({selectedMonth}) {
+function ExpensePerMonthChart() {
     const categoryContext = useContext(CategoryContext);
     const expenseContext = useContext(ExpensesContext)
 
     const categoryColors = ["#f15bb5", "#fee440", "#00bbf9", "#00f5d4", "#f79256", "#90fe00", "#cc17ff", "#ff0000", "#adb5bd"];
 
     const transformedData = categoryContext.category.map((item, index) => ({
-        x: item.category, y: item.amount, color: categoryColors[index % categoryColors.length], percent: item.percent
-    })).sort((a, b) => b.percent - a.percent);
+        x: item.category, y: item.amount, color: categoryColors[index % categoryColors.length], percent: item.percentage
+    })).sort((a, b) => b.percentage - a.percentage);
 
     if (!transformedData.length) return <LoadingOverlay/>;
 
     return (<View style={styles.container}>
         {transformedData.length > 0 && (<View style={styles.chart}>
-            <PieChartWithLabel chartData={transformedData} chartName={'Expenses'} chartPercent={expenseContext.expenses.length}/>
+            <PieChartWithLabel chartData={transformedData} chartTitleName={'Expenses'}
+                               chartTitleCount={expenseContext.expenses.length}/>
         </View>)}
     </View>);
 }

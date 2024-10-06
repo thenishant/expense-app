@@ -1,28 +1,21 @@
-import React, {useEffect, useState} from "react";
-import axios from "axios";
+import React, {useContext, useEffect, useState} from "react";
 import {StyleSheet, View} from "react-native";
 import {getMonth} from "../../util/Date";
 import PieChart from "../../components/charts/PieChart";
-import {apiEndpoints, buildUrl} from "../../constansts/Endpoints";
 import LoadingOverlay from "../../components/UI/LoadingOverlay";
 import ErrorOverlay from "../../components/UI/ErrorOverlay";
+import {ExpensesContext} from "../../store/expenses-context";
 
 function PaymentModePerMonth({refreshing, selectedMonth}) {
     const [expenseCategory, setExpenseCategory] = useState([]);
     const [isFetching, setIsFetching] = useState(true);
     const [error, setError] = useState('');
     const currentMonth = getMonth(selectedMonth);
+    const [selectedYear, setSelectedYear] = useState(new Date());
+    const expensesContext = useContext(ExpensesContext);
 
     const expenseCategoryHandler = async () => {
-        setIsFetching(true)
-        try {
-            const response = await axios.get(buildUrl(`${apiEndpoints.paymentMode}?month=${currentMonth}`));
-            const responseData = response.data;
-            setExpenseCategory(responseData);
-        } catch (error) {
-            console.error(error);
-        }
-        setIsFetching(false)
+        console.log(expensesContext.expenses.paymentMode)
     };
 
     useEffect(() => {
@@ -34,6 +27,7 @@ function PaymentModePerMonth({refreshing, selectedMonth}) {
     const transformedData = expenseCategory?.map((item, index) => ({
         x: item.name, y: item.amount, color: categoryColors[index % categoryColors.length]
     }));
+
 
     if (isFetching) return <LoadingOverlay/>
 

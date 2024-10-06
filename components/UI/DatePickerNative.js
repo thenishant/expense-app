@@ -3,6 +3,7 @@ import {StyleSheet, Text, View, TouchableOpacity, Modal, Button} from "react-nat
 import {GlobalStyles} from "../../constansts/styles";
 import {Calendar} from "react-native-calendars";
 import moment from "moment";
+import {getFormattedDate, getFormattedDateAsDate} from "../../util/Date";
 
 const CustomDatePicker = ({label, config, onChange}) => {
     const [date, setDate] = useState(config.value);
@@ -18,7 +19,7 @@ const CustomDatePicker = ({label, config, onChange}) => {
     return (<View style={styles.container}>
         <Text style={styles.label}>{label}</Text>
         <TouchableOpacity onPress={() => setShowCalendar(true)}>
-            <Text style={styles.date}>{date.toLocaleDateString()}</Text>
+            <Text style={styles.date}>{getFormattedDate(date)}</Text>
         </TouchableOpacity>
         <Modal
             transparent={true}
@@ -30,8 +31,8 @@ const CustomDatePicker = ({label, config, onChange}) => {
                 <View style={styles.modalContainer}>
                     <Calendar style={styles.calender}
                               onDayPress={day => {
-                                  const date = moment(day.dateString).format('DD-MMM-YYYY');
-                                  onChangeInternal(new Date(day.dateString));
+                                  const date = new Date(day.dateString);
+                                  onChangeInternal(date);
                               }}
                     />
                     <Button title="Cancel" onPress={() => setShowCalendar(false)}/>

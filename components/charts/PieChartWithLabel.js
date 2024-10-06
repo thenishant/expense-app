@@ -3,7 +3,7 @@ import {Dimensions, FlatList, Text, TouchableOpacity, View} from 'react-native';
 import {VictoryPie} from 'victory-native';
 import {GlobalStyles} from "../../constansts/styles";
 
-function PieChartWithLabel({chartData, chartName, chartPercent}) {
+function PieChartWithLabel({chartData, chartTitleName, chartTitleCount}) {
     const [selectedCategory, setSelectedCategory] = useState(null);
 
     function setSelectCategoryByName(name) {
@@ -54,13 +54,13 @@ function PieChartWithLabel({chartData, chartName, chartPercent}) {
                 <View style={{
                     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'
                 }}>
-                    <Text>{item.percent}%</Text>
+                    <Text>{item.percent}</Text>
                 </View>
             </TouchableOpacity>)
         }
 
         return (<View style={{padding: 8}}>
-            <FlatList data={data} renderItem={renderItem} keyExtractor={item => `${item.x}`}/>
+            <FlatList scrollEnabled={false} data={data} renderItem={renderItem} keyExtractor={item => `${item.x}`}/>
         </View>)
     }
 
@@ -70,7 +70,7 @@ function PieChartWithLabel({chartData, chartName, chartPercent}) {
             radius={({datum}) => selectedCategory && selectedCategory.x === datum.x ? width * 0.4 : width * 0.4 - 10}
             innerRadius={70}
             labelRadius={({innerRadius}) => (width * 0.4 + innerRadius) / 2.5}
-            style={{ labels: { fill: "transparent"}}}
+            style={{labels: {fill: "transparent"}}}
             colorScale={chartData.map(item => item.color)}
             events={[{
                 target: "data", eventHandlers: {
@@ -88,9 +88,9 @@ function PieChartWithLabel({chartData, chartName, chartPercent}) {
         <View>
             {renderExpenseSummary()}
         </View>
-        <View style={{position: 'absolute', top: '-3%', left: '44%'}}>
-            <Text style={{textAlign: 'center'}}>{chartPercent}</Text>
-            <Text style={{textAlign: 'center'}}>{chartName}</Text>
+        <View style={{position: 'absolute', top: '-4%', left: '43%'}}>
+            <Text style={{textAlign: 'center', fontSize: 18}}>{chartTitleCount}</Text>
+            <Text style={{textAlign: 'center', fontSize: 16}}>{chartTitleName}</Text>
         </View>
     </View>;
 }

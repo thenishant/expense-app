@@ -1,9 +1,9 @@
 import {createContext, useReducer} from "react";
 
 export const ExpensesContext = createContext({
-    expenses: [], addExpense: ({desc, amount, date, type, category, paymentMode}) => {
+    expenses: [], addExpense: ({desc, amount, date, type, category}) => {
     }, deleteExpense: ({id}) => {
-    }, updateExpense: (id, {desc, amount, date, type, category, paymentMode}) => {
+    }, updateExpense: (id, {desc, amount, date, type, category}) => {
     }, setExpenses: (expense) => {
     }
 });
@@ -28,7 +28,7 @@ function expensesReducer(state, action) {
     }
 }
 
-function ExpenseContextProvider({children}) {
+export function ExpenseContextProvider({children}) {
     const [expenseState, dispatch] = useReducer(expensesReducer, [])
 
     function addExpense(expenseData) {
@@ -58,5 +58,3 @@ function ExpenseContextProvider({children}) {
     return <ExpensesContext.Provider value={value}>{children}</ExpensesContext.Provider>
 }
 
-
-export default ExpenseContextProvider
