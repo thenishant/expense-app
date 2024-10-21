@@ -1,15 +1,7 @@
 import moment from "moment";
 
-export function getDateMinusDays(date, days) {
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate() - days)
-}
-
 export function getFormattedDate(date) {
     return moment(date).format('DD-MMM-YYYY')
-}
-
-export function getFormattedDateAsDate(date) {
-    return moment(date, 'DD-MMM-YYYY').toDate()
 }
 
 export function getCurrentDate(date?: string) {
@@ -27,3 +19,8 @@ export function getMonth(date) {
 export function getYear(date) {
     return date ? moment(date).format('YYYY') : moment().format('YYYY');
 }
+
+export function convertToStandardFormat(date) {
+    return moment(date).format("YYYY-MM-DD");
+}
+

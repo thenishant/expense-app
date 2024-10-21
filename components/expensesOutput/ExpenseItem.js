@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     }, amountContainer: {
         paddingHorizontal: 15, backgroundColor: "white", justifyContent: "center", alignItems: 'center', borderRadius: 4
     }, amount: {
-        fontWeight: "bold", fontSize:15
+        fontWeight: "bold", fontSize: 15
     }, pressed: {
         opacity: 0.75
     }

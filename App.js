@@ -10,7 +10,8 @@ import IconButton from "./components/UI/IconButton";
 import DashBoard from "./screens/DashBoard";
 import Budget from "./screens/Budget";
 import CategoryContextProvider from "./store/category-context";
-import {ExpenseContextProvider} from "./store/expenses-context";
+import ManageBudget from "./screens/ManageBudget";
+import {ExpensesContextProvider} from "./store/expenses-context";
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -48,7 +49,7 @@ function ExpensesOverview() {
                     size={28}
                     color={tintColor}
                     onPress={() => {
-                        navigation.navigate("ManageExpense")
+                        navigation.navigate("ManageBudget")
                     }}
                 />)
             })}
@@ -77,7 +78,7 @@ function ExpensesOverview() {
 export default function App() {
     return (<>
         <StatusBar style={"auto"}/>
-        <ExpenseContextProvider>
+        <ExpensesContextProvider>
             <CategoryContextProvider>
                 <NavigationContainer>
                     <Stack.Navigator screenOptions={{
@@ -95,6 +96,6 @@ export default function App() {
                     </Stack.Navigator>
                 </NavigationContainer>
             </CategoryContextProvider>
-        </ExpenseContextProvider>
+        </ExpensesContextProvider>
     </>);
 }

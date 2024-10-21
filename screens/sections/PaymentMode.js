@@ -36,8 +36,6 @@ function PaymentModePerMonth({refreshing, selectedMonth}) {
         }))
     );
 
-    console.log(transformedData);
-
     if (isFetching) return <LoadingOverlay/>
 
     if (!isFetching && error) return <ErrorOverlay message={error}/>

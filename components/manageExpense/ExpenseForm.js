@@ -3,7 +3,7 @@ import {Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-
 import Input from "../UI/Input";
 import Button from "../UI/Button";
 import CustomDatePicker from "../UI/DatePickerNative";
-import {getCurrentDate} from "../../util/Date";
+import {convertToStandardFormat} from "../../util/Date";
 import {GlobalStyles} from "../../constansts/styles";
 import ModalComponent from "../UI/ModalComponent";
 import {convertToTable} from "../../util/Table";
@@ -15,7 +15,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
 
     const [inputs, setInputs] = useState({
         amount: {value: defaultValues ? defaultValues.amount.toString() : '', isValid: true},
-        date: {value: defaultValues ? new Date(defaultValues.date) : getCurrentDate(), isValid: true},
+        date: {value: defaultValues ? new Date(defaultValues.date) : new Date(), isValid: true},
         desc: {value: defaultValues ? defaultValues.desc : '', isValid: true},
         type: {value: defaultValues ? defaultValues.type : '', isValid: true},
         category: {value: defaultValues ? defaultValues.category : '', isValid: true},
@@ -34,7 +34,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
 
         const expenseData = {
             amount: +inputs.amount.value,
-            date: inputs.date.value,
+            date: convertToStandardFormat(inputs.date.value),
             desc: inputs.desc.value,
             type: inputs.type.value,
             category: inputs.category.value,
