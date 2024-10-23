@@ -7,6 +7,9 @@ import {convertToStandardFormat} from "../../util/Date";
 import {GlobalStyles} from "../../constansts/styles";
 import ModalComponent from "../UI/ModalComponent";
 import {convertToTable} from "../../util/Table";
+import {
+    expenseCategoryType, incomeCategoryType, investmentCategoryType, paymentModeData, typesData
+} from "../../data/Data";
 
 function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     const [modalData, setModalData] = useState([]);
@@ -23,8 +26,8 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     });
 
     function changeHandler(inputIdentifier, enteredValue) {
-        setInputs(currentInput => ({
-            ...currentInput, [inputIdentifier]: {value: enteredValue, isValid: true}
+        setInputs((currentInput) => ({
+            ...currentInput, [inputIdentifier]: {value: enteredValue, isValid: true},
         }));
         setModalVisible(false);
     }
@@ -47,7 +50,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
         const typeIsValid = expenseData.type.trim().length > 0;
 
         if (!amountIsValid || !descIsValid || !categoryIsValid || !typeIsValid) {
-            setInputs(currentInput => ({
+            setInputs((currentInput) => ({
                 ...currentInput,
                 amount: {...currentInput.amount, isValid: amountIsValid},
                 desc: {...currentInput.desc, isValid: descIsValid},
@@ -56,20 +59,17 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
             }));
             return;
         }
+
         onSubmit(expenseData);
     }
 
     const formIsValid = !inputs.amount.isValid || !inputs.desc.isValid || !inputs.category.isValid || !inputs.type.isValid || !inputs.paymentMode.isValid;
 
-    const categoryData = ['🏦 Loan', '🍺 Alcohol', '🛍️ Shopping', '🥗 Grocery', '🍽 Restaurant', '🏕️ Leisure', '🏠 Home', '🚗 Transport', '🎁 Gift', '🍔 Eatery', '🏥 Insurance', '🩺 Medical'];
+    let categoriesMap = {
+        'Expense': expenseCategoryType, 'Income': incomeCategoryType, 'Investment': investmentCategoryType
+    };
 
-    const types = ['🟥 Expense', '🟩 Income', '🟨 Investment'];
-
-    const paymentModeData = ["💳 Credit Card", "🏛 Bank Account", "💵 Cash"];
-
-    const incomeCategory = ['Interest', 'ROI', 'Salary', 'Credit Exchange']
-
-    let categories = inputs.type.value === 'Expense' ? convertToTable(categoryData) : convertToTable(incomeCategory);
+    let categories = convertToTable(categoriesMap[inputs.type.value] || []);
 
     let paymentMode = null;
 
@@ -93,7 +93,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
         textInputConfig={{
             editable: false,
             value: inputs.type.value,
-            onTouchStart: () => openModal('type', convertToTable(types)),
+            onTouchStart: () => openModal('type', convertToTable(typesData)),
             placeholder: "Select type",
         }}
     /></>;
@@ -104,8 +104,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                 label={"Payment Mode"}
                 inValid={!inputs.paymentMode.isValid}
                 textInputConfig={{
-                    editable: false,
-                    value: inputs.paymentMode.value, onTouchStart: () => {
+                    editable: false, value: inputs.paymentMode.value, onTouchStart: () => {
                         openModal('paymentMode', convertToTable(paymentModeData));
                     }, placeholder: "Select Payment mode",
                 }}
@@ -120,8 +119,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                 label={"Category"}
                 inValid={!inputs.category.isValid}
                 textInputConfig={{
-                    editable: false,
-                    value: inputs.category.value, onTouchStart: () => {
+                    editable: false, value: inputs.category.value, onTouchStart: () => {
                         openModal('category', categories);
                     }, placeholder: "Select category",
                 }}
