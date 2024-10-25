@@ -98,7 +98,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
         }}
     /></>;
 
-    if (inputs.type.value === 'Expense') {
+    if (inputs.type.value === 'Expense' || inputs.type.value === 'Investment') {
         paymentMode = (<>
             <Input
                 label={"Payment Mode"}
