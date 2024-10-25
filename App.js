@@ -10,8 +10,8 @@ import IconButton from "./components/UI/IconButton";
 import DashBoard from "./screens/DashBoard";
 import Budget from "./screens/Budget";
 import CategoryContextProvider from "./store/category-context";
-import ManageBudget from "./screens/ManageBudget";
 import {ExpensesContextProvider} from "./store/expenses-context";
+import ManageBudget from "./screens/ManageBudget";
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -91,6 +91,11 @@ export default function App() {
                         <Stack.Screen
                             name={"ManageExpense"}
                             component={ManageExpense}
+                            options={{presentation: 'modal'}}
+                        />
+                        <Stack.Screen
+                            name={"ManageBudget"}
+                            component={ManageBudget}
                             options={{presentation: 'modal'}}
                         />
                     </Stack.Navigator>
