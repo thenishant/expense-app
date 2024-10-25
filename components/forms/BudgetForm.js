@@ -7,6 +7,7 @@ import {convertToStandardFormat, getMonth, getYear} from "../../util/Date";
 import {GlobalStyles} from "../../constansts/styles";
 import ModalComponent from "../UI/ModalComponent";
 import {convertToTable} from "../../util/Table";
+import {expenseCategoryType} from "../../data/Data";
 
 function BudgetForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     const [modalData, setModalData] = useState([]);
@@ -74,8 +75,6 @@ function BudgetForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
 
     const formIsInvalid = !inputs.amount.isValid || !inputs.category.isValid || !inputs.year.isValid;
 
-    const categoryData = ['🏦 Loan', '🛍️ Shopping', '🥗 Grocery', '🏠 Home', '🏕️ Leisure'];
-
     const openModal = (inputIdentifier, data) => {
         setSelectedInput(inputIdentifier);
         setModalData(data);
@@ -118,7 +117,7 @@ function BudgetForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                     textInputConfig={{
                         editable: false,
                         value: inputs.category.value,
-                        onTouchStart: () => openModal('category', convertToTable(categoryData)),
+                        onTouchStart: () => openModal('category', convertToTable(expenseCategoryType)),
                         placeholder: "Select category",
                     }}
                 />
