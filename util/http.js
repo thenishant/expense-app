@@ -15,7 +15,7 @@ export async function createBudget(expenseData) {
 
 export async function getTransactionsResponse(month, year) {
     const response = await axios.get(EXPRESS_URL + `expense/transactions?month=${month}&year=${year}`);
-    return (response.data.transactions['Expense'] || []).concat(response.data.transactions['Income'] || response.data.transactions['Investment'] || [])
+    return (response.data.transactions['Expense'] || []).concat(response.data.transactions['Income'] || []).concat(response.data.transactions['Investment'] || [])
         .map(key => ({
             id: key._id,
             amount: key.amount,
