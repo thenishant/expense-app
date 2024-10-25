@@ -8,6 +8,11 @@ export async function createExpense(expenseData) {
     return response.data.name
 }
 
+export async function createBudget(expenseData) {
+    const response = await axios.post(EXPRESS_URL + "budget/create", expenseData);
+    return response.data.name
+}
+
 export async function getTransactionsResponse(month, year) {
     const response = await axios.get(EXPRESS_URL + `expense/transactions?month=${month}&year=${year}`);
     return (response.data.transactions['Expense'] || []).concat(response.data.transactions['Income'] || response.data.transactions['Investment'] || [])
@@ -50,5 +55,10 @@ export async function getCategoryTransactionResponse(month, year) {
 
 export async function getSummary() {
     const response = await axios.get(buildUrl(apiEndpoints.summary))
+    return response.data;
+}
+
+export async function getBudgetForMonth(month, year) {
+    const response = await axios.get(buildUrl(`${apiEndpoints.allBudget}?month=${month}&year=${year}`))
     return response.data;
 }

@@ -1,42 +1,44 @@
 import React, {useContext, useEffect, useState} from "react";
-import {FlatList, StyleSheet, View, Text} from "react-native";
-import axios from "axios";
-import {getMonth} from "../util/Date";
+import {FlatList, StyleSheet, Text, View} from "react-native";
+import {getMonth, getYear} from "../util/Date";
 import {CategoryContext} from "../store/category-context";
 import ProgressBar from "../components/UI/ProgressBar";
-import {apiEndpoints, buildUrl} from "../constansts/Endpoints";
 import {GlobalStyles} from "../constansts/styles";
+import {getBudgetForMonth} from "../util/http";
 
 function Budget() {
     const [selectedMonth, setSelectedMonth] = useState(new Date());
     const [error, setError] = useState('');
     const [budget, setBudget] = useState([]);
     const [itemWidth, setItemWidth] = useState(0);
-    const [isFetching, setIsFetching] = useState(true)
+    const [isFetching, setIsFetching] = useState(true);
 
     const categoryContext = useContext(CategoryContext);
 
-    const month = getMonth(selectedMonth);
+    // Get month and year from the selected date
+    const month = getMonth(selectedMonth);  // e.g., "Oct"
+    const year = getYear(selectedMonth);    // e.g., "2024"
 
+    // Fetch the budget data whenever month or year changes
     useEffect(() => {
         const budgetHandler = async () => {
             setIsFetching(true);
             try {
-                const response = await axios.get(buildUrl(`${apiEndpoints.allBudget}?month=${month}`));
-                const allBudgetResponse = response.data;
-                setBudget(allBudgetResponse);
+                const response = await getBudgetForMonth(month, year); // Add async/await here
+                setBudget(response); // Save the fetched budget data
             } catch (error) {
                 setError(`Error fetching expense data for ${month}`);
                 console.error(error);
             }
-            setIsFetching(false);
+            setIsFetching(false); // Stop fetching after the data is retrieved
         };
 
-        budgetHandler();
-    }, [selectedMonth, month]);
+        budgetHandler(); // Call the fetch function
+    }, [selectedMonth, month, year]); // Depend on month and year
 
     const outputArray = [];
 
+    // Match the category context with the fetched budget data
     categoryContext.category.forEach(data1 => {
         const {amount: spentAmount, category} = data1;
 
@@ -55,9 +57,10 @@ function Budget() {
         }
     });
 
+    // Render the progress bar and expense details
     const renderItem = ({item, index}) => {
-        const progress = (item.spentAmount / item.totalAmount).toFixed(3);
-        const progressPercent = (progress * 100).toFixed(1);
+        const progress = (item.spentAmount / item.totalAmount).toFixed(3); // Calculate progress
+        const progressPercent = (progress * 100).toFixed(1); // Convert to percentage
         const darkColor = '#7f5539';
         const lightColor = '#ddb892';
 
@@ -92,11 +95,13 @@ function Budget() {
     };
 
     return (<View style={styles.listContainer}>
-        <FlatList
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+        {isFetching ? (<Text>Loading...</Text> // Display a loading state
+        ) : (<FlatList
             data={outputArray}
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
-        />
+        />)}
     </View>);
 }
 
@@ -104,7 +109,7 @@ export default Budget;
 
 const styles = StyleSheet.create({
     listContainer: {
-        backgroundColor: '#ffffff', borderRadius: 20, margin: 8, paddingVertical: 8
+        backgroundColor: 'transparent', borderRadius: 20, margin: 8, paddingVertical: 8
     },
     container: {margin: 8},
     expenseItem: {
@@ -114,5 +119,8 @@ const styles = StyleSheet.create({
     desc: {fontSize: 16, marginBottom: 4, fontWeight: "bold"},
     amountContainer: {padding: 10, backgroundColor: "white", borderRadius: 4},
     amount: {fontWeight: "bold", fontSize: 15, color: "#7f5539"},
-    progressBar: {flex: 1, marginTop: 10}
+    progressBar: {flex: 1, marginTop: 10},
+    errorText: {
+        color: 'red', textAlign: 'center', marginVertical: 8,
+    }
 });
