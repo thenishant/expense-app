@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center"
     }, period: {
-        fontSize: 12, fontWeight: "bold", color: GlobalStyles.colors.black50
+        fontSize: 16, fontWeight: "bold", color: GlobalStyles.colors.black50
     }, sum: {
         fontWeight: "bold", fontSize: 16, color: GlobalStyles.colors.black50
     }
