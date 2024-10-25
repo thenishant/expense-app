@@ -61,8 +61,8 @@ function Budget() {
     const renderItem = ({item, index}) => {
         const progress = (item.spentAmount / item.totalAmount).toFixed(3); // Calculate progress
         const progressPercent = (progress * 100).toFixed(1); // Convert to percentage
-        const darkColor = '#7f5539';
-        const lightColor = '#ddb892';
+        const darkColor = GlobalStyles.colors.orange100;
+        const lightColor = GlobalStyles.colors.orange50;
 
         return (<View key={index} style={styles.container}>
             <View style={[styles.expenseItem, {backgroundColor: lightColor}]}>
@@ -118,7 +118,6 @@ const styles = StyleSheet.create({
     detailsContainer: {flexDirection: "row", justifyContent: "space-between", alignItems: "center"},
     desc: {fontSize: 16, marginBottom: 4, fontWeight: "bold"},
     amountContainer: {padding: 10, backgroundColor: "white", borderRadius: 4},
-    amount: {fontWeight: "bold", fontSize: 15, color: "#7f5539"},
     progressBar: {flex: 1, marginTop: 10},
     errorText: {
         color: 'red', textAlign: 'center', marginVertical: 8,
