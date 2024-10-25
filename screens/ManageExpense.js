@@ -3,7 +3,7 @@ import {useContext, useLayoutEffect, useState} from "react";
 import IconButton from "../components/UI/IconButton";
 import {GlobalStyles} from "../constansts/styles";
 import {ExpensesContext} from "../store/expenses-context";
-import ExpenseForm from "../components/manageExpense/ExpenseForm";
+import ExpenseForm from "../components/forms/ExpenseForm";
 import {createExpense, deleteExpense, updateExpense} from "../util/http";
 import LoadingOverlay from "../components/UI/LoadingOverlay";
 import ErrorOverlay from "../components/UI/ErrorOverlay";
