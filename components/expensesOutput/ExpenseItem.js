@@ -11,8 +11,7 @@ function ExpenseItem({id, desc, amount, date, type, category}) {
         navigation.navigate("ManageExpense", {expenseId: id})
     }
 
-    const backgroundColor = type === "Expense" ? GlobalStyles.colors.red100 : GlobalStyles.colors.green100;
-    const color = type === "Expense" ? GlobalStyles.colors.red100 : GlobalStyles.colors.green100;
+    const backgroundColor = type === "Expense" ? GlobalStyles.colors.red100 : type === "Income" ? GlobalStyles.colors.green100 : GlobalStyles.colors.yellow100;
 
     return (<Pressable onPress={expensePressHandler} style={({pressed}) => pressed && styles.pressed}>
         <View style={[styles.expenseItem, {backgroundColor}]}>
@@ -22,7 +21,7 @@ function ExpenseItem({id, desc, amount, date, type, category}) {
                 <Text style={styles.textBase}>{category}</Text>
             </View>
             <View style={styles.amountContainer}>
-                <Text style={[styles.amount, {color}]}>{GlobalStyles.characters.rupee}{amount}</Text>
+                <Text style={styles.amount}>{GlobalStyles.characters.rupee}{amount}</Text>
             </View>
         </View>
     </Pressable>)
@@ -43,13 +42,13 @@ const styles = StyleSheet.create({
         shadowOffset: {width: 1, height: 1},
         shadowOpacity: 0.4
     }, textBase: {
-        color: GlobalStyles.colors.primary50
+        color: GlobalStyles.colors.black50
     }, desc: {
         fontSize: 16, marginBottom: 4, fontWeight: "bold"
     }, amountContainer: {
         paddingHorizontal: 15, backgroundColor: "white", justifyContent: "center", alignItems: 'center', borderRadius: 4
     }, amount: {
-        fontWeight: "bold", fontSize: 15
+        color: GlobalStyles.colors.black50, fontWeight: "bold", fontSize: 15
     }, pressed: {
         opacity: 0.75
     }
