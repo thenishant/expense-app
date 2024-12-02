@@ -31,12 +31,20 @@ function CardSection({selectedMonth}) {
 
     if (!isFetching && error) return <ErrorOverlay message={error}/>
 
+    function formatAmountToThousands(amount) {
+        return (amount / 1000).toFixed(1) + 'K';
+    }
+
     return (<View style={styles.container}>
         {currentMonthTransactions ? (<View style={styles.firstRow}>
-            <Card style={styles.expenseAmount} amount={currentMonthTransactions.Expense} heading={'Expense'}/>
-            <Card style={styles.incomeAmount} amount={currentMonthTransactions.Income} heading={'Income'}/>
-            <Card style={styles.investmentAmount} amount={currentMonthTransactions.Investment} heading={'Investment'}/>
-            <Card style={styles.balanceAmount} amount={currentMonthTransactions.Balance} heading={'Balance'}/>
+            <Card style={styles.expenseAmount} amount={formatAmountToThousands(currentMonthTransactions.Expense)}
+                  heading={'Expense'}/>
+            <Card style={styles.incomeAmount} amount={formatAmountToThousands(currentMonthTransactions.Income)}
+                  heading={'Income'}/>
+            <Card style={styles.investmentAmount} amount={formatAmountToThousands(currentMonthTransactions.Investment)}
+                  heading={'Investment'}/>
+            <Card style={styles.balanceAmount} amount={formatAmountToThousands(currentMonthTransactions.Balance)}
+                  heading={'Balance'}/>
         </View>) : (<ErrorOverlay message={`No expense details found for ${getMonth(selectedMonth)}`}/>)}
     </View>);
 }
@@ -45,22 +53,16 @@ export default CardSection;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1, backgroundColor: '#eef4f8', marginTop: 20
+        flex: 1, backgroundColor: '#eef4f8'
     }, firstRow: {
-        flexDirection: "row",
-        justifyContent: "center",
-        paddingHorizontal: 12,
-        marginTop: -20,
-        width: '105%',
-        marginLeft: -10,
-        backgroundColor: '#eef4f8'
+        flexDirection: "row", justifyContent: "center", backgroundColor: '#eef4f8'
     }, incomeAmount: {
-        color: '#70e000'
+        color: '#52b788'
     }, expenseAmount: {
         color: '#ef233c'
     }, balanceAmount: {
-        color: '#01befe'
+        color: '#008bf8'
     }, investmentAmount: {
-        color: '#ff7b00'
+        color: '#bc6c25'
     }
 });
