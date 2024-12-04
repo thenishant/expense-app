@@ -15,15 +15,14 @@ function BudgetForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     const [selectedInput, setSelectedInput] = useState('');
 
     const [inputs, setInputs] = useState({
-        amount: {value: defaultValues ? defaultValues.amount.toString() : '', isValid: true},
-        date: {value: defaultValues ? new Date(defaultValues.date) : new Date(), isValid: true},
-        category: {value: defaultValues ? defaultValues.category : '', isValid: true},
+        amount: {value: defaultValues?.amount?.toString() || '', isValid: true},
+        date: {value: new Date(), isValid: true},
+        category: {value: '', isValid: true},
         year: {
-            value: defaultValues ? defaultValues.year.toString() : new Date().getFullYear().toString(), isValid: true
+            value: new Date().getFullYear().toString(), isValid: true
         },
         month: {
-            value: defaultValues ? defaultValues.month : new Date().toLocaleString('default', {month: 'short'}),
-            isValid: true
+            value: new Date().toLocaleString('default', {month: 'short'}),
         }
     });
 

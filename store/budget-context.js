@@ -10,19 +10,19 @@ export const BudgetContext = createContext({
 
 function budgetReducer(state, action) {
     switch (action.type) {
-        case 'ADD':
+        case "ADD":
             return [action.payload, ...state];
-        case 'SET':
+        case "SET":
             return action.payload.reverse();
-        case 'UPDATE':
-            const updatableBudgetIndex = state.findIndex(budget => budget.id === action.payload.id);
+        case "UPDATE":
+            const updatableBudgetIndex = state.findIndex((budget) => budget.id === action.payload.id);
             const updatedBudgets = [...state];
             updatedBudgets[updatableBudgetIndex] = {
                 ...state[updatableBudgetIndex], ...action.payload.data,
             };
             return updatedBudgets;
-        case 'DELETE':
-            return state.filter(budget => budget.id !== action.payload);  // Remove budget by id
+        case "DELETE":
+            return state.filter((budget) => budget.id !== action.payload);
         default:
             return state;
     }
@@ -36,7 +36,7 @@ export function BudgetContextProvider({children}) {
     }
 
     function setBudgets(budgets) {
-        dispatch({type: 'SET', payload: budgets});
+        dispatch({type: "SET", payload: budgets});
     }
 
     function deleteBudget(id) {
@@ -51,5 +51,5 @@ export function BudgetContextProvider({children}) {
         budgets: budgetState, addBudget, deleteBudget, updateBudget, setBudgets,
     };
 
-    return <BudgetContext.Provider value={value}>{children}</BudgetContext.Provider>
+    return (<BudgetContext.Provider value={value}>{children}</BudgetContext.Provider>);
 }

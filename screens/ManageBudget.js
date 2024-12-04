@@ -50,7 +50,8 @@ function ManageBudget({route, navigation}) {
                 // await updateBudget(editedBudgetId, budgetData);  // Ensure this is implemented in the http util
             } else {
                 const id = await createBudget(budgetData);  // Ensure this is implemented in the http util
-                budgetsContext.addBudget({...budgetData, id});
+                budgetsContext.addBudget({ ...budgetData, id });
+                navigation.setParams({ budgetId: id });
             }
             navigation.goBack();
         } catch (error) {
