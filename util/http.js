@@ -20,6 +20,7 @@ export async function getTransactionsResponse(month, year) {
             id: key._id,
             amount: key.amount,
             category: key.category,
+            subCategory: key.subCategory,
             date: new Date(key.date),
             desc: key.desc,
             type: key.type,
@@ -36,10 +37,11 @@ export async function updateExpense(id, expenseData) {
     const data = {
         type: expenseData.type,
         category: expenseData.category,
+        subCategory: expenseData.subCategory,
         amount: expenseData.amount,
         desc: expenseData.desc,
         paymentMode: expenseData.paymentMode,
-        date: expenseData.date
+        date: expenseData.date,
     }
     return await axios.patch(EXPRESS_URL + `expense/update`, data, {headers: {"id": id}})
 }
