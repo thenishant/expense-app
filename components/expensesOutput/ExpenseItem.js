@@ -3,7 +3,7 @@ import {GlobalStyles} from "../../constansts/styles";
 import {useNavigation} from "@react-navigation/native";
 import {getFormattedDate} from "../../util/Date";
 
-function ExpenseItem({id, desc, amount, date, type, category}) {
+function ExpenseItem({id, amount, date, type, category, subCategory}) {
 
     const navigation = useNavigation();
 
@@ -16,7 +16,8 @@ function ExpenseItem({id, desc, amount, date, type, category}) {
     return (<Pressable onPress={expensePressHandler} style={({pressed}) => pressed && styles.pressed}>
         <View style={[styles.expenseItem, {backgroundColor}]}>
             <View>
-                <Text style={[styles.textBase, styles.desc]}>{desc}</Text>
+                <Text
+                    style={[styles.textBase, styles.desc]}>{subCategory === "" ? category : subCategory + " - " + category}</Text>
                 <Text style={styles.textBase}>{getFormattedDate(date)}</Text>
                 <Text style={styles.textBase}>{category}</Text>
             </View>
