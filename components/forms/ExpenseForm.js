@@ -1,35 +1,29 @@
 import React, {useState} from 'react';
-import {Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
-import Input from "../UI/Input";
+import {Keyboard, StyleSheet, View, TouchableWithoutFeedback} from 'react-native';
 import Button from "../UI/Button";
 import CustomDatePicker from "../UI/DatePickerNative";
 import {convertToStandardFormat} from "../../util/Date";
-import {GlobalStyles} from "../../constansts/styles";
-import ModalComponent from "../UI/ModalComponent";
-import {convertToTable} from "../../util/Table";
+import ModalInputField from "../UI/ModalInputField";
+import Input from "../UI/Input";
 import {
-    expenseCategoryType, incomeCategoryType, investmentCategoryType, paymentModeData, typesData
+    getMainCategories, getSubCategories, paymentModeData, typesData, incomeCategoryType, investmentCategoryType
 } from "../../data/Data";
 
 function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
-    const [modalData, setModalData] = useState([]);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [selectedInput, setSelectedInput] = useState('');
-
     const [inputs, setInputs] = useState({
-        amount: {value: defaultValues ? defaultValues.amount.toString() : '', isValid: true},
-        date: {value: defaultValues ? new Date(defaultValues.date) : new Date(), isValid: true},
-        desc: {value: defaultValues ? defaultValues.desc : '', isValid: true},
-        type: {value: defaultValues ? defaultValues.type : '', isValid: true},
-        category: {value: defaultValues ? defaultValues.category : '', isValid: true},
-        paymentMode: {value: defaultValues ? defaultValues.paymentMode : '', isValid: true}
+        amount: {value: defaultValues?.amount?.toString() || '', isValid: true},
+        date: {value: defaultValues?.date || new Date(), isValid: true},
+        desc: {value: defaultValues?.desc || '', isValid: true},
+        type: {value: defaultValues?.type || '', isValid: true},
+        category: {value: defaultValues?.category || '', isValid: true},
+        subCategory: {value: defaultValues?.subCategory || '', isValid: true},
+        paymentMode: {value: defaultValues?.paymentMode || '', isValid: true},
     });
 
     function changeHandler(inputIdentifier, enteredValue) {
-        setInputs((currentInput) => ({
-            ...currentInput, [inputIdentifier]: {value: enteredValue, isValid: true},
+        setInputs(currentInput => ({
+            ...currentInput, [inputIdentifier]: {value: enteredValue, isValid: true}
         }));
-        setModalVisible(false);
     }
 
     function submitHandler() {
@@ -41,16 +35,17 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
             desc: inputs.desc.value,
             type: inputs.type.value,
             category: inputs.category.value,
+            subCategory: inputs.subCategory.value,
             paymentMode: inputs.paymentMode.value
         };
 
         const amountIsValid = !isNaN(expenseData.amount) && expenseData.amount > 0;
         const descIsValid = expenseData.desc.trim().length > 0;
-        const categoryIsValid = expenseData.category.trim().length > 0;
-        const typeIsValid = expenseData.type.trim().length > 0;
+        const categoryIsValid = expenseData.category.length > 0;
+        const typeIsValid = expenseData.type.length > 0;
 
         if (!amountIsValid || !descIsValid || !categoryIsValid || !typeIsValid) {
-            setInputs((currentInput) => ({
+            setInputs(currentInput => ({
                 ...currentInput,
                 amount: {...currentInput.amount, isValid: amountIsValid},
                 desc: {...currentInput.desc, isValid: descIsValid},
@@ -60,79 +55,83 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
             return;
         }
 
-        onSubmit(expenseData);
+        const dataWithoutEmojis = removeEmojis(expenseData);
+        onSubmit(dataWithoutEmojis); // Pass cleaned data to onSubmit
     }
 
-    const formIsValid = !inputs.amount.isValid || !inputs.desc.isValid || !inputs.category.isValid || !inputs.type.isValid || !inputs.paymentMode.isValid;
+    function removeEmojis(inputData) {
+        function removeEmojis(value) {
+            if (typeof value === 'string') {
+                return value.replace(/[\p{Emoji}\p{Emoji}]/gu, '').trim(); // Remove emojis and trim whitespace
+            }
+            return value;
+        }
 
-    let categoriesMap = {
-        'Expense': expenseCategoryType, 'Income': incomeCategoryType, 'Investment': investmentCategoryType
-    };
+        return Object.fromEntries(Object.entries(inputData).map(([key, value]) => [key, key === 'date' ? value : removeEmojis(value) // Skip removing emojis from the date field
+        ]));
+    }
 
-    let categories = convertToTable(categoriesMap[inputs.type.value] || []);
+    const type = (<ModalInputField
+        label="Type"
+        value={inputs.type.value}
+        placeholder="Select type"
+        data={typesData}
+        onChange={value => changeHandler('type', value)}
+    />);
 
-    let paymentMode = null;
+    const expense = typesData[0];
+    const investment = typesData[1];
+    const income = typesData[2];
+    let categoryData;
+    let subCategoryData;
 
-    const openModal = (inputIdentifier, data) => {
-        setSelectedInput(inputIdentifier);
-        setModalData(data);
-        setModalVisible(true);
-    };
+    if (inputs.type.value === expense) {
+        categoryData = getMainCategories();
+        subCategoryData = getSubCategories(inputs.category.value);
+    } else if (inputs.type.value === investment) {
+        categoryData = investmentCategoryType;
+    } else {
+        categoryData = incomeCategoryType;
+        subCategoryData = getSubCategories(inputs.category.value);
+    }
 
-    const closeModal = () => {
-        setModalVisible(false);
-    };
-
-    const handleItemClick = (selectedItem) => {
-        changeHandler(selectedInput, selectedItem.replace(/\p{Emoji}/gu, '').trim());
-    };
-
-    const type = <><Input
-        label={"Type"}
-        inValid={!inputs.type.isValid}
+    const category = (<ModalInputField
+        label="Category"
+        value={inputs.category.value}
+        placeholder="Select category"
+        data={categoryData}
+        onChange={value => changeHandler('category', value)}
+    />);
+    // const subCategory = (
+    //     <ModalInputField
+    //         label="Sub Category"
+    //         value={inputs.subCategory.value}
+    //         placeholder="Select sub category"
+    //         data={subCategoryData}
+    //         onChange={value => changeHandler('subCategory', value)}
+    //     />
+    // );
+    const paymentMode = (<ModalInputField
+        label="Payment Mode"
+        value={inputs.paymentMode.value}
+        placeholder="Select payment mode"
+        data={paymentModeData}
+        onChange={value => changeHandler('paymentMode', value)}
+    />);
+    const description = (<Input
+        label="Description"
+        inValid={!inputs.desc.isValid}
         textInputConfig={{
-            editable: false,
-            value: inputs.type.value,
-            onTouchStart: () => openModal('type', convertToTable(typesData)),
-            placeholder: "Select type",
+            onChangeText: changeHandler.bind(this, 'desc'), value: inputs.desc.value, placeholder: "Enter Description",
         }}
-    /></>;
-
-    if (inputs.type.value === 'Expense' || inputs.type.value === 'Investment') {
-        paymentMode = (<>
-            <Input
-                label={"Payment Mode"}
-                inValid={!inputs.paymentMode.isValid}
-                textInputConfig={{
-                    editable: false, value: inputs.paymentMode.value, onTouchStart: () => {
-                        openModal('paymentMode', convertToTable(paymentModeData));
-                    }, placeholder: "Select Payment mode",
-                }}
-            />
-        </>);
-    }
-
-    let category = null;
-    if (inputs.type.value) {
-        category = (<View>
-            <Input
-                label={"Category"}
-                inValid={!inputs.category.isValid}
-                textInputConfig={{
-                    editable: false, value: inputs.category.value, onTouchStart: () => {
-                        openModal('category', categories);
-                    }, placeholder: "Select category",
-                }}
-            />
-        </View>);
-    }
+    />);
 
     return (<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.form}>
             <View style={styles.inputsRow}>
                 <Input
                     style={styles.rowInput}
-                    label={"Amount"}
+                    label="Amount"
                     inValid={!inputs.amount.isValid}
                     textInputConfig={{
                         keyboardType: 'decimal-pad',
@@ -142,43 +141,30 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                     }}
                 />
                 <CustomDatePicker
-                    style={styles.rowInput}
-                    label={"Date"}
-                    onChange={changeHandler.bind(this, 'date')}
-                    config={{
-                        value: inputs.date.value,
-                    }}
+                    style={styles.input}
+                    label="Date"
+                    onChange={value => changeHandler('date', value)}
+                    config={{value: inputs.date.value}}
                 />
             </View>
-            <View>
-                {type}
+            {type}
+            {inputs.type.value === expense && (<>
                 {paymentMode}
                 {category}
-            </View>
-            <Input
-                label={"Description"}
-                inValid={!inputs.desc.isValid}
-                textInputConfig={{
-                    multiline: true,
-                    placeholder: "Enter desc",
-                    onChangeText: changeHandler.bind(this, 'desc'),
-                    value: inputs.desc.value,
-                    blurOnSubmit: true
-                }}
-            />
-            {formIsValid && (
-                <Text style={styles.errorText}>Invalid input values - please check your entered data</Text>)}
+                {/*{subCategory}*/}
+            </>)}
+            {inputs.type.value === investment && (<>
+                {paymentMode}
+                {category}
+            </>)}
+            {inputs.type.value === income && (<>
+                {category}
+            </>)}
+            {description}
             <View style={styles.buttons}>
-                <Button mode={'flat'} onPress={onCancel} style={styles.button}>Cancel</Button>
+                <Button mode="flat" onPress={onCancel} style={styles.button}>Cancel</Button>
                 <Button onPress={submitHandler} style={styles.button}>{submitButtonLabel}</Button>
             </View>
-            <ModalComponent
-                visible={modalVisible}
-                data={modalData}
-                onClose={closeModal}
-                onItemClick={handleItemClick}
-                modalTitle={'Select option'}
-            />
         </View>
     </TouchableWithoutFeedback>);
 }
@@ -188,17 +174,15 @@ export default ExpenseForm;
 const styles = StyleSheet.create({
     form: {
         marginTop: 8,
-    }, title: {
-        fontWeight: 'bold', fontSize: 20, color: 'black', marginVertical: 24, textAlign: 'center'
-    }, inputsRow: {
-        flexDirection: "row", justifyContent: "flex-start"
+    }, input: {
+        borderWidth: 1, borderColor: '#ccc', padding: 10, marginVertical: 8, borderRadius: 4,
     }, rowInput: {
-        flex: 1
+        flex: 1,
+    }, inputsRow: {
+        flexDirection: 'row', justifyContent: 'space-between',
     }, buttons: {
-        flexDirection: 'row', justifyContent: 'center', alignItems: "center"
+        flexDirection: 'row', justifyContent: 'center',
     }, button: {
-        minWidth: 120, marginHorizontal: 8
-    }, errorText: {
-        textAlign: "center", color: GlobalStyles.colors.error500, margin: 8
-    }
+        minWidth: 120, marginHorizontal: 8,
+    },
 });
