@@ -1,5 +1,31 @@
-export const typesData = ['🟥 Expense', '🟩 Income', '🟨 Investment'];
+export const typesData = ['Expense', 'Investment', 'Income'];
 export const paymentModeData = ["💳 Credit Card", "🏛 Bank Account", "💵 Cash"];
-export const expenseCategoryType = ['🏦 Loan', '🍺 Alcohol', '🛍️ Shopping', '🥗 Grocery', '🍽 Restaurant', '🏕️ Leisure', '🏠 Home', '🚗 Transport', '🎁 Gift', '🍔 Eatery', '🏥 Insurance', '🩺 Medical'];
-export const incomeCategoryType = ['Interest', 'ROI', 'Salary', 'Credit Exchange'];
+export const incomeCategoryType = ['💼 Interest', '📈 ROI', '💼 Salary', '💳 Credit Exchange'];
 export const investmentCategoryType = ['📈 Stocks', '💹 Mutual Funds'];
+
+export const categories = {
+    '🏦 Loan': ['📑 Personal Loan', '🚗 Car Loan', '🏠 Mortgage', '🎓 Education Loan', '📊 Business Loan', '🔄 Debt Repayment'],
+    '🍺 Alcohol': ['🍺 Beer', '🍷 Wine', '🥃 Spirits', '🍾 Liquor', '🍹 Cocktails', '🍻 Bar Drinks'],
+    '🛍 Shopping': ['👚 Clothing', '💻 Electronics', '🧸 Toys', '💄 Beauty Products', '⚽ Sporting Goods'],
+    '🥗 Grocery': ['🛒 Supermarket', '🏞️ Farmers Market', '🍏 Organic', '🔍 Bulk Items', '🐶 Pet Supplies'],
+    '🍔 Eatery': ['🍴 Cafeteria', '🍫 Snacks', '🍹 Beverages', '🌭 Street Food', '🍟 Fast Food'],
+    '🍽 Restaurant': ['🍽️ Dining', '🍔 Fast Food', '☕ Café', '🍽️ Takeaway'],
+    '🏕 Leisure': ['🌍 Travel', '🎭 Entertainment', '🏞️ Outdoor Activities', '🎮 Gaming', '🎬 Movies', '🎮 Video Games'],
+    '🏠 Home': ['🏡 Utilities', '🛋️ Furniture', '🔧 Appliances', '⚒️ Maintenance', '🏠 Home Improvement'],
+    '🚗 Transport': ['🚗 Petrol', '🚖 Cab Booking', '🚗 Tolls', '🗒️ Ticket'],
+    '🎁 Gift': ['🎉 Birthday', '💑 Anniversary', '🎄 Holiday', '👰 Wedding', '🎁 Gift Cards'],
+    '🏥 Insurance': ['💖 Health', '🩼 Life', '🚗 Car', '🏠 Home', '🌍 Travel', '🐕 Pet Insurance'],
+    '🩺 Medical': ['🩺 Doctor Visits', '💊 Prescriptions', '🏥 Hospital Bills', '💉 Medicines'],
+    '📺 Bills': ['🎬 Streaming', '🌐 Internet', '💪 Gym', '⚡ Electricity', '🚰 Water', '🚗 Gas', '📱 Mobile', '📺 Cable'],
+    '🎓 Education': ['📚 Books & Supplies', '🎓 Online Courses', '🛠️ Workshops', '🎓 Events'],
+    '💆 Personal Care': ['💆 Body Care', '🛍️ Products']
+};
+
+export const getMainCategories = () => {
+    return Object.keys(categories);
+};
+
+export const getSubCategories = (mainCategory) => {
+    const category = categories[mainCategory];
+    return category || null;
+};
