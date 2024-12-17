@@ -5,14 +5,11 @@ import Button from "../UI/Button";
 import CustomDatePicker from "../UI/DatePickerNative";
 import {convertToStandardFormat, getMonth, getYear} from "../../util/Date";
 import {GlobalStyles} from "../../constansts/styles";
-import ModalComponent from "../UI/ModalComponent";
-import {convertToTable} from "../../util/Table";
-import {expenseCategoryType} from "../../data/Data";
+import ModalInputField from "../UI/ModalInputField";
+import {getMainCategories} from "../../data/Data";
 
 function BudgetForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
-    const [modalData, setModalData] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
-    const [selectedInput, setSelectedInput] = useState('');
 
     const [inputs, setInputs] = useState({
         amount: {value: defaultValues?.amount?.toString() || '', isValid: true},
@@ -74,18 +71,6 @@ function BudgetForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
 
     const formIsInvalid = !inputs.amount.isValid || !inputs.category.isValid || !inputs.year.isValid;
 
-    const openModal = (inputIdentifier, data) => {
-        setSelectedInput(inputIdentifier);
-        setModalData(data);
-        setModalVisible(true);
-    };
-
-    const closeModal = () => setModalVisible(false);
-
-    const handleItemClick = (selectedItem) => {
-        changeHandler(selectedInput, selectedItem.replace(/\p{Emoji}/gu, '').trim());
-    };
-
     return (<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.form}>
             <View style={styles.inputsRow}>
@@ -110,15 +95,12 @@ function BudgetForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                 />
             </View>
             <View>
-                <Input
-                    label={"Category"}
-                    inValid={!inputs.category.isValid}
-                    textInputConfig={{
-                        editable: false,
-                        value: inputs.category.value,
-                        onTouchStart: () => openModal('category', convertToTable(expenseCategoryType)),
-                        placeholder: "Select category",
-                    }}
+                <ModalInputField
+                    label="Category"
+                    value={inputs.category.value}
+                    placeholder="Select category"
+                    data={getMainCategories()}
+                    onChange={value => changeHandler('category', value)}
                 />
             </View>
             <View style={styles.inputsRow}>
@@ -145,13 +127,6 @@ function BudgetForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                 <Button mode={'flat'} onPress={onCancel} style={styles.button}>Cancel</Button>
                 <Button onPress={submitHandler} style={styles.button}>{submitButtonLabel}</Button>
             </View>
-            <ModalComponent
-                visible={modalVisible}
-                data={modalData}
-                onClose={closeModal}
-                onItemClick={handleItemClick}
-                modalTitle={'Select option'}
-            />
         </View>
     </TouchableWithoutFeedback>);
 }
