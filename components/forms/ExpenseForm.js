@@ -60,14 +60,14 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     }
 
     function removeEmojis(inputData) {
-        function removeEmojis(value) {
+        function removeEmoji(value) {
             if (typeof value === 'string') {
-                return value.replace(/[\p{Emoji}\p{Emoji}]/gu, '').trim(); // Remove emojis and trim whitespace
+                return value.replace(/\p{Emoji}/gu, '').trim(); // Remove emojis and trim whitespace
             }
             return value;
         }
 
-        return Object.fromEntries(Object.entries(inputData).map(([key, value]) => [key, key === 'date' ? value : removeEmojis(value) // Skip removing emojis from the date field
+        return Object.fromEntries(Object.entries(inputData).map(([key, value]) => [key, key === 'date' ? value : removeEmoji(value) // Skip removing emojis from the 'date' field
         ]));
     }
 
@@ -102,15 +102,13 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
         data={categoryData}
         onChange={value => changeHandler('category', value)}
     />);
-    // const subCategory = (
-    //     <ModalInputField
-    //         label="Sub Category"
-    //         value={inputs.subCategory.value}
-    //         placeholder="Select sub category"
-    //         data={subCategoryData}
-    //         onChange={value => changeHandler('subCategory', value)}
-    //     />
-    // );
+    const subCategory = (<ModalInputField
+        label="Sub Category"
+        value={inputs.subCategory.value}
+        placeholder="Select sub category"
+        data={subCategoryData}
+        onChange={value => changeHandler('subCategory', value)}
+    />);
     const paymentMode = (<ModalInputField
         label="Payment Mode"
         value={inputs.paymentMode.value}
@@ -151,7 +149,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
             {inputs.type.value === expense && (<>
                 {paymentMode}
                 {category}
-                {/*{subCategory}*/}
+                {subCategory}
             </>)}
             {inputs.type.value === investment && (<>
                 {paymentMode}
