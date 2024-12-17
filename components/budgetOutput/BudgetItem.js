@@ -31,7 +31,7 @@ function BudgetItem({id, category, spentAmount, budgetedAmount, spentPercentage}
                         <View>
                             <Text style={styles.desc}>{category}</Text>
                             <Text style={styles.text}>
-                                {`Spent: ${spentPercentage} % of ${GlobalStyles.characters.rupee}${budgetedAmount}`}
+                                {`Spent: ${spentPercentage} of ${GlobalStyles.characters.rupee}${budgetedAmount}`}
                             </Text>
                         </View>
                         <View style={styles.amountContainer}>
@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
         flexDirection: "row", justifyContent: "space-between", alignItems: "center",
     },
     desc: {fontSize: 16, marginBottom: 4, fontWeight: "bold"},
+    amount: {fontWeight: "bold"},
     amountContainer: {padding: 10, backgroundColor: "white", borderRadius: 4},
     progressBar: {flex: 1, marginTop: 10},
     errorText: {
