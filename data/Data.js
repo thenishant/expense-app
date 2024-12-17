@@ -12,7 +12,7 @@ export const categories = {
     '🍽 Restaurant': ['🍽️ Dining', '🍔 Fast Food', '☕ Café', '🍽️ Takeaway'],
     '🏕 Leisure': ['🌍 Travel', '🎭 Entertainment', '🏞️ Outdoor Activities', '🎮 Gaming', '🎬 Movies', '🎮 Video Games'],
     '🏠 Home': ['🏡 Utilities', '🛋️ Furniture', '🔧 Appliances', '⚒️ Maintenance', '🏠 Home Improvement'],
-    '🚗 Transport': ['🚗 Petrol', '🚖 Cab Booking', '🚗 Tolls', '🗒️ Ticket'],
+    '🚗 Travel': ['⛽️ Petrol', '🚖 Cab Booking', '🚗 Tolls', '🗒️ Tickets'],
     '🎁 Gift': ['🎉 Birthday', '💑 Anniversary', '🎄 Holiday', '👰 Wedding', '🎁 Gift Cards'],
     '🏥 Insurance': ['💖 Health', '🩼 Life', '🚗 Car', '🏠 Home', '🌍 Travel', '🐕 Pet Insurance'],
     '🩺 Medical': ['🩺 Doctor Visits', '💊 Prescriptions', '🏥 Hospital Bills', '💉 Medicines'],
