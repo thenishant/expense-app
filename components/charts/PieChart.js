@@ -81,8 +81,8 @@ function PieChart({chartData, centerData}) {
             {renderExpenseSummary()}
         </View>
         <View style={{position: 'absolute', top: '-2%', left: '42%'}}>
-            <Text style={{textAlign: 'center', fontWeight: 'bold',fontSize: 20}}>{chartData.length}</Text>
-            <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Expenses</Text>
+            {/*<Text style={{textAlign: 'center', fontWeight: 'bold',fontSize: 20}}>{chartData.length}</Text>*/}
+            {/*<Text style={{textAlign: 'center', fontWeight: 'bold'}}>Expenses</Text>*/}
         </View>
     </View>);
 }

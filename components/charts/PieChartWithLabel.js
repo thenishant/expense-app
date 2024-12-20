@@ -88,7 +88,7 @@ function PieChartWithLabel({chartData, chartTitleName, chartTitleCount}) {
         <View>
             {renderExpenseSummary()}
         </View>
-        <View style={{position: 'absolute', top: '-4%', left: '43%'}}>
+        <View style={{position: 'absolute', top: '-2%'}}>
             <Text style={{textAlign: 'center', fontSize: 18}}>{chartTitleCount}</Text>
             <Text style={{textAlign: 'center', fontSize: 16}}>{chartTitleName}</Text>
         </View>

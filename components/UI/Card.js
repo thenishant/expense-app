@@ -15,8 +15,8 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#fff', margin: 5, borderRadius: 20, alignItems: 'center', justifyContent: 'center', flex: 1
     }, heading: {
-        fontSize: 10, paddingBottom: 12, textAlign: "center", color: "#283618"
+        fontSize: 13, paddingBottom: 12, textAlign: "center", color: "#283618"
     }, amount: {
-        fontSize: 16, fontWeight: "bold", textAlign: "center", marginVertical: 13
+        fontSize: 16, fontWeight: "bold", textAlign: "center", marginVertical: 10
     },
 });

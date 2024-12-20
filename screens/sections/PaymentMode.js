@@ -1,33 +1,40 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {StyleSheet, View} from "react-native";
-import {getMonth} from "../../util/Date";
+import {getMonth, getYear} from "../../util/Date";
 import PieChart from "../../components/charts/PieChart";
 import LoadingOverlay from "../../components/UI/LoadingOverlay";
 import ErrorOverlay from "../../components/UI/ErrorOverlay";
-import {ExpensesContext} from "../../store/expenses-context";
+import {getTransactionsPaymentMode} from "../../util/http";
 
 function PaymentModePerMonth({refreshing, selectedMonth}) {
-    const [expenseCategory, setExpenseCategory] = useState([]);
+    const [paymentMode, setPaymentMode] = useState([]);
     const [isFetching, setIsFetching] = useState(true);
     const [error, setError] = useState('');
-    const currentMonth = getMonth(selectedMonth);
     const [selectedYear, setSelectedYear] = useState(new Date());
-    const expensesContext = useContext(ExpensesContext);
-
-    const expenseCategoryHandler = async () => {
-        console.log(expensesContext.expenses.paymentMode)
-    };
 
     useEffect(() => {
+        const month = getMonth(selectedMonth);
+        const year = getYear(selectedYear);
+
+        const expenseCategoryHandler = async () => {
+            setIsFetching(true);
+            const response = await getTransactionsPaymentMode(month, year);
+            setPaymentMode([response])
+            setIsFetching(false);
+        }
         expenseCategoryHandler();
-    }, [refreshing, selectedMonth]);
+    }, [selectedMonth, selectedYear]);
+
 
     const categoryColors = ["#f15bb5", "#fee440", "#00bbf9", "#00f5d4", "#f79256", "#90fe00", "#cc17ff", "#ff0000", "#adb5bd"];
 
-    const transformedData = expenseCategory?.map((item, index) => ({
-        x: item.name, y: item.amount, color: categoryColors[index % categoryColors.length]
-    }));
-
+    const transformedData = paymentMode.flatMap((item, index) =>
+        Object.keys(item).map((key, subIndex) => ({
+            color: categoryColors[(index + subIndex) % categoryColors.length],
+            x: key,
+            y: item[key]
+        }))
+    );
 
     if (isFetching) return <LoadingOverlay/>
 

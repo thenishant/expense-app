@@ -7,7 +7,7 @@ export const apiEndpoints = {
     categoryTransactions: 'expense/categoryTransactions',
     monthlyTransactions: 'expense/getMonthlyTransactions',
     createBudget: 'budget/create',
-    allBudget: 'budget/allBudget'
+    allBudget: 'budget/budgets'
 };
 
 export function buildUrl(apiEndpoint) {

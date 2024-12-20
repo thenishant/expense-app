@@ -14,7 +14,11 @@ export const GlobalStyles = {
         error50: "#ff8fa5",
         black700: "#283618",
         red100: '#ec8385',
-        green100: '#78c6a3'
+        green100: '#78c6a3',
+        yellow100: '#ffe169',
+        black50:'#000000',
+        orange100: "#774936",
+        orange50: "#e6b8a2"
     },
     characters: {
         rupee: '₹'

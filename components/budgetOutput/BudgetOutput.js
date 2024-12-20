@@ -1,24 +1,23 @@
 import {StyleSheet, Text, View} from "react-native";
-import ExpenseSummary from "./ExpenseSummary";
-import ExpenseList from "./ExpenseList";
+import BudgetList from "./BudgetList";
+import BudgetSummary from "./BudgetSummary";
 
 
-function ExpensesOutput({expenses, expensesPeriod, fallbackText}) {
+function BudgetOutput({budgets, expensesPeriod, fallbackText}) {
     let content = <Text style={styles.infoText}>{fallbackText}</Text>
 
-    if (expenses.length > 0)
-        content = <ExpenseList expenses={expenses}/>
-
+    if (budgets.length > 0)
+        content = <BudgetList budgets={budgets}/>
 
     return (
         <View style={styles.container}>
-            <ExpenseSummary expenses={expenses} periodName={expensesPeriod}/>
+            {/*<BudgetSummary expenses={budget} periodName={expensesPeriod}/>*/}
             {content}
         </View>
     )
 }
 
-export default ExpensesOutput
+export default BudgetOutput
 
 const styles = StyleSheet.create({
     container: {

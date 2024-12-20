@@ -1,10 +1,9 @@
 import {StyleSheet, Text, View} from "react-native";
 import {GlobalStyles} from "../../constansts/styles";
 
-function ExpenseSummary({expenses, periodName}) {
+function BudgetSummary({expenses, periodName}) {
 
     const expenseArray = typeof expenses === 'number' ? [{amount: expenses}] : expenses;
-
 
     const expenseSum = Array.isArray(expenseArray)
         ? expenseArray
@@ -19,7 +18,7 @@ function ExpenseSummary({expenses, periodName}) {
     </View>)
 }
 
-export default ExpenseSummary
+export default BudgetSummary
 
 const styles = StyleSheet.create({
     container: {
