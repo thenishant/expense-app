@@ -13,7 +13,7 @@ function ExpensePerMonthChart() {
 
     const transformedData = categoryContext.category.map((item, index) => ({
         x: item.category, y: item.amount, color: categoryColors[index % categoryColors.length], percent: item.percentage
-    })).sort((a, b) => b.percentage - a.percentage);
+    })).sort((a, b) => b.y - a.y);
 
     if (!transformedData.length) return <LoadingOverlay/>;
 
