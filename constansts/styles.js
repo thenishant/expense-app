@@ -7,7 +7,7 @@ export const GlobalStyles = {
         primary300: "#90e0ef",
         primary200: "#ade8f4",
         primary100: "#caf0f8",
-        primary50: "#f1faee",
+        primary50: "#fefae0",
         gray500: "#ced4da",
         gray300: '#adb5bd',
         error500: "#e63946",
@@ -16,11 +16,12 @@ export const GlobalStyles = {
         red100: '#ec8385',
         green100: '#78c6a3',
         yellow100: '#ffe169',
-        black50:'#000000',
+        black50: '#000000',
         orange100: "#774936",
         orange50: "#e6b8a2"
     },
     characters: {
-        rupee: '₹'
+        rupee: '₹',
+        percent: '%'
     }
 }
