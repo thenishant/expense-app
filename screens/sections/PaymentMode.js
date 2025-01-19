@@ -6,11 +6,10 @@ import LoadingOverlay from "../../components/UI/LoadingOverlay";
 import ErrorOverlay from "../../components/UI/ErrorOverlay";
 import {getTransactionsPaymentMode} from "../../util/http";
 
-function PaymentModePerMonth({refreshing, selectedMonth}) {
+function PaymentModePerMonth({selectedMonth, selectedYear}) {
     const [paymentMode, setPaymentMode] = useState([]);
     const [isFetching, setIsFetching] = useState(true);
     const [error, setError] = useState('');
-    const [selectedYear, setSelectedYear] = useState(new Date());
 
     useEffect(() => {
         const month = getMonth(selectedMonth);
@@ -28,13 +27,9 @@ function PaymentModePerMonth({refreshing, selectedMonth}) {
 
     const categoryColors = ["#f15bb5", "#fee440", "#00bbf9", "#00f5d4", "#f79256", "#90fe00", "#cc17ff", "#ff0000", "#adb5bd"];
 
-    const transformedData = paymentMode.flatMap((item, index) =>
-        Object.keys(item).map((key, subIndex) => ({
-            color: categoryColors[(index + subIndex) % categoryColors.length],
-            x: key,
-            y: item[key]
-        }))
-    );
+    const transformedData = paymentMode.flatMap((item, index) => Object.keys(item).map((key, subIndex) => ({
+        color: categoryColors[(index + subIndex) % categoryColors.length], x: key, y: item[key]
+    })));
 
     if (isFetching) return <LoadingOverlay/>
 
