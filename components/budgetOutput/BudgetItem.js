@@ -11,7 +11,6 @@ function BudgetItem({id, category, spentAmount, budgetedAmount, spentPercentage}
         navigation.navigate("ManageBudget", {budgetId: id});
     }
 
-    const categoryWithoutEmoji = category.replace(/\p{Emoji}/gu, '').trim();
 
     const [itemWidth, setItemWidth] = useState(0);
     const progress = budgetedAmount > 0 ? (spentAmount / budgetedAmount).toFixed(3) : 0; // Safe progress calculation
@@ -30,7 +29,7 @@ function BudgetItem({id, category, spentAmount, budgetedAmount, spentPercentage}
                     }}
                 >
                     <View>
-                        <Text style={styles.desc}>{categoryWithoutEmoji}</Text>
+                        <Text style={styles.desc}>{category}</Text>
                         <Text style={styles.text}>
                             {`Spent: ${spentPercentage} of ${GlobalStyles.characters.rupee}${budgetedAmount}`}
                         </Text>
