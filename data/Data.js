@@ -7,18 +7,19 @@ export const categories = {
     '🏦 Loan': ['📑 Personal Loan', '🚗 Car Loan', '🏠 Mortgage', '🎓 Education Loan', '📊 Business Loan', '🔄 Debt Repayment'],
     '🍺 Alcohol': ['🍺 Beer', '🍷 Wine', '🥃 Spirits', '🍾 Liquor', '🍹 Cocktails', '🍻 Bar Drinks'],
     '🛍 Shopping': ['👚 Clothing', '💻 Electronics', '🧸 Toys', '💄 Beauty Products', '⚽ Sporting Goods'],
-    '🥗 Grocery': ['🛒 Supermarket', '🏞️ Farmers Market', '🍏 Organic', '🔍 Bulk Items', '🐶 Pet Supplies'],
-    '🍔 Eatery': ['🍴 Cafeteria', '🍫 Snacks', '🍹 Beverages', '🌭 Street Food', '🍟 Fast Food'],
-    '🍽 Restaurant': ['🍽️ Dining', '🍔 Fast Food', '☕ Café', '🍽️ Takeaway'],
+    '🥗 Grocery': ['🥒 Vegetables', '🍉 Fruits', '🥡 Dairy', '📱 Online Grocery'],
+    // '🍔 Eatery': ['🍴 Cafeteria', '🍫 Snacks', '🍹 Beverages', '🌭 Street Food', '🍟 Fast Food'],
+    '🍽 Eating': ['🍽️ Restaurant', '🍻 Pub', '📱 Online order', '🍔 Fast Food', '🍹 Beverages', '☕ Café', '🍽️ Takeaway'],
     '🏕 Leisure': ['🌍 Travel', '🎭 Entertainment', '🏞️ Outdoor Activities', '🎮 Gaming', '🎬 Movies', '🎮 Video Games'],
-    '🏠 Home': ['🏡 Utilities', '🛋️ Furniture', '🔧 Appliances', '⚒️ Maintenance', '🏠 Home Improvement'],
+    '🏠 Home': ['🏡 Utilities', '🛋️ Maid', '🔧 Appliances', '⚒️ Maintenance', '🏠 Home Improvement'],
     '🚗 Travel': ['⛽️ Petrol', '🚖 Cab Booking', '🚗 Tolls', '🗒 Tickets'],
     '🎁 Gift': ['🎉 Birthday', '💑 Anniversary', '🎄 Holiday', '👰 Wedding', '🎁 Gift Cards'],
-    '🏥 Insurance': ['💖 Health', '🩼 Life', '🚗 Car', '🏠 Home', '🌍 Travel', '🐕 Pet Insurance'],
-    '🩺 Medical': ['🩺 Doctor Visits', '💊 Prescriptions', '🏥 Hospital Bills', '💉 Medicines'],
-    '📺 Bills': ['🎬 Streaming', '🌐 Internet', '💪 Gym', '⚡ Electricity', '🚰 Water', '🚗 Gas', '📱 Mobile', '📺 Cable'],
-    '🎓 Education': ['📚 Books & Supplies', '🎓 Online Courses', '🛠️ Workshops', '🎓 Events'],
-    '💆 Personal Care': ['💆 Body Care', '🛍️ Products']
+    '🏥 Insurance': ['💖 Health', '🩼 Life'],
+    '🩺 Medical': ['🩺 Doctor Visits', '💊 Medicines', '🦷 Dental', '👓 Optical'],
+    '📺 Bills': ['🌐 Internet', '💪 Gym', '⚡ Electricity', '🚰 Water', '📱 Mobile', '📺 Cable'],
+    '🎓 Education': ['📚 Books', '🎓 Courses', '🛠️ Workshops', '🎓 Events'],
+    '💆 Personal Care': ['💆 Body Care', '🛍️ Products'],
+    '👶 Family': ['👶 Baby', '👦 Toys', '👧 Clothing', '📚 Education', '👩 Wife']
 };
 
 export const getMainCategories = () => {
