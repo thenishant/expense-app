@@ -7,6 +7,7 @@ import {convertToStandardFormat, getMonth, getYear} from "../../util/Date";
 import {GlobalStyles} from "../../constansts/styles";
 import ModalInputField from "../UI/ModalInputField";
 import {getMainCategories} from "../../data/Data";
+import {removeEmojisOnForm} from "../../util/Emoji";
 
 function BudgetForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     const [modalVisible, setModalVisible] = useState(false);
@@ -66,7 +67,8 @@ function BudgetForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
             }));
             return;
         }
-        onSubmit(budgetData);
+        const dataWithoutEmojis = removeEmojisOnForm(budgetData);
+        onSubmit(dataWithoutEmojis); // Pass cleaned data to onSubmit
     }
 
     const formIsInvalid = !inputs.amount.isValid || !inputs.category.isValid || !inputs.year.isValid;

@@ -8,6 +8,7 @@ import Input from "../UI/Input";
 import {
     getMainCategories, getSubCategories, paymentModeData, typesData, incomeCategoryType, investmentCategoryType
 } from "../../data/Data";
+import {removeEmojisOnForm} from "../../util/Emoji";
 
 function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     const [inputs, setInputs] = useState({
@@ -55,21 +56,10 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
             return;
         }
 
-        const dataWithoutEmojis = removeEmojis(expenseData);
+        const dataWithoutEmojis = removeEmojisOnForm(expenseData);
         onSubmit(dataWithoutEmojis); // Pass cleaned data to onSubmit
     }
 
-    function removeEmojis(inputData) {
-        function removeEmoji(value) {
-            if (typeof value === 'string') {
-                return value.replace(/\p{Emoji}/gu, '').trim(); // Remove emojis and trim whitespace
-            }
-            return value;
-        }
-
-        return Object.fromEntries(Object.entries(inputData).map(([key, value]) => [key, key === 'date' ? value : removeEmoji(value) // Skip removing emojis from the 'date' field
-        ]));
-    }
 
     const type = (<ModalInputField
         label="Type"
