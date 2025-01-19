@@ -11,7 +11,7 @@ function BudgetOutput({budgets, expensesPeriod, fallbackText}) {
 
     return (
         <View style={styles.container}>
-            {/*<BudgetSummary expenses={budget} periodName={expensesPeriod}/>*/}
+            <BudgetSummary budgets={budgets} periodName={expensesPeriod}/>
             {content}
         </View>
     )
