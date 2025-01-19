@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View} from "react-native";
 import {GlobalStyles} from "../../constansts/styles";
 
-function BudgetSummary({budgets, periodName}) {
+function BudgetSummary({budgets}) {
 
     const budgetArray = typeof budgets === 'number' ? [{amount: budgets}] : budgets;
 
