@@ -2,9 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {RefreshControl, ScrollView, StyleSheet} from "react-native";
 import MonthYearHeader from "../components/UI/HeaderWithArrow";
 import ExpensePerMonthChart from "./sections/ExpensePerMonthChart";
-import {
-    getBudgetForMonth, getCategoryTransactionResponse, getTransactionsPaymentMode, getTransactionsResponse
-} from "../util/http";
+import {getBudgetForMonth, getCategoryTransactionResponse, getTransactionsResponse} from "../util/http";
 import {ExpensesContext} from "../store/expenses-context";
 import {CategoryContext} from "../store/category-context";
 import {BudgetContext} from "../store/budget-context";
