@@ -13,6 +13,7 @@ import CategoryContextProvider from "./store/category-context";
 import {ExpensesContextProvider} from "./store/expenses-context";
 import ManageBudget from "./screens/ManageBudget";
 import {BudgetContextProvider} from "./store/budget-context";
+import {BalanceContextProvider} from "./store/balance-context";
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -82,26 +83,29 @@ export default function App() {
         <ExpensesContextProvider>
             <CategoryContextProvider>
                 <BudgetContextProvider>
-                    <NavigationContainer>
-                        <Stack.Navigator screenOptions={{
-                            headerStyle: {backgroundColor: GlobalStyles.colors.primary500}, headerTintColor: 'white',
-                        }}>
-                            <Stack.Screen
-                                name={"ExpensesOverview"}
-                                component={ExpensesOverview}
-                                options={{headerShown: false}}/>
-                            <Stack.Screen
-                                name={"ManageExpense"}
-                                component={ManageExpense}
-                                options={{presentation: 'modal'}}
-                            />
-                            <Stack.Screen
-                                name={"ManageBudget"}
-                                component={ManageBudget}
-                                options={{presentation: 'modal'}}
-                            />
-                        </Stack.Navigator>
-                    </NavigationContainer>
+                    <BalanceContextProvider>
+                        <NavigationContainer>
+                            <Stack.Navigator screenOptions={{
+                                headerStyle: {backgroundColor: GlobalStyles.colors.primary500},
+                                headerTintColor: 'white',
+                            }}>
+                                <Stack.Screen
+                                    name={"ExpensesOverview"}
+                                    component={ExpensesOverview}
+                                    options={{headerShown: false}}/>
+                                <Stack.Screen
+                                    name={"ManageExpense"}
+                                    component={ManageExpense}
+                                    options={{presentation: 'modal'}}
+                                />
+                                <Stack.Screen
+                                    name={"ManageBudget"}
+                                    component={ManageBudget}
+                                    options={{presentation: 'modal'}}
+                                />
+                            </Stack.Navigator>
+                        </NavigationContainer>
+                    </BalanceContextProvider>
                 </BudgetContextProvider>
             </CategoryContextProvider>
         </ExpensesContextProvider>

@@ -10,6 +10,7 @@ import {getMonth, getYear} from "../util/Date";
 import IncomeVsExpenseChart from "./sections/IncomeVsExpenseChart";
 import PaymentModePerMonth from "./sections/PaymentMode";
 import CardSection from "./sections/CardSection";
+import BankBalance from "./sections/BankBalance";
 
 function DashBoard() {
     const [refreshing, setRefreshing] = useState(false);
@@ -75,6 +76,7 @@ function DashBoard() {
         style={styles.container}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
         <MonthYearHeader onChange={handleMonthChange}/>
+        <BankBalance/>
         <CardSection selectedMonth={selectedMonth}/>
         <ExpensePerMonthChart selectedMonth={selectedMonth}/>
         <IncomeVsExpenseChart/>
