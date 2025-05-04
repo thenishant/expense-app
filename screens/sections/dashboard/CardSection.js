@@ -1,10 +1,10 @@
 import React, {useContext, useEffect, useState} from "react";
 import {StyleSheet, View} from "react-native";
-import Card from "../../../components/UI/Card";
-import {getMonth} from "../../../util/Date";
-import LoadingOverlay from "../../../components/UI/LoadingOverlay";
-import ErrorOverlay from "../../../components/UI/ErrorOverlay";
-import {ExpensesContext} from "../../../store/expenses-context";
+import Card from "../../components/UI/Card";
+import {getMonth} from "../../util/Date";
+import LoadingOverlay from "../../components/UI/LoadingOverlay";
+import ErrorOverlay from "../../components/UI/ErrorOverlay";
+import {ExpensesContext} from "../../store/expenses-context";
 import {useNavigation} from "@react-navigation/native";
 
 function CardSection({selectedMonth}) {
