@@ -1,6 +1,6 @@
 import React from "react";
-import {StyleSheet, View, ActivityIndicator, Text} from "react-native";
-import {VictoryBar, VictoryChart, VictoryGroup, VictoryTooltip} from "victory-native";
+import {ActivityIndicator, StyleSheet, Text, View} from "react-native";
+import {VictoryBar, VictoryChart, VictoryGroup, VictoryLabel} from "victory-native";
 import {formatThousands} from "../../util/Numbers";
 import {BalanceContextProvider, useBalance} from "../../store/balance-context";
 
@@ -24,23 +24,17 @@ const IncomeVsExpenseChartContent = () => {
             <VictoryGroup offset={20} colorScale={["#ef233c", "#70e000"]}>
                 <VictoryBar
                     data={incomeExpenseMapping.map((item) => ({
-                        x: item.month, y: formatThousands(item.expense),
+                        x: item.month, y: Number(formatThousands(item.expense)),
                     }))}
                     labels={({datum}) => `${datum.y}K`}
-                    labelComponent={<VictoryTooltip/>}
-                    animate={{
-                        duration: 2000, onLoad: {duration: 1000},
-                    }}
+                    labelComponent={<VictoryLabel/>}
                 />
                 <VictoryBar
                     data={incomeExpenseMapping.map((item) => ({
-                        x: item.month, y: formatThousands(item.income),
+                        x: item.month, y: Number(formatThousands(item.income)),
                     }))}
                     labels={({datum}) => `${datum.y}K`}
-                    labelComponent={<VictoryTooltip/>}
-                    animate={{
-                        duration: 2000, onLoad: {duration: 1000},
-                    }}
+                    labelComponent={<VictoryLabel/>}
                 />
             </VictoryGroup>
         </VictoryChart>
