@@ -5,8 +5,11 @@ import {getMonth} from "../../util/Date";
 import LoadingOverlay from "../../components/UI/LoadingOverlay";
 import ErrorOverlay from "../../components/UI/ErrorOverlay";
 import {ExpensesContext} from "../../store/expenses-context";
+import {useNavigation} from "@react-navigation/native";
 
 function CardSection({selectedMonth}) {
+    const navigation = useNavigation();
+
     const initialFigures = {
         income: 0, expense: 0, investment: 0, balance: 0,
     };
@@ -42,7 +45,7 @@ function CardSection({selectedMonth}) {
             <Card style={styles.incomeAmount} amount={formatAmountToThousands(currentMonthTransactions.Income)}
                   heading={'Income'}/>
             <Card style={styles.investmentAmount} amount={formatAmountToThousands(currentMonthTransactions.Investment)}
-                  heading={'Investment'}/>
+                  heading={'Investment'} onPress={() => navigation.navigate("Investments")}/>
             <Card style={styles.balanceAmount} amount={formatAmountToThousands(currentMonthTransactions.Balance)}
                   heading={'Balance'}/>
         </View>) : (<ErrorOverlay message={`No expense details found for ${getMonth(selectedMonth)}`}/>)}
