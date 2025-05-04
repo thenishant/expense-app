@@ -69,6 +69,8 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "row",
         paddingHorizontal: 20,
+        borderColor: 'black',
+        borderWidth: 0.5
     }, heading: {
         fontSize: 20, textAlign: "center", color: "#283618",
     }, amountContainer: {
