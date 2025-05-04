@@ -19,7 +19,7 @@
     "@react-navigation/native": "^6.1.16",
     "@react-navigation/native-stack": "^6.9.25",
     "@react-navigation/stack": "^6.3.28",
-    "axios": "^1.6.7",
+    "axios": "1.8.2",
     "d3-shape": "^3.2.0",
     "expo": "^51.0.8",
     "expo-build-properties": "~0.12.1",
