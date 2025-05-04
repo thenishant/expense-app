@@ -1,14 +1,18 @@
 import React from "react";
-import {Pressable, StyleSheet, Text} from "react-native";
+import {Pressable, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {GlobalStyles} from "../../constansts/styles";
 
 function Card({heading, amount, style, onPress}) {
-    return (<Pressable onPress={onPress} style={({pressed}) => [styles.container, pressed && styles.pressed]}>
-        <Text style={[styles.amount, style]}>
-            {GlobalStyles.characters.rupee}{amount}
-        </Text>
-        <Text style={styles.heading}>{heading}</Text>
-    </Pressable>);
+    return (
+        <TouchableOpacity onPress={onPress} style={{flex: 1}}>
+            <View style={styles.container}>
+                <Text style={[styles.amount, style]}>
+                    {GlobalStyles.characters.rupee}{amount}
+                </Text>
+                <Text style={styles.heading}>{heading}</Text>
+            </View>
+        </TouchableOpacity>
+    );
 }
 
 export default Card;
