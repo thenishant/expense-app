@@ -1,31 +1,22 @@
-import {BalanceContextProvider, useBalance} from "../../store/balance-context";
+import {useBalance} from "../../store/balance-context";
 import BigCard from "../../components/UI/BIgCard";
 
 function BankBalance() {
     const {summaryData, isLoading, error} = useBalance();
 
-    const handleAmountChange = (newAmount) => {
-        console.log("New Amount Entered:", newAmount);
-    };
-
     if (isLoading) {
-        return <BigCard heading="Balance in Bank" amount="Loading..."/>;
+        return <BigCard heading="Balance" amount="Loading..."/>;
     }
 
     if (error) {
-        return <BigCard heading="Balance in Bank" amount="Error loading data"/>;
+        return <BigCard heading="Balance" amount="Error loading data"/>;
     }
 
     return (<BigCard
-        isEditable={true} // Pass `true` to show the pencil icon
+        isEditable={true}
         amount={summaryData?.effectiveBalance || 0}
-        heading="Balance in Bank"
-        onAmountChange={handleAmountChange}
+        heading="Balance"
     />);
 }
-
-// const BankBalance = () => (<BalanceContextProvider>
-//     <BankBalanceContent/>
-// </BalanceContextProvider>);
 
 export default BankBalance;
