@@ -15,6 +15,8 @@ import ManageBudget from "./screens/ManageBudget";
 import {BudgetContextProvider} from "./store/budget-context";
 import {BalanceContextProvider} from "./store/balance-context";
 import Investments from "./screens/Investments";
+import ManageInvestment from "./screens/ManageInvestment";
+import InvestmentContextProvider from "./store/investment-context";
 
 const RootStack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -42,9 +44,14 @@ function DashboardStackNavigator() {
         <DashboardStack.Screen
             name="Investments"
             component={Investments}
-            options={{
-                title: "Investments", headerShown: true,
-            }}
+            options={({navigation}) => ({
+                title: "Investments", headerRight: ({tintColor}) => (<IconButton
+                    icon="add"
+                    size={28}
+                    color={tintColor}
+                    onPress={() => navigation.navigate("ManageInvestment")}
+                />),
+            })}
         />
     </DashboardStack.Navigator>);
 }
@@ -110,30 +117,37 @@ export default function App() {
             <CategoryContextProvider>
                 <BudgetContextProvider>
                     <BalanceContextProvider>
-                        <NavigationContainer>
-                            <RootStack.Navigator
-                                screenOptions={{
-                                    headerStyle: {backgroundColor: GlobalStyles.colors.primary500},
-                                    headerTintColor: "white",
-                                }}
-                            >
-                                <RootStack.Screen
-                                    name="ExpensesOverview"
-                                    component={ExpensesOverview}
-                                    options={{headerShown: false}}
-                                />
-                                <RootStack.Screen
-                                    name="ManageExpense"
-                                    component={ManageExpense}
-                                    options={{presentation: "modal"}}
-                                />
-                                <RootStack.Screen
-                                    name="ManageBudget"
-                                    component={ManageBudget}
-                                    options={{presentation: "modal"}}
-                                />
-                            </RootStack.Navigator>
-                        </NavigationContainer>
+                        <InvestmentContextProvider>
+                            <NavigationContainer>
+                                <RootStack.Navigator
+                                    screenOptions={{
+                                        headerStyle: {backgroundColor: GlobalStyles.colors.primary500},
+                                        headerTintColor: "white",
+                                    }}
+                                >
+                                    <RootStack.Screen
+                                        name="ExpensesOverview"
+                                        component={ExpensesOverview}
+                                        options={{headerShown: false}}
+                                    />
+                                    <RootStack.Screen
+                                        name="ManageExpense"
+                                        component={ManageExpense}
+                                        options={{presentation: "modal"}}
+                                    />
+                                    <RootStack.Screen
+                                        name="ManageBudget"
+                                        component={ManageBudget}
+                                        options={{presentation: "modal"}}
+                                    />
+                                    <RootStack.Screen
+                                        name="ManageInvestment"
+                                        component={ManageInvestment}
+                                        options={{presentation: "modal"}}
+                                    />
+                                </RootStack.Navigator>
+                            </NavigationContainer>
+                        </InvestmentContextProvider>
                     </BalanceContextProvider>
                 </BudgetContextProvider>
             </CategoryContextProvider>

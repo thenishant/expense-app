@@ -6,17 +6,17 @@ import LoadingOverlay from "../components/UI/LoadingOverlay";
 import ErrorOverlay from "../components/UI/ErrorOverlay";
 import {createInvestmentPlan} from "../util/http";
 import InvestmentForm from "../components/forms/InvestmentForm";
-import {SummaryContext} from "../store/summary-context";
+import {InvestmentContext} from "../store/investment-context";
 
 function ManageInvestment({route, navigation}) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
 
-    const investmentContext = useContext(SummaryContext);
+    const investmentContext = useContext(InvestmentContext);
 
     const editedInvestmentId = route.params?.id;
     const isEditing = !!editedInvestmentId;
-    const selectedInvestment = investmentContext.summary.find(p => p.id === editedInvestmentId);
+    const selectedInvestment = investmentContext.plans.find(p => p.id === editedInvestmentId);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -38,7 +38,7 @@ function ManageInvestment({route, navigation}) {
                 investmentContext.updatePlan(editedInvestmentId, data);
             } else {
                 const id = await createInvestmentPlan(data);
-                investmentContext.addPlan({...data, id});
+                investmentContext.createPlan({...data, id});
             }
             navigation.goBack();
         } catch {
