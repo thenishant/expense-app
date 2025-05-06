@@ -64,3 +64,8 @@ export async function getBudgetForMonth(month, year) {
     const response = await axios.get(buildUrl(`${apiEndpoints.allBudget}?month=${month}&year=${year}`))
     return response.data;
 }
+
+export async function createInvestmentPlan(data) {
+    const response = await axios.post(buildUrl(apiEndpoints.createInvestmentPlan), data);
+    return response.data;
+}

@@ -1,5 +1,5 @@
 import React, {useLayoutEffect} from "react";
-import {View, Text, StyleSheet} from "react-native";
+import {StyleSheet, Text, View} from "react-native";
 import {GlobalStyles} from "../constansts/styles";
 
 function Investments({route, navigation}) {
