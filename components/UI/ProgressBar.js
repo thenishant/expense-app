@@ -15,6 +15,6 @@ export default ProgressBar
 
 const styles = StyleSheet.create({
     progressBar: {
-        marginTop: 15, color: "#522500",
+        marginTop: 15,
     },
 });
