@@ -13,7 +13,7 @@ function BudgetItem({id, category, spentAmount, budgetedAmount, spentPercentage}
 
 
     const [itemWidth, setItemWidth] = useState(0);
-    const progress = budgetedAmount > 0 ? (spentAmount / budgetedAmount).toFixed(3) : 0; // Safe progress calculation
+    const progress = budgetedAmount > 0 ? spentAmount / budgetedAmount : 0;
     const progressBarWidth = itemWidth > 0 ? itemWidth : 100; // Default width
     const darkColor = GlobalStyles.colors.orange100;
     const lightColor = GlobalStyles.colors.orange50;
@@ -43,7 +43,11 @@ function BudgetItem({id, category, spentAmount, budgetedAmount, spentPercentage}
                 </View>
                 <ProgressBar
                     options={{
-                        color: darkColor, progress: progress, height: 10, width: progressBarWidth,
+                        color: darkColor,
+                        progress: progress,
+                        height: 10,
+                        width: progressBarWidth,
+                        unfilledColor: lightColor,
                     }}
                     style={styles.progressBar}
                 />
@@ -64,7 +68,7 @@ const styles = StyleSheet.create({
     desc: {fontSize: 16, marginBottom: 4, fontWeight: "bold"},
     amount: {fontWeight: "bold"},
     amountContainer: {padding: 10, backgroundColor: "white", borderRadius: 4},
-    progressBar: {flex: 1, marginTop: 10},
+    progressBar: {flex: 1, marginTop: 10, height: 15},
     errorText: {
         color: "red", textAlign: "center", marginVertical: 8,
     },
