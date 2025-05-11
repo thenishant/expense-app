@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
 import {StyleSheet, View} from "react-native";
-import {getMonth, getYear} from "../../util/Date";
-import PieChart from "../../components/charts/PieChart";
-import LoadingOverlay from "../../components/UI/LoadingOverlay";
-import ErrorOverlay from "../../components/UI/ErrorOverlay";
-import {getTransactionsPaymentMode} from "../../util/http";
+import {getMonth, getYear} from "../../../util/Date";
+import PieChart from "../../../components/charts/PieChart";
+import LoadingOverlay from "../../../components/UI/LoadingOverlay";
+import ErrorOverlay from "../../../components/UI/ErrorOverlay";
+import {getTransactionsPaymentMode} from "../../../util/http";
 
 function PaymentModePerMonth({selectedMonth, selectedYear}) {
     const [paymentMode, setPaymentMode] = useState([]);

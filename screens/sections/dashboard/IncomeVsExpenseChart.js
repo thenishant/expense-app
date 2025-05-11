@@ -1,23 +1,19 @@
-import React from "react";
-import {ActivityIndicator, StyleSheet, Text, View} from "react-native";
+import React, {useContext} from "react";
+import {StyleSheet, View} from "react-native";
 import {VictoryBar, VictoryChart, VictoryGroup, VictoryLabel} from "victory-native";
-import {formatThousands} from "../../util/Numbers";
-import {BalanceContextProvider, useBalance} from "../../store/balance-context";
+import {SummaryContext} from "../../../store/summary-context";
+import {formatThousands} from "../../../util/Numbers";
 
-const IncomeVsExpenseChartContent = () => {
-    const {summaryData, isLoading, error} = useBalance();
+const IncomeVsExpenseChart = () => {
+    const summaryContext = useContext(SummaryContext);
+    const rawData = summaryContext?.summary;
 
-    if (isLoading) {
-        return <ActivityIndicator size="large" color="#0000ff"/>;
-    }
-
-    if (error) {
-        return <Text style={styles.errorText}>Error: {error.message}</Text>;
-    }
-
-    const incomeExpenseMapping = summaryData?.data?.map((item) => ({
-        expense: item.expense, income: item.income, month: item.month,
-    })).slice(-5);
+    // Mapping data to get the expense, income, and month for each month
+    const incomeExpenseMapping = rawData?.months ? rawData.months
+        .map((item) => ({
+            expense: item.expense, income: item.income, month: item.month,
+        }))
+        .slice(-5) : [];
 
     return (<View style={styles.container}>
         <VictoryChart>
@@ -41,10 +37,6 @@ const IncomeVsExpenseChartContent = () => {
     </View>);
 };
 
-const IncomeVsExpenseChart = () => (<BalanceContextProvider>
-    <IncomeVsExpenseChartContent/>
-</BalanceContextProvider>);
-
 export default IncomeVsExpenseChart;
 
 const styles = StyleSheet.create({
@@ -56,6 +48,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         flex: 1,
     }, errorText: {
-        color: "red", textAlign: "center", fontSize: 16,
+        color: "red", textAlign: "center", fontSize: 16, marginTop: 20,
     },
 });
