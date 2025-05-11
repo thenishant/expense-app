@@ -56,7 +56,7 @@ export default CardSection;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1, backgroundColor: '#eef4f8'
+        flex: 1, backgroundColor: '#eef4f8', marginHorizontal: 5
     }, firstRow: {
         flexDirection: "row", justifyContent: "center", backgroundColor: '#eef4f8'
     }, incomeAmount: {
