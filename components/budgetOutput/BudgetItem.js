@@ -45,7 +45,7 @@ function BudgetItem({id, category, spentAmount, budgetedAmount, spentPercentage}
                     options={{
                         color: darkColor,
                         progress: progress,
-                        height: 10,
+                        height: 12,
                         width: progressBarWidth,
                         unfilledColor: lightColor,
                     }}
