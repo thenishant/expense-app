@@ -18,7 +18,8 @@ export const GlobalStyles = {
         yellow100: '#ffe169',
         black50: '#000000',
         orange100: "#774936",
-        orange50: "#e6b8a2"
+        orange50: "#e6b8a2",
+        white500: "#ffffff"
     },
     characters: {
         rupee: '₹',

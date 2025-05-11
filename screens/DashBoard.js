@@ -1,16 +1,17 @@
 import React, {useContext, useEffect, useState} from "react";
 import {RefreshControl, ScrollView, StyleSheet} from "react-native";
 import MonthYearHeader from "../components/UI/HeaderWithArrow";
-import ExpensePerMonthChart from "./sections/ExpensePerMonthChart";
-import {getBudgetForMonth, getCategoryTransactionResponse, getTransactionsResponse} from "../util/http";
+import ExpensePerMonthChart from "./sections/dashboard/ExpensePerMonthChart";
+import {getBudgetForMonth, getCategoryTransactionResponse, getSummary, getTransactionsResponse} from "../util/http";
 import {ExpensesContext} from "../store/expenses-context";
 import {CategoryContext} from "../store/category-context";
 import {BudgetContext} from "../store/budget-context";
 import {getMonth, getYear} from "../util/Date";
-import IncomeVsExpenseChart from "./sections/IncomeVsExpenseChart";
-import PaymentModePerMonth from "./sections/PaymentMode";
-import CardSection from "./sections/CardSection";
-import BankBalance from "./sections/BankBalance";
+import IncomeVsExpenseChart from "./sections/dashboard/IncomeVsExpenseChart";
+import PaymentModePerMonth from "./sections/dashboard/PaymentMode";
+import CardSection from "./sections/dashboard/CardSection";
+import {SummaryContext} from "../store/summary-context";
+import BankBalance from "./sections/dashboard/BankBalance";
 
 function DashBoard() {
     const [refreshing, setRefreshing] = useState(false);
@@ -20,6 +21,7 @@ function DashBoard() {
     const expensesContext = useContext(ExpensesContext);
     const categoryContext = useContext(CategoryContext);
     const budgetContext = useContext(BudgetContext);
+    const investmentContext = useContext(SummaryContext);
 
     useEffect(() => {
         const month = getMonth(selectedMonth);
@@ -27,11 +29,18 @@ function DashBoard() {
 
         const fetchData = async () => {
             setIsFetching(true);
+            const hasPlans = (context) => context.plans && context.plans.length > 0;
+
+            if (hasPlans(expensesContext) && hasPlans(categoryContext) && hasPlans(budgetContext) && hasPlans(investmentContext)) {
+                return;
+            }
 
             try {
-                const [expensesResponse, categoryResponse, budgetResponse] = await Promise.all([getTransactionsResponse(month, year), getCategoryTransactionResponse(month, year), getBudgetForMonth(month, year)]);
+                const [expensesResponse, categoryResponse, budgetResponse, summaryResponse] = await Promise.all([getTransactionsResponse(month, year), getCategoryTransactionResponse(month, year), getBudgetForMonth(month, year), getSummary(year)])
+
                 expensesContext.setExpenses(expensesResponse);
                 categoryContext.setCategory(categoryResponse);
+                investmentContext.setSummary(summaryResponse)
 
                 const calculateSpentVsBudget = (budget, spent) => {
                     return budget.map((budgetItem) => {

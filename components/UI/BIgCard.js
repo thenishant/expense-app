@@ -2,10 +2,21 @@ import React, {useEffect, useState} from "react";
 import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
 
-function BigCard({heading, amount, style, onAmountChange, isEditable: propIsEditable}) {
+function BigCard({
+                     heading,
+                     amount,
+                     style,
+                     onAmountChange,
+                     isEditable: propIsEditable,
+                     isHidden: propIsHidden,
+                     onToggleHidden
+                 }) {
     const [isEditable, setIsEditable] = useState(propIsEditable || false);
     const [editableAmount, setEditableAmount] = useState(amount);
-    const [isHidden, setIsHidden] = useState(true);
+    const [internalIsHidden, setInternalIsHidden] = useState(true);
+
+    const isControlled = propIsHidden !== undefined;
+    const isHidden = isControlled ? propIsHidden : internalIsHidden;
 
     useEffect(() => {
         setEditableAmount(amount);
@@ -19,6 +30,14 @@ function BigCard({heading, amount, style, onAmountChange, isEditable: propIsEdit
         setIsEditable(false);
         if (onAmountChange) {
             onAmountChange(parseFloat(editableAmount));
+        }
+    };
+
+    const toggleHidden = () => {
+        if (isControlled && onToggleHidden) {
+            onToggleHidden(!propIsHidden);
+        } else {
+            setInternalIsHidden(prev => !prev);
         }
     };
 
@@ -36,7 +55,7 @@ function BigCard({heading, amount, style, onAmountChange, isEditable: propIsEdit
                 {isHidden ? "*****" : editableAmount}
             </Text>)}
 
-            <TouchableOpacity onPress={() => setIsHidden(!isHidden)}>
+            <TouchableOpacity onPress={toggleHidden}>
                 <Ionicons
                     name={isHidden ? "eye-off" : "eye"}
                     size={20}
@@ -59,11 +78,12 @@ function BigCard({heading, amount, style, onAmountChange, isEditable: propIsEdit
 
 export default BigCard;
 
+
 const styles = StyleSheet.create({
     container: {
         backgroundColor: "#fff",
         margin: 5,
-        borderRadius: 20,
+        borderRadius: 10,
         alignItems: "center",
         justifyContent: "space-between",
         flex: 1,
