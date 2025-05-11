@@ -19,11 +19,11 @@ function PieChartWithLabel({chartData, chartTitleName, chartTitleCount}) {
         const renderItem = ({item}) => {
             return (<TouchableOpacity style={{
                 flexDirection: 'row',
-                height: 40,
+                height: 33,
                 paddingHorizontal: 8,
                 borderRadius: 10,
                 backgroundColor: (selectedCategory && selectedCategory.x === item.x) ? item.color : '#ffffff',
-                width: 350
+                width: 360
             }}
                                       onPress={() => {
                                           let categoryName = item.x
@@ -59,7 +59,7 @@ function PieChartWithLabel({chartData, chartTitleName, chartTitleCount}) {
             </TouchableOpacity>)
         }
 
-        return (<View style={{padding: 8}}>
+        return (<View>
             <FlatList scrollEnabled={false} data={data} renderItem={renderItem} keyExtractor={item => `${item.x}`}/>
         </View>)
     }

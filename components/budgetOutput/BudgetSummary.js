@@ -1,20 +1,21 @@
 import {StyleSheet, Text, View} from "react-native";
 import {GlobalStyles} from "../../constansts/styles";
 
-function BudgetSummary({expenses, periodName}) {
+function BudgetSummary({budgets}) {
 
-    const expenseArray = typeof expenses === 'number' ? [{amount: expenses}] : expenses;
+    const budgetArray = typeof budgets === 'number' ? [{amount: budgets}] : budgets;
 
-    const expenseSum = Array.isArray(expenseArray)
-        ? expenseArray
-            .filter(expense => expense.type === 'Expense')
-            .reduce((sum, expense) => sum + expense.amount, 0)
-        : 0;
+    const budgetSpentSum = Array.isArray(budgetArray) ? budgetArray
+        .reduce((sum, budget) => sum + budget.spentAmount, 0) : 0;
 
+    const budgetAllocatedSum = Array.isArray(budgetArray) ? budgetArray
+        .reduce((sum, budget) => sum + budget.budgetedAmount, 0) : 0;
+
+    const totalSpentPercentage = budgetAllocatedSum > 0 ? (budgetSpentSum / budgetAllocatedSum) * 100 : 0;
 
     return (<View style={styles.container}>
-        <Text style={styles.period}>{periodName}</Text>
-        <Text style={styles.sum}>{GlobalStyles.characters.rupee}{expenseSum.toFixed(0)}</Text>
+        <Text style={styles.period}>Spent {totalSpentPercentage.toFixed(1)}%
+            of {GlobalStyles.characters.rupee}{budgetAllocatedSum.toFixed(0)}: {GlobalStyles.characters.rupee}{budgetSpentSum.toFixed(0)}</Text>
     </View>)
 }
 
@@ -22,11 +23,7 @@ export default BudgetSummary
 
 const styles = StyleSheet.create({
     container: {
-        padding: 8,
-        backgroundColor: GlobalStyles.colors.primary50,
-        borderRadius: 6,
-        flexDirection: "row",
-        justifyContent: "space-between",
+        padding: 8, backgroundColor: GlobalStyles.colors.primary50, borderRadius: 6, flexDirection: "row", // justifyContent: "space-between",
         alignItems: "center"
     }, period: {
         fontSize: 16, fontWeight: "bold", color: GlobalStyles.colors.black50

@@ -24,3 +24,8 @@ export function convertToStandardFormat(date) {
     return moment(date).format("YYYY-MM-DD");
 }
 
+export function getPreviousMonth() {
+    return moment().subtract(1, "month").format("MMM");
+}
+
+

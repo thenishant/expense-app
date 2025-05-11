@@ -55,12 +55,22 @@ export async function getCategoryTransactionResponse(month, year) {
     return response.data;
 }
 
-export async function getSummary() {
-    const response = await axios.get(buildUrl(apiEndpoints.summary))
+export async function getSummary(year) {
+    const response = await axios.get(buildUrl(`${apiEndpoints.summary}?year=${year}`))
     return response.data;
 }
 
 export async function getBudgetForMonth(month, year) {
     const response = await axios.get(buildUrl(`${apiEndpoints.allBudget}?month=${month}&year=${year}`))
+    return response.data;
+}
+
+export async function createInvestmentPlan(data) {
+    const response = await axios.post(buildUrl(apiEndpoints.createInvestmentPlan), data);
+    return response.data.name;
+}
+
+export async function getInvestmentPlans() {
+    const response = await axios.get(buildUrl(apiEndpoints.allInvestmentPlans));
     return response.data;
 }

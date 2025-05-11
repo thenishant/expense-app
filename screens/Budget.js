@@ -7,7 +7,7 @@ function Budget() {
 
     return (<>
         <BudgetOutput budgets={budgetContext.budgets}
-                      expensesPeriod={"Total"} fallbackText={"No budgets found!!"}/>
+                      expensesPeriod={""} fallbackText={"No budgets found!!"}/>
     </>)
 }
 

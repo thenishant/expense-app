@@ -1,9 +1,9 @@
 import React, {useContext} from "react";
-import PieChartWithLabel from "../../components/charts/PieChartWithLabel";
+import PieChartWithLabel from "../../../components/charts/PieChartWithLabel";
 import {StyleSheet, View} from "react-native";
-import LoadingOverlay from "../../components/UI/LoadingOverlay";
-import {CategoryContext} from "../../store/category-context";
-import {ExpensesContext} from "../../store/expenses-context";
+import LoadingOverlay from "../../../components/UI/LoadingOverlay";
+import {CategoryContext} from "../../../store/category-context";
+import {ExpensesContext} from "../../../store/expenses-context";
 
 function ExpensePerMonthChart() {
     const categoryContext = useContext(CategoryContext);
@@ -13,7 +13,7 @@ function ExpensePerMonthChart() {
 
     const transformedData = categoryContext.category.map((item, index) => ({
         x: item.category, y: item.amount, color: categoryColors[index % categoryColors.length], percent: item.percentage
-    })).sort((a, b) => b.percentage - a.percentage);
+    })).sort((a, b) => b.y - a.y);
 
     if (!transformedData.length) return <LoadingOverlay/>;
 
