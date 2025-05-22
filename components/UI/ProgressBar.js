@@ -4,9 +4,9 @@ import {StyleSheet, Text, View} from "react-native";
 import {GlobalStyles} from "../../constansts/styles";
 
 function getColorByProgress(progress) {
-    if (progress < 0.3) return "#e74c3c";     // red
-    if (progress < 0.7) return "#f1c40f";     // yellow
-    return "#2ecc71";                         // green
+    if (progress < 0.3) return GlobalStyles.colors.red200;
+    if (progress < 0.7) return GlobalStyles.colors.yellow200;
+    return GlobalStyles.colors.green100;
 }
 
 function ProgressBar({options, style}) {
