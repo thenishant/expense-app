@@ -3,7 +3,7 @@ import BigCard from "../../../components/UI/BIgCard";
 import {SummaryContext} from "../../../store/summary-context";
 
 function BankBalance() {
-    const {summary} = useContext(SummaryContext);
+    const summaryContext = useContext(SummaryContext);
     const [isFetching, setIsFetching] = useState(true);
     const [error, setError] = useState('');
     const [balance, setBalance] = useState(0);
@@ -11,12 +11,12 @@ function BankBalance() {
     useEffect(() => {
 
         try {
-            setBalance(summary.effectiveBalance);
+            setBalance(summaryContext.summary.effectiveBalance);
         } catch (err) {
             setError('Error loading data');
         }
         setIsFetching(false)
-    }, [summary]);
+    }, [summaryContext]);
 
     if (isFetching) {
         return <BigCard heading="Balance" amount="Loading..."/>;
