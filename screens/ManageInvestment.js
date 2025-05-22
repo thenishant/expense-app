@@ -1,78 +1,53 @@
-import {StyleSheet, View} from "react-native";
-import {useContext, useLayoutEffect, useState} from "react";
-import IconButton from "../components/UI/IconButton";
-import {GlobalStyles} from "../constansts/styles";
-import LoadingOverlay from "../components/UI/LoadingOverlay";
-import ErrorOverlay from "../components/UI/ErrorOverlay";
-import {createInvestmentPlan} from "../util/http";
-import InvestmentForm from "../components/forms/InvestmentForm";
+import {Button, StyleSheet, Text, TextInput, View} from "react-native";
+import {useContext, useEffect, useState} from "react";
 import {SummaryContext} from "../store/summary-context";
+import {GlobalStyles} from "../constansts/styles";
 
 function ManageInvestment({route, navigation}) {
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState('');
+    const {summary, addSummary} = useContext(SummaryContext);
+    const {month, year} = route.params;
 
-    const investmentContext = useContext(SummaryContext);
+    const selectedSummary = summary.months.find((item) => item.month === month && item.year === year);
 
-    const editedInvestmentId = route.params?.id;
-    const isEditing = !!editedInvestmentId;
-    const selectedInvestment = investmentContext.summary.find(p => p.id === editedInvestmentId);
+    const existingPlan = selectedSummary?.investmentPlan;
+    const [percentToInvest, setPercentToInvest] = useState(existingPlan?.percentToInvest?.toString() || "");
 
-    useLayoutEffect(() => {
-        navigation.setOptions({
-            title: isEditing ? 'Edit Investment Plan' : 'Add Investment Plan'
-        });
-    }, [navigation, isEditing]);
+    useEffect(() => {
+        navigation.setOptions({title: `${month} ${year} Investment`});
+    }, [navigation, month, year]);
 
-    if (isSubmitting) return <LoadingOverlay/>;
-    if (!isSubmitting && error) return <ErrorOverlay message={error}/>;
+    function confirmHandler() {
+        const percent = parseFloat(percentToInvest);
+        if (isNaN(percent) || percent < 0 || percent > 100) {
+            alert("Enter a valid percentage (0–100)");
+            return;
+        }
 
-    function cancelHandler() {
+        const income = selectedSummary?.income ?? 0;
+        const suggestedInvestment = (percent / 100) * income;
+        const percentInvested = income ? ((selectedSummary.investment || 0) / suggestedInvestment) * 100 : 0;
+
+        const investmentPlan = {
+            percentToInvest: percent,
+            suggestedInvestment: parseFloat(suggestedInvestment.toFixed(2)),
+            percentInvested: parseFloat(percentInvested.toFixed(1)),
+            statusColor: {},
+        };
+
+        addSummary(month, year, investmentPlan);
         navigation.goBack();
     }
 
-    async function confirmHandler(data) {
-        setIsSubmitting(true);
-        try {
-            if (isEditing) {
-                investmentContext.updatePlan(editedInvestmentId, data);
-            } else {
-                const id = await createInvestmentPlan(data);
-                investmentContext.addPlan({...data, id});
-            }
-            navigation.goBack();
-        } catch {
-            setError('Could not save investment plan!');
-            setIsSubmitting(false);
-        }
-    }
-
-    function deleteHandler() {
-        setIsSubmitting(true);
-        try {
-            investmentContext.deletePlan(editedInvestmentId);
-            navigation.goBack();
-        } catch {
-            setError('Could not delete investment plan!');
-            setIsSubmitting(false);
-        }
-    }
-
     return (<View style={styles.container}>
-        <InvestmentForm
-            onCancel={cancelHandler}
-            submitButtonLabel={isEditing ? 'Update' : 'Add'}
-            onSubmit={confirmHandler}
-            defaultValues={selectedInvestment}
+        <Text style={styles.label}>Percent to Invest</Text>
+        <TextInput
+            style={styles.input}
+            keyboardType="numeric"
+            value={percentToInvest}
+            onChangeText={setPercentToInvest}
+            placeholder="Enter percent"
         />
-        {isEditing && (<View style={styles.deleteContainer}>
-            <IconButton
-                icon="trash"
-                color={GlobalStyles.colors.error500}
-                size={36}
-                onPress={deleteHandler}
-            />
-        </View>)}
+        <Button title="Save Investment Plan" onPress={confirmHandler}/>
     </View>);
 }
 
@@ -80,12 +55,15 @@ export default ManageInvestment;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1, padding: 24, backgroundColor: GlobalStyles.colors.gray500,
-    }, deleteContainer: {
-        marginTop: 16,
-        paddingTop: 8,
-        borderTopWidth: 2,
-        borderTopColor: GlobalStyles.colors.primary700,
-        alignItems: 'center',
+        padding: 24, backgroundColor: "white", flex: 1,
+    }, label: {
+        fontSize: 18, color: GlobalStyles.colors.primary500, marginBottom: 8,
+    }, input: {
+        borderWidth: 1,
+        borderColor: GlobalStyles.colors.primary200,
+        padding: 12,
+        fontSize: 18,
+        marginBottom: 16,
+        borderRadius: 6,
     },
 });
