@@ -21,7 +21,7 @@ function DashBoard() {
     const expensesContext = useContext(ExpensesContext);
     const categoryContext = useContext(CategoryContext);
     const budgetContext = useContext(BudgetContext);
-    const investmentContext = useContext(SummaryContext);
+    const summaryContext = useContext(SummaryContext);
 
     useEffect(() => {
         const month = getMonth(selectedMonth);
@@ -31,7 +31,7 @@ function DashBoard() {
             setIsFetching(true);
             const hasPlans = (context) => context.plans && context.plans.length > 0;
 
-            if (hasPlans(expensesContext) && hasPlans(categoryContext) && hasPlans(budgetContext) && hasPlans(investmentContext)) {
+            if (hasPlans(expensesContext) && hasPlans(categoryContext) && hasPlans(budgetContext) && hasPlans(summaryContext)) {
                 return;
             }
 
@@ -40,7 +40,7 @@ function DashBoard() {
 
                 expensesContext.setExpenses(expensesResponse);
                 categoryContext.setCategory(categoryResponse);
-                investmentContext.setSummary(summaryResponse)
+                summaryContext.setSummary(summaryResponse)
 
                 const calculateSpentVsBudget = (budget, spent) => {
                     return budget.map((budgetItem) => {
@@ -88,7 +88,7 @@ function DashBoard() {
         <BankBalance/>
         <CardSection selectedMonth={selectedMonth}/>
         <ExpensePerMonthChart selectedMonth={selectedMonth}/>
-        <IncomeVsExpenseChart/>
+        {/*<IncomeVsExpenseChart/>*/}
         <PaymentModePerMonth selectedMonth={selectedMonth} selectedYear={selectedYear}/>
     </ScrollView>);
 }

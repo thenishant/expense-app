@@ -1,11 +1,14 @@
+// === Data Definitions ===
 export const typesData = ['Expense', 'Investment', 'Income'];
 export const paymentModeData = ["💳 Credit Card", "🏛 Bank Account", "💵 Cash"];
 export const incomeCategoryType = ['💼 Interest', '📈 ROI', '💼 Salary', '💵 Reimbursement', '💳 Credit Exchange'];
-export const investmentCategoryType = ['📈 Stocks', '💹 Mutual Funds'];
+export const investmentCategoryType = {
+    '📈 Stocks': ['🇮🇳 Indian', '🇺🇸 USA'], '💹 Mutual Funds': ['🟡 Coin', '🌱 Groww']
+};
 
-export const categories = {
+export const categoriesType = {
     '🏦 Loan': ['📑 Personal', '🚗 Car', '🏠 Home', '🎓 Education', '📊 Business', '🔄 Debt Repayment'],
-    '🍺 Alcohol': ['🍺 Beer', '🍷 Wine', '🍾 Liquor', '🍹 Cocktails',],
+    '🍺 Alcohol': ['🍺 Beer', '🍷 Wine', '🍾 Liquor', '🍹 Cocktails'],
     '🛍 Shopping': ['👚 Clothing', '💻 Electronics', '🧸 Toys', '💄 Beauty Products', '⚽ Sporting Goods'],
     '🥗 Grocery': ['🥒 Vegetables', '🍉 Fruits', '🥡 Dairy', '📱 Online Grocery', '🍞 Bakery'],
     '🍽 Eating': ['🍽️ Restaurant', '📱 Online', '🍹 Beverages', '🍽 Takeaway'],
@@ -21,17 +24,12 @@ export const categories = {
     '👶 Family': ['👶 Baby', '👩 Wife']
 };
 
-export const getMainCategories = () => {
-    return Object.keys(categories);
+export const getMainCategories = (categoryObject) => {
+    if (!categoryObject || typeof categoryObject !== 'object') return [];
+    return Object.keys(categoryObject);
 };
 
-export const getSubCategories = (mainCategory) => {
-    if (!mainCategory) {
-        return [];
-    }
-    if (!categories[mainCategory]) {
-        return [];
-    }
-    const category = categories[mainCategory];
-    return category || null;
+export const getSubCategories = (categoryObject, mainCategory) => {
+    if (!categoryObject || !mainCategory) return [];
+    return categoryObject[mainCategory] || [];
 };

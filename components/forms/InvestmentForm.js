@@ -6,12 +6,19 @@ import {GlobalStyles} from "../../constansts/styles";
 import {getMonth, getYear} from "../../util/Date";
 import CustomDatePicker from "../UI/DatePickerNative";
 
-function InvestmentForm({onCancel, onSubmit, submitButtonLabel}) {
+function InvestmentForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
+    const initialDate = defaultValues?.date ? new Date(defaultValues.date) : new Date();
+
     const [inputs, setInputs] = useState({
-        investmentPercent: {value: '', isValid: true},
-        date: {value: new Date(), isValid: true},
-        month: {value: new Date().toLocaleString('default', {month: 'short'}), isValid: true},
-        year: {value: new Date().getFullYear().toString(), isValid: true}
+        percent: {
+            value: defaultValues?.percent?.toString() || '', isValid: true
+        }, date: {
+            value: initialDate, isValid: true
+        }, month: {
+            value: getMonth(initialDate), isValid: true
+        }, year: {
+            value: getYear(initialDate), isValid: true
+        }
     });
 
     function changeHandler(field, value) {
@@ -36,34 +43,34 @@ function InvestmentForm({onCancel, onSubmit, submitButtonLabel}) {
         Keyboard.dismiss();
 
         const data = {
-            investmentPercent: +inputs.investmentPercent.value, month: inputs.month.value, year: +inputs.year.value,
+            percent: +inputs.percent.value, month: inputs.month.value, year: inputs.year.value,
         };
 
-        const percentIsValid = !isNaN(data.investmentPercent) && data.investmentPercent >= 0 && data.investmentPercent <= 100;
+        const percentIsValid = !isNaN(data.percent) && data.percent >= 0 && data.percent <= 100;
 
         if (!percentIsValid) {
             setInputs((current) => ({
-                ...current, investmentPercent: {...current.investmentPercent, isValid: false}
+                ...current, percent: {...current.percent, isValid: false}
             }));
             return;
         }
-
         onSubmit(data);
     }
 
-    const formIsInvalid = !inputs.investmentPercent.isValid;
+
+    const formIsInvalid = !inputs.percent.isValid;
 
     return (<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.form}>
             <View style={styles.inputsRow}>
                 <Input style={styles.rowInput}
                        label="Investment %"
-                       inValid={!inputs.investmentPercent.isValid}
+                       inValid={!inputs.percent.isValid}
                        textInputConfig={{
                            keyboardType: 'decimal-pad',
                            placeholder: "e.g. 20",
-                           value: inputs.investmentPercent.value,
-                           onChangeText: value => changeHandler('investmentPercent', value)
+                           value: inputs.percent.value,
+                           onChangeText: value => changeHandler('percent', value)
                        }}
                 />
                 <CustomDatePicker

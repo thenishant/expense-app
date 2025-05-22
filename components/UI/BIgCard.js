@@ -82,7 +82,7 @@ export default BigCard;
 const styles = StyleSheet.create({
     container: {
         backgroundColor: "#fff",
-        margin: 5,
+        margin: 10,
         borderRadius: 10,
         alignItems: "center",
         justifyContent: "space-between",

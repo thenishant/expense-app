@@ -1,6 +1,12 @@
 import React, {useState} from 'react';
 import {
-    Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TouchableWithoutFeedback, View
+    Keyboard,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    TouchableWithoutFeedback,
+    View
 } from 'react-native';
 import Button from "../UI/Button";
 import CustomDatePicker from "../UI/DatePickerNative";
@@ -9,9 +15,16 @@ import {convertToTable} from "../../util/Table";
 import Input from "../UI/Input";
 import ModalComponent from "../UI/ModalComponent";
 import {
-    getMainCategories, getSubCategories, incomeCategoryType, investmentCategoryType, paymentModeData, typesData
+    categoriesType,
+    getMainCategories,
+    getSubCategories,
+    incomeCategoryType,
+    investmentCategoryType,
+    paymentModeData,
+    typesData
 } from "../../data/Data";
 import {removeEmojisOnForm} from "../../util/Emoji";
+import {Type} from "../../util/category";
 
 function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     const [modalData, setModalData] = useState([]);
@@ -30,8 +43,17 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
         paymentMode: {value: defaultValues?.paymentMode || '', isValid: true}
     });
 
-    const categoryMap = {
-        Expense: getMainCategories(), Income: incomeCategoryType, Investment: investmentCategoryType
+    const getCategoriesForType = (type) => {
+        switch (type) {
+            case Type.EXPENSE:
+                return getMainCategories(categoriesType);
+            case Type.INVESTMENT:
+                return getMainCategories(investmentCategoryType);
+            case Type.INCOME:
+                return incomeCategoryType;
+            default:
+                return [];
+        }
     };
 
     function changeHandler(inputIdentifier, enteredValue) {
@@ -77,8 +99,8 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
         onSubmit(dataWithoutEmojis);
     }
 
-    const categories = convertToTable(categoryMap[inputs.type.value] || []);
-    const subcategories = convertToTable(getSubCategories(selectedMainCategory));
+    const categories = convertToTable(getCategoriesForType(inputs.type.value));
+    const subcategories = convertToTable(getSubCategories(inputs.type.value === Type.EXPENSE ? categoriesType : inputs.type.value === Type.INVESTMENT ? investmentCategoryType : null, selectedMainCategory));
 
     const openModal = (inputIdentifier, data) => {
         setSelectedInput(inputIdentifier);
@@ -93,9 +115,17 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
             category: () => {
                 changeHandler('category', selectedValue);
                 setSelectedMainCategory(selectedValue);
-                const subcategories = getSubCategories(selectedValue);
-                setSubcategoryData(convertToTable(subcategories));
-                setSubcategoryModalVisible(subcategories?.length > 0);
+                // Set subcategories data for the modal
+                let subcats = [];
+                if (inputs.type.value === Type.EXPENSE) {
+                    subcats = getSubCategories(categoriesType, selectedValue);
+                } else if (inputs.type.value === Type.INVESTMENT) {
+                    subcats = getSubCategories(investmentCategoryType, selectedValue);
+                } else {
+                    subcats = [];
+                }
+                setSubcategoryData(convertToTable(subcats));
+                setSubcategoryModalVisible(subcats.length > 0);
             }, subCategory: () => {
                 changeHandler('subCategory', selectedValue);
                 setSubcategoryModalVisible(false);
@@ -108,9 +138,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
         setModalVisible(false);
     };
 
-    return (<KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
+    return (<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
                 <View style={styles.form}>
@@ -134,7 +162,6 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                         />
                     </View>
                     <View style={styles.inputsRow}>
-
                         {['type', 'paymentMode'].map((field) => (<Input
                             style={styles.rowInput}
                             key={field}
@@ -148,16 +175,21 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                         />))}
                     </View>
                     <View style={styles.inputsRow}>
-
                         {['category', 'subCategory'].map((field) => (<Input
                             style={styles.rowInput}
                             key={field}
                             label={`Select ${field}`}
                             inValid={!inputs[field].isValid}
                             textInputConfig={{
-                                editable: false,
-                                value: inputs[field].value,
-                                onTouchStart: () => openModal(field, field === 'category' ? categories : field === 'subCategory'),
+                                editable: false, value: inputs[field].value, onTouchStart: () => {
+                                    if (field === 'category') {
+                                        openModal(field, categories);
+                                    } else if (field === 'subCategory') {
+                                        if (subcategories.length > 0) {
+                                            setSubcategoryModalVisible(true);
+                                        }
+                                    }
+                                },
                             }}
                         />))}
                     </View>
@@ -178,7 +210,10 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                         visible={subcategoryModalVisible}
                         data={subcategoryData}
                         onClose={() => setSubcategoryModalVisible(false)}
-                        onItemClick={(selectedSubItem) => changeHandler('subCategory', selectedSubItem)}
+                        onItemClick={(selectedSubItem) => {
+                            changeHandler('subCategory', selectedSubItem);
+                            setSubcategoryModalVisible(false);
+                        }}
                         modalTitle={`Select Sub-category of ${selectedMainCategory}`}
                     />
                 </View>
