@@ -14,15 +14,27 @@ export const GlobalStyles = {
         error50: "#ff8fa5",
         black700: "#283618",
         red100: '#ec8385',
-        green100: '#78c6a3',
-        yellow100: '#ffe169',
+
+        green100: '#2ba84a',
+        green200: "#2dc653",
+        green300: '#40916c',
+        green500: '#0e9594',
+
         black50: '#000000',
-        orange100: "#774936",
+
+        white500: "#ffffff",
+
+        red200: "#e63946",
+
+        yellow200: "#ffd53e",
+
         orange50: "#e6b8a2",
-        white500: "#ffffff"
-    },
-    characters: {
-        rupee: '₹',
-        percent: '%'
+        orange100: "#774936",
+        orange200: "#e76f51",
+        orange300: "#ff8800"
+
+
+    }, characters: {
+        rupee: '₹', percent: '%'
     }
 }
