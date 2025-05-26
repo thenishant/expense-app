@@ -54,7 +54,7 @@ function PieChartWithLabel({chartData, chartTitleName, chartTitleCount}) {
                 <View style={{
                     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'
                 }}>
-                    <Text>{item.percent}</Text>
+                    <Text>{item.percent}{GlobalStyles.characters.percent}</Text>
                 </View>
             </TouchableOpacity>)
         }
