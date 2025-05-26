@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         backgroundColor: GlobalStyles.colors.red200,
         borderRadius: 8,
     }, closeText: {
-        color: GlobalStyles.colors.white500, fontWeight: '600',
+        color: 'white', fontWeight: '600',
     },
 });
 

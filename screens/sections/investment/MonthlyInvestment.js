@@ -57,10 +57,6 @@ const MonthlyInvestment = ({data}) => {
                         </TouchableOpacity>);
                     })}
                 </View>
-                <View style={styles.textContainer}>
-                    <Text style={styles.text}>{`Amount Investment:`}</Text>
-                    <Text style={styles.amountText}>{GlobalStyles.characters.rupee}{data.investment}</Text>
-                </View>
             </View>
         </ScrollView>
 
@@ -83,6 +79,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         backgroundColor: GlobalStyles.colors.white500,
         borderRadius: 12,
+        padding: 10,
         shadowColor: GlobalStyles.colors.black50,
         shadowOpacity: 0.1,
         shadowRadius: 4,
@@ -97,26 +94,12 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         color: GlobalStyles.colors.black700,
         alignSelf: 'flex-start',
-        paddingTop: 10,
-        paddingLeft: 15
     }, monthBoxesWrapper: {
-        flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start', paddingHorizontal: 10
+        flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center',
     }, monthBox: {
         width: boxWidth, height: 35, justifyContent: 'center', alignItems: 'center', margin: 8, borderRadius: 8,
     }, monthText: {
         fontSize: 16, fontWeight: '600', color: GlobalStyles.colors.white500,
-    }, textContainer: {
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        marginBottom: 10,
-        alignSelf: 'flex-start',
-        paddingTop: 5,
-        fontWeight: 'bold',
-        paddingLeft: 20
-    }, text: {
-        fontSize: 16, color: "#444",
-    }, amountText: {
-        fontSize: 16, fontWeight: 'bold', color: "#444",
     }
 });
 
