@@ -26,6 +26,7 @@ export const GlobalStyles = {
 
         red200: "#e63946",
 
+        yellow100: "#fedd00",
         yellow200: "#ffd53e",
 
         orange50: "#e6b8a2",
