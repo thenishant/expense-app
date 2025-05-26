@@ -88,7 +88,7 @@ function DashBoard() {
         <BankBalance/>
         <CardSection selectedMonth={selectedMonth}/>
         <ExpensePerMonthChart selectedMonth={selectedMonth}/>
-        {/*<IncomeVsExpenseChart/>*/}
+        <IncomeVsExpenseChart/>
         <PaymentModePerMonth selectedMonth={selectedMonth} selectedYear={selectedYear}/>
     </ScrollView>);
 }
