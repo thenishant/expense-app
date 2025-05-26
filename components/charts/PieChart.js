@@ -43,10 +43,18 @@ function PieChart({chartData, centerData}) {
                     }}>{item.x}</Text>
                 </View>
                 <View style={{
-                    justifyContent: 'center',
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'flex-end',
                     color: (selectedCategory && selectedCategory.x === item.x) ? 'white' : '#194868'
                 }}>
                     <Text>{GlobalStyles.characters.rupee}{item.y}</Text>
+                </View>
+                <View style={{
+                    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'
+                }}>
+                    <Text>{item.percent}{GlobalStyles.characters.percent}</Text>
                 </View>
             </TouchableOpacity>)
         }

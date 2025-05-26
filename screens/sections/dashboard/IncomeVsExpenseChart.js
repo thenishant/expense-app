@@ -8,7 +8,6 @@ const IncomeVsExpenseChart = () => {
     const summaryContext = useContext(SummaryContext);
     const rawData = summaryContext?.summary;
 
-    // Mapping data to get the expense, income, and month for each month
     const incomeExpenseMapping = rawData?.months ? rawData.months
         .map((item) => ({
             expense: item.expense, income: item.income, month: item.month,
@@ -17,7 +16,7 @@ const IncomeVsExpenseChart = () => {
 
     return (<View style={styles.container}>
         <VictoryChart>
-            <VictoryGroup offset={20} colorScale={["#ef233c", "#70e000"]}>
+            <VictoryGroup offset={18} colorScale={["#ef233c", "#70e000"]}>
                 <VictoryBar
                     data={incomeExpenseMapping.map((item) => ({
                         x: item.month, y: Number(formatThousands(item.expense)),
