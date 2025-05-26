@@ -28,7 +28,7 @@ function PaymentModePerMonth({selectedMonth, selectedYear}) {
     const categoryColors = ["#f15bb5", "#fee440", "#00bbf9", "#00f5d4", "#f79256", "#90fe00", "#cc17ff", "#ff0000", "#adb5bd"];
 
     const transformedData = paymentMode.flatMap((item, index) => Object.keys(item).map((key, subIndex) => ({
-        color: categoryColors[(index + subIndex) % categoryColors.length], x: key, y: item[key]
+        color: categoryColors[(index + subIndex) % categoryColors.length], x: key, y: item[key], percent: item[key] ? ((item[key] / Object.values(item).reduce((a, b) => a + b, 0)) * 100).toFixed(1) : 0
     })));
 
     if (isFetching) return <LoadingOverlay/>
