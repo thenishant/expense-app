@@ -1,6 +1,6 @@
 // === Data Definitions ===
 export const typesData = ['Expense', 'Investment', 'Income'];
-export const paymentModeData = ["💳 Credit Card", "🏛 Bank Account", "💵 Cash"];
+export const paymentModeData = ["💳 Credit Card", "🪪 UPI Credit Card", "🏛 Bank Account", "💵 Cash"];
 export const incomeCategoryType = ['💼 Interest', '📈 ROI', '💼 Salary', '💵 Reimbursement', '💳 Credit Exchange'];
 export const investmentCategoryType = {
     '📈 Stocks': ['🇮🇳 Indian', '🇺🇸 USA'], '💹 Mutual Funds': ['🟡 Coin', '🌱 Groww']
@@ -12,7 +12,7 @@ export const categoriesType = {
     '🛍 Shopping': ['👚 Clothing', '💻 Electronics', '🧸 Toys', '💄 Beauty Products', '⚽ Sporting Goods'],
     '🥗 Grocery': ['🥒 Vegetables', '🍉 Fruits', '🥡 Dairy', '📱 Online Grocery', '🍞 Bakery'],
     '🍽 Eating': ['🍽️ Restaurant', '📱 Online', '🍹 Beverages', '🍽 Takeaway'],
-    '🏕 Leisure': ['🌍 Travel', '🎭 Entertainment', '🏞️ Activities', '🎮 Gaming', '🎬 Movies', '🍻 Restaurant'],
+    '🏕 Leisure': ['🌍 Travel', '🎭 Entertainment', '🏡 Stay', '🎮 Gaming', '🎬 Movies', '🍻 Restaurant'],
     '🏠 Home': ['🏡 Utilities', '🛋️ Maid', '🔧 Items', '🏠 Home Improvement'],
     '🚗 Travel': ['⛽ Petrol', '🚖 Cab', '🚗 Tolls', '🗒 Tickets'],
     '🎁 Gift': ['🎉 Birthday', '💑 Anniversary', '🎄 Holiday', '👰 Wedding', '🎁 Gift Cards'],
