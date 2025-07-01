@@ -1,6 +1,6 @@
 import React from 'react';
-import {Modal, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
-import {GlobalStyles} from "../../constansts/styles";
+import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {GlobalStyles} from '../../constansts/styles';
 
 const InvestmentModal = ({visible, onClose, title, children}) => {
     return (<Modal
@@ -8,10 +8,10 @@ const InvestmentModal = ({visible, onClose, title, children}) => {
         animationType="fade"
         transparent
         presentationStyle="overFullScreen"
-        statusBarTranslucent={true}
+        statusBarTranslucent
         onRequestClose={onClose}
     >
-        <View style={styles.modalOverlay} pointerEvents="box-none">
+        <View style={styles.modalOverlay}>
             <TouchableOpacity
                 style={styles.modalOverlayTouchable}
                 activeOpacity={1}
@@ -24,7 +24,8 @@ const InvestmentModal = ({visible, onClose, title, children}) => {
                         <Text style={styles.closeText}>Close</Text>
                     </TouchableOpacity>
                 </View>
-                {children}
+
+                <View style={styles.modalBody}>{children}</View>
             </View>
         </View>
     </Modal>);
@@ -32,27 +33,25 @@ const InvestmentModal = ({visible, onClose, title, children}) => {
 
 const styles = StyleSheet.create({
     modalOverlay: {
-        flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0)',
+        flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0, 0, 0, 0.6)',
     }, modalOverlayTouchable: {
-        flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        flex: 1,
     }, modalContent: {
-        height: '33%',
         backgroundColor: GlobalStyles.colors.white500,
         borderTopLeftRadius: 16,
         borderTopRightRadius: 16,
-        padding: 15,
+        padding: 16,
+        maxHeight: '80%',
     }, modalHeader: {
         flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12,
     }, modalTitle: {
-        padding: 10, fontSize: 20, fontWeight: 'bold',
+        fontSize: 18, fontWeight: 'bold',
     }, closeButton: {
-        alignSelf: 'flex-end',
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        backgroundColor: GlobalStyles.colors.red200,
-        borderRadius: 8,
+        backgroundColor: GlobalStyles.colors.red200, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8,
     }, closeText: {
         color: GlobalStyles.colors.white500, fontWeight: '600',
+    }, modalBody: {
+        flexGrow: 1,
     },
 });
 
