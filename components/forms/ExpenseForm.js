@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
     Keyboard,
     KeyboardAvoidingView,
@@ -26,195 +26,121 @@ import {
 import {removeEmojisOnForm} from "../../util/Emoji";
 import {Type} from "../../util/category";
 
+const FIELDS = {
+    amount: {label: 'Enter amount', type: 'input', required: true},
+    date: {label: 'Date', type: 'date'},
+    type: {
+        label: 'Select type',
+        type: 'modal',
+        data: typesData,
+        required: true,
+        clears: ['category', 'subCategory', 'paymentMode']
+    },
+    paymentMode: {label: 'Select paymentMode', type: 'modal', data: paymentModeData},
+    category: {label: 'Select category', type: 'modal', required: true, clears: ['subCategory']},
+    subCategory: {label: 'Select subCategory', type: 'modal'}
+};
+
+const ROWS = [['amount', 'date'], ['type', 'paymentMode'], ['category', 'subCategory']];
+
 function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
-    const [modalData, setModalData] = useState([]);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [selectedInput, setSelectedInput] = useState('');
-    const [subcategoryData, setSubcategoryData] = useState([]);
-    const [subcategoryModalVisible, setSubcategoryModalVisible] = useState(false);
-    const [selectedMainCategory, setSelectedMainCategory] = useState('');
-
-    const [inputs, setInputs] = useState({
-        amount: {value: defaultValues?.amount?.toString() || '', isValid: true},
-        date: {value: defaultValues ? new Date(defaultValues.date) : getCurrentDate(), isValid: true},
-        type: {value: defaultValues?.type || '', isValid: true},
-        category: {value: defaultValues?.category || '', isValid: true},
-        subCategory: {value: defaultValues?.subCategory || '', isValid: true},
-        paymentMode: {value: defaultValues?.paymentMode || '', isValid: true}
-    });
-
-    const getCategoriesForType = (type) => {
-        switch (type) {
-            case Type.EXPENSE:
-                return getMainCategories(categoriesType);
-            case Type.INVESTMENT:
-                return getMainCategories(investmentCategoryType);
-            case Type.INCOME:
-                return incomeCategoryType;
-            default:
-                return [];
+    const [modal, setModal] = useState({visible: false, data: [], field: '', title: ''});
+    const [form, setForm] = useState(() => Object.keys(FIELDS).reduce((acc, key) => ({
+        ...acc, [key]: {
+            value: key === 'date' ? (defaultValues?.date ? new Date(defaultValues.date) : getCurrentDate()) : (defaultValues?.[key]?.toString() || ''),
+            isValid: true
         }
+    }), {}));
+
+    const getFieldData = (field) => {
+        const dataMap = {
+            type: () => typesData, paymentMode: () => paymentModeData, category: () => ({
+                [Type.EXPENSE]: getMainCategories(categoriesType),
+                [Type.INVESTMENT]: getMainCategories(investmentCategoryType),
+                [Type.INCOME]: incomeCategoryType
+            }[form.type.value] || []), subCategory: () => ({
+                [Type.EXPENSE]: getSubCategories(categoriesType, form.category.value),
+                [Type.INVESTMENT]: getSubCategories(investmentCategoryType, form.category.value)
+            }[form.type.value] || [])
+        };
+        return convertToTable(dataMap[field]?.() || []);
     };
 
-    function changeHandler(inputIdentifier, enteredValue) {
-        setInputs((currentInput) => ({
-            ...currentInput, [inputIdentifier]: {
-                value: enteredValue, isValid: true
-            }, ...(inputIdentifier === 'type' ? {
-                paymentMode: {value: '', isValid: true},
-                category: {value: '', isValid: true},
-                subCategory: {value: '', isValid: true}
-            } : {})
-        }));
+    const updateField = useCallback((field, value) => {
+        setForm(prev => {
+            const updates = {[field]: {value, isValid: true}};
+            FIELDS[field].clears?.forEach(f => updates[f] = {value: '', isValid: true});
+            return {...prev, ...updates};
+        });
+    }, []);
 
-        setModalVisible(false);
-        setSubcategoryModalVisible(false);
-    }
+    const openModal = (field) => {
+        const data = getFieldData(field);
+        setModal({visible: true, data, field, title: FIELDS[field].label});
+    };
 
-    function submitHandler() {
+    const handleSelect = (value) => {
+        updateField(modal.field, value.trim());
+        setModal(prev => ({...prev, visible: false}));
+
+        // Auto-open subcategory if category selected and has subcategories
+        modal.field === 'category' && getFieldData('subCategory').length > 0 && setTimeout(() => openModal('subCategory'), 100);
+    };
+
+    const handleSubmit = () => {
         Keyboard.dismiss();
-
-        const expenseData = {
-            amount: +inputs.amount.value,
-            date: inputs.date.value,
-            type: inputs.type.value,
-            category: inputs.category.value,
-            subCategory: inputs.subCategory.value,
-            paymentMode: inputs.paymentMode.value
-        };
-
-        const isValid = Object.entries({
-            amount: !isNaN(expenseData.amount) && expenseData.amount > 0,
-            category: expenseData.category.trim().length > 0,
-            type: inputs.type.value.trim().length > 0
-        }).reduce((acc, [key, valid]) => ({
-            ...acc, [key]: {...inputs[key], isValid: valid}
+        const data = Object.keys(FIELDS).reduce((acc, key) => ({
+            ...acc, [key]: key === 'amount' ? +form[key].value : key === 'date' ? form[key].value : form[key].value
         }), {});
 
-        if (!Object.values(isValid).every(field => field.isValid)) {
-            setInputs((currentInput) => ({...currentInput, ...isValid}));
-            return;
-        }
-        const dataWithoutEmojis = removeEmojisOnForm(expenseData);
-        onSubmit(dataWithoutEmojis);
-    }
+        const validation = Object.keys(FIELDS).reduce((acc, key) => {
+            const isValid = !FIELDS[key].required || (key === 'amount' ? !isNaN(data[key]) && data[key] > 0 : data[key].trim());
+            return {...acc, [key]: {...form[key], isValid}};
+        }, {});
 
-    const categories = convertToTable(getCategoriesForType(inputs.type.value));
-    const subcategories = convertToTable(getSubCategories(inputs.type.value === Type.EXPENSE ? categoriesType : inputs.type.value === Type.INVESTMENT ? investmentCategoryType : null, selectedMainCategory));
-
-    const openModal = (inputIdentifier, data) => {
-        setSelectedInput(inputIdentifier);
-        setModalData(data);
-        setModalVisible(true);
+        const hasErrors = Object.values(validation).some(f => !f.isValid);
+        hasErrors ? setForm(validation) : onSubmit(removeEmojisOnForm(data));
     };
 
-    const handleItemClick = (selectedItem) => {
-        const selectedValue = selectedItem.trim();
+    const renderField = (key) => {
+        const config = FIELDS[key];
+        const field = form[key];
+        const props = {key, style: styles.rowInput, label: config.label, inValid: !field.isValid};
 
-        const actions = {
-            category: () => {
-                changeHandler('category', selectedValue);
-                setSelectedMainCategory(selectedValue);
-                // Set subcategories data for the modal
-                let subcats = [];
-                if (inputs.type.value === Type.EXPENSE) {
-                    subcats = getSubCategories(categoriesType, selectedValue);
-                } else if (inputs.type.value === Type.INVESTMENT) {
-                    subcats = getSubCategories(investmentCategoryType, selectedValue);
-                } else {
-                    subcats = [];
-                }
-                setSubcategoryData(convertToTable(subcats));
-                setSubcategoryModalVisible(subcats.length > 0);
-            }, subCategory: () => {
-                changeHandler('subCategory', selectedValue);
-                setSubcategoryModalVisible(false);
-            }, default: () => {
-                changeHandler(selectedInput, selectedValue);
-            }
+        const components = {
+            input: () => <Input {...props} textInputConfig={{
+                keyboardType: key === 'amount' ? 'decimal-pad' : 'default',
+                onChangeText: (v) => updateField(key, v),
+                value: field.value,
+                onBlur: Keyboard.dismiss
+            }}/>,
+            date: () => <CustomDatePicker {...props} onChange={(v) => updateField(key, v)}
+                                          config={{value: field.value}}/>,
+            modal: () => <Input {...props} textInputConfig={{
+                editable: false, value: field.value, onTouchStart: () => openModal(key)
+            }}/>
         };
 
-        (actions[selectedInput] || actions.default)();
-        setModalVisible(false);
+        return components[config.type]();
     };
 
     return (<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
                 <View style={styles.form}>
-                    <View style={styles.inputsRow}>
-                        <Input
-                            style={styles.rowInput}
-                            label="Enter amount"
-                            inValid={!inputs.amount.isValid}
-                            textInputConfig={{
-                                keyboardType: 'decimal-pad',
-                                onChangeText: (value) => changeHandler('amount', value),
-                                value: inputs.amount.value,
-                                onBlur: () => Keyboard.dismiss(),
-                            }}
-                        />
-                        <CustomDatePicker
-                            style={styles.rowInput}
-                            label="Date"
-                            onChange={(value) => changeHandler('date', value)}
-                            config={{value: inputs.date.value}}
-                        />
-                    </View>
-                    <View style={styles.inputsRow}>
-                        {['type', 'paymentMode'].map((field) => (<Input
-                            style={styles.rowInput}
-                            key={field}
-                            label={`Select ${field}`}
-                            inValid={!inputs[field].isValid}
-                            textInputConfig={{
-                                editable: false,
-                                value: inputs[field].value,
-                                onTouchStart: () => openModal(field, field === 'paymentMode' ? convertToTable(paymentModeData) : convertToTable(typesData)),
-                            }}
-                        />))}
-                    </View>
-                    <View style={styles.inputsRow}>
-                        {['category', 'subCategory'].map((field) => (<Input
-                            style={styles.rowInput}
-                            key={field}
-                            label={`Select ${field}`}
-                            inValid={!inputs[field].isValid}
-                            textInputConfig={{
-                                editable: false, value: inputs[field].value, onTouchStart: () => {
-                                    if (field === 'category') {
-                                        openModal(field, categories);
-                                    } else if (field === 'subCategory') {
-                                        if (subcategories.length > 0) {
-                                            setSubcategoryModalVisible(true);
-                                        }
-                                    }
-                                },
-                            }}
-                        />))}
-                    </View>
-
+                    {ROWS.map((row, i) => (<View key={i} style={styles.inputsRow}>
+                        {row.map(renderField)}
+                    </View>))}
                     <View style={styles.buttons}>
                         <Button mode="flat" onPress={onCancel} style={styles.button}>Cancel</Button>
-                        <Button onPress={submitHandler} style={styles.button}>{submitButtonLabel}</Button>
+                        <Button onPress={handleSubmit} style={styles.button}>{submitButtonLabel}</Button>
                     </View>
-
                     <ModalComponent
-                        visible={modalVisible}
-                        data={modalData}
-                        onClose={() => setModalVisible(false)}
-                        onItemClick={handleItemClick}
-                        modalTitle="Select option"
-                    />
-                    <ModalComponent
-                        visible={subcategoryModalVisible}
-                        data={subcategoryData}
-                        onClose={() => setSubcategoryModalVisible(false)}
-                        onItemClick={(selectedSubItem) => {
-                            changeHandler('subCategory', selectedSubItem);
-                            setSubcategoryModalVisible(false);
-                        }}
-                        modalTitle={`Select Sub-category of ${selectedMainCategory}`}
+                        visible={modal.visible}
+                        data={modal.data}
+                        onClose={() => setModal(prev => ({...prev, visible: false}))}
+                        onItemClick={handleSelect}
+                        modalTitle={modal.title}
                     />
                 </View>
             </ScrollView>
