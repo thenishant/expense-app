@@ -1,27 +1,27 @@
-import {NavigationContainer} from "@react-navigation/native";
+import React from "react";
 import {StatusBar} from "expo-status-bar";
+import {NavigationContainer} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-import ManageExpense from "./screens/ManageExpense";
-import AllExpenses from "./screens/AllExpenses";
-import {GlobalStyles} from "./constansts/styles";
 import {Ionicons} from "@expo/vector-icons";
+import {GlobalStyles} from "./constansts/styles";
 import IconButton from "./components/UI/IconButton";
 import DashBoard from "./screens/DashBoard";
-import Budget from "./screens/Budget";
-import CategoryContextProvider from "./store/category-context";
-import {ExpensesContextProvider} from "./store/expenses-context";
-import ManageBudget from "./screens/ManageBudget";
-import {BudgetContextProvider} from "./store/budget-context";
-import ManageInvestment from "./screens/ManageInvestment";
 import Investment from "./screens/Investment";
+import Budget from "./screens/Budget";
+import AllExpenses from "./screens/AllExpenses";
+import ManageExpense from "./screens/ManageExpense";
+import ManageBudget from "./screens/ManageBudget";
+import ManageInvestment from "./screens/ManageInvestment";
+import {ExpensesContextProvider} from "./store/expenses-context";
+import CategoryContextProvider from "./store/category-context";
+import {BudgetContextProvider} from "./store/budget-context";
 import {SummaryContextProvider} from "./store/summary-context";
 
 const RootStack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
 const DashboardStack = createNativeStackNavigator();
 
-// 👇 Nested stack for Dashboard and Investments
 function DashboardStackNavigator() {
     return (<DashboardStack.Navigator
         screenOptions={{
@@ -55,7 +55,6 @@ function DashboardStackNavigator() {
     </DashboardStack.Navigator>);
 }
 
-// 👇 Bottom tab navigator
 function ExpensesOverview() {
     return (<BottomTabs.Navigator
         screenOptions={{
@@ -108,7 +107,6 @@ function ExpensesOverview() {
     </BottomTabs.Navigator>);
 }
 
-// 👇 Root App
 export default function App() {
     return (<>
         <StatusBar style="auto"/>
@@ -119,8 +117,9 @@ export default function App() {
                         <NavigationContainer>
                             <RootStack.Navigator
                                 screenOptions={{
-                                    headerStyle: {backgroundColor: GlobalStyles.colors.primary500},
-                                    headerTintColor: "white",
+                                    headerStyle: {
+                                        backgroundColor: GlobalStyles.colors.primary500,
+                                    }, headerTintColor: "white",
                                 }}
                             >
                                 <RootStack.Screen

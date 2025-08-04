@@ -37,7 +37,7 @@ function PaymentModePerMonth({selectedMonth, selectedYear}) {
 
     return (<View style={styles.container}>
         {transformedData.length > 0 && (<View style={styles.chart}>
-            <PieChart chartData={transformedData}/>
+            <PieChart chartData={transformedData} showLabels={true}/>
         </View>)}
     </View>);
 }
