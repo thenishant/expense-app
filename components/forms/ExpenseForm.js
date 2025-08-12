@@ -34,22 +34,14 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     const [subcategoryData, setSubcategoryData] = useState([]);
     const [selectedMainCategory, setSelectedMainCategory] = useState('');
 
-    const [inputs, setInputs] = useState({
-        amount: defaultValues?.amount?.toString() || '',
-        date: defaultValues ? new Date(defaultValues.date) : getCurrentDate(),
-        type: defaultValues?.type || '',
-        category: defaultValues?.category || '',
-        subCategory: defaultValues?.subCategory || '',
-        paymentMode: defaultValues?.paymentMode || ''
-    });
+    const [amount, setAmount] = useState(defaultValues?.amount?.toString() || '');
+    const [date, setDate] = useState(defaultValues ? new Date(defaultValues.date) : getCurrentDate());
+    const [type, setType] = useState(defaultValues?.type || '');
+    const [category, setCategory] = useState(defaultValues?.category || '');
+    const [subCategory, setSubCategory] = useState(defaultValues?.subCategory || '');
+    const [paymentMode, setPaymentMode] = useState(defaultValues?.paymentMode || '');
 
-    const changeHandler = (key, value) => {
-        setInputs((prev) => ({
-            ...prev, [key]: value, ...(key === 'type' && {
-                paymentMode: '', category: '', subCategory: ''
-            })
-        }));
-    };
+    const getCategoryData = () => type === Type.EXPENSE ? categoriesType : type === Type.INVESTMENT ? investmentCategoryType : incomeCategoryType;
 
     const openModal = (key, data) => {
         setSelectedInput(key);
@@ -58,37 +50,35 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     };
 
     const handleItemClick = (item) => {
-        if (selectedInput === 'category') {
-            changeHandler('category', item);
+        if (selectedInput === 'type') {
+            setType(item);
+            setPaymentMode('');
+            setCategory('');
+            setSubCategory('');
+        } else if (selectedInput === 'category') {
+            setCategory(item);
             setSelectedMainCategory(item);
-            const subs = convertToTable(getSubCategories(inputs.type === Type.EXPENSE ? categoriesType : investmentCategoryType, item));
+            const subs = convertToTable(getSubCategories(getCategoryData(), item));
             setSubcategoryData(subs);
             setSubcategoryModalVisible(subs.length > 0);
         } else if (selectedInput === 'subCategory') {
-            changeHandler('subCategory', item);
-        } else {
-            changeHandler(selectedInput, item);
+            setSubCategory(item);
+        } else if (selectedInput === 'paymentMode') {
+            setPaymentMode(item);
         }
         setModalVisible(false);
     };
 
     const submitHandler = () => {
         const data = {
-            amount: +inputs.amount,
-            date: inputs.date,
-            type: inputs.type,
-            category: inputs.category,
-            subCategory: inputs.subCategory,
-            paymentMode: inputs.paymentMode
+            amount: +amount, date, type, category, subCategory, paymentMode
         };
 
-        if (isNaN(data.amount) || data.amount <= 0 || !data.type || !data.category) return;
+        if (isNaN(data.amount) || data.amount <= 0 || !type || !category) return;
         onSubmit(removeEmojisOnForm(data));
     };
 
-    const categories = convertToTable(getMainCategories(inputs.type === Type.EXPENSE ? categoriesType : inputs.type === Type.INVESTMENT ? investmentCategoryType : incomeCategoryType));
-
-    const subcategories = convertToTable(getSubCategories(inputs.type === Type.EXPENSE ? categoriesType : investmentCategoryType, selectedMainCategory));
+    const categories = convertToTable(getMainCategories(getCategoryData()));
 
     return (<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -98,16 +88,14 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                         <Input
                             label="Amount"
                             textInputConfig={{
-                                keyboardType: 'decimal-pad',
-                                value: inputs.amount,
-                                onChangeText: (v) => changeHandler('amount', v)
+                                keyboardType: 'decimal-pad', value: amount, onChangeText: setAmount
                             }}
                             style={styles.rowInput}
                         />
                         <CustomDatePicker
                             label="Date"
-                            onChange={(v) => changeHandler('date', v)}
-                            config={{value: inputs.date}}
+                            onChange={setDate}
+                            config={{value: date}}
                             style={styles.rowInput}
                         />
                     </View>
@@ -117,7 +105,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                             label="Type"
                             textInputConfig={{
                                 editable: false,
-                                value: inputs.type,
+                                value: type,
                                 onTouchStart: () => openModal('type', convertToTable(typesData))
                             }}
                             style={styles.rowInput}
@@ -126,7 +114,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                             label="Payment Mode"
                             textInputConfig={{
                                 editable: false,
-                                value: inputs.paymentMode,
+                                value: paymentMode,
                                 onTouchStart: () => openModal('paymentMode', convertToTable(paymentModeData))
                             }}
                             style={styles.rowInput}
@@ -137,18 +125,16 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                         <Input
                             label="Category"
                             textInputConfig={{
-                                editable: false,
-                                value: inputs.category,
-                                onTouchStart: () => openModal('category', categories)
+                                editable: false, value: category, onTouchStart: () => openModal('category', categories)
                             }}
                             style={styles.rowInput}
                         />
                         <Input
                             label="SubCategory"
                             textInputConfig={{
-                                editable: false,
-                                value: inputs.subCategory,
-                                onTouchStart: () => subcategories.length > 0 && setSubcategoryModalVisible(true)
+                                editable: false, value: subCategory, onTouchStart: () => {
+                                    if (subcategoryData.length > 0) setSubcategoryModalVisible(true);
+                                }
                             }}
                             style={styles.rowInput}
                         />
@@ -172,7 +158,7 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                         data={subcategoryData}
                         onClose={() => setSubcategoryModalVisible(false)}
                         onItemClick={(item) => {
-                            changeHandler('subCategory', item);
+                            setSubCategory(item);
                             setSubcategoryModalVisible(false);
                         }}
                         modalTitle={`Select Sub-category of ${selectedMainCategory}`}
@@ -188,7 +174,7 @@ export default ExpenseForm;
 const styles = StyleSheet.create({
     scrollContainer: {flexGrow: 1},
     form: {marginTop: 8},
-    inputsRow: {flexDirection: 'row', justifyContent: 'flex-start', marginBottom: 5},
+    inputsRow: {flexDirection: 'row', marginBottom: 5},
     rowInput: {flex: 1, marginBottom: 5},
     buttons: {flexDirection: 'row', justifyContent: 'center', alignItems: 'center'},
     button: {minWidth: 120, marginHorizontal: 8}
