@@ -1,7 +1,14 @@
-// === Data Definitions ===
 export const typesData = ['Expense', 'Investment', 'Income'];
 export const paymentModeData = ["💳 Credit Card", "🪪 UPI Credit Card", "🏛 Bank Account", "💵 Cash"];
-export const incomeCategoryType = ['💼 Interest', '📈 ROI', '💼 Salary', '💵 Reimbursement', '💳 Credit Exchange'];
+
+export const incomeCategoryType = {
+    '💼 Interest': ['🏦 Bank', '💰 P2P Lending', '💱 Bonds'],
+    '📈 ROI': ['📊 Stocks', '🏠 Real Estate', '💹 Mutual Funds'],
+    '💼 Salary': ['🏢 Company A', '🏭 Company B', '💻 Freelance'],
+    '💵 Reimbursement': ['🚗 Travel', '🍽 Food', '📦 Purchases'],
+    '💳 Credit Exchange': ['💳 Card A', '💳 Card B']
+};
+
 export const investmentCategoryType = {
     '📈 Stocks': ['🇮🇳 Indian', '🇺🇸 USA'], '💹 Mutual Funds': ['🟡 Coin', '🌱 Groww']
 };
@@ -24,6 +31,7 @@ export const categoriesType = {
     '👶 Family': ['👶 Baby', '👩 Wife']
 };
 
+// === Helpers ===
 export const getMainCategories = (categoryObject) => {
     if (!categoryObject || typeof categoryObject !== 'object') return [];
     return Object.keys(categoryObject);
