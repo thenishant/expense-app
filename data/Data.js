@@ -2,11 +2,12 @@ export const typesData = ['Expense', 'Investment', 'Income'];
 export const paymentModeData = ["💳 Credit Card", "🪪 UPI Credit Card", "🏛 Bank Account", "💵 Cash"];
 
 export const incomeCategoryType = {
-    '💼 Interest': ['🏦 Bank', '💰 P2P Lending', '💱 Bonds'],
+    '💼 Interest': ['🏦 Savings Account', '💰 P2P Lending', '💱 Bonds'],
+    '📈 Lending': ['📊 Friend'],
     '📈 ROI': ['📊 Stocks', '🏠 Real Estate', '💹 Mutual Funds'],
-    '💼 Salary': ['🏢 Company A', '🏭 Company B', '💻 Freelance'],
-    '💵 Reimbursement': ['🚗 Travel', '🍽 Food', '📦 Purchases'],
-    '💳 Credit Exchange': ['💳 Card A', '💳 Card B']
+    '💼 Salary': ['🏢 Goto', '🏭 TV', '💻 Freelance'],
+    '💵 Reimbursement': ['🚗 Travel', '🍽 Food', '📦 Internet'],
+    '💳 Credit Exchange': ['💳 Credit Card']
 };
 
 export const investmentCategoryType = {
