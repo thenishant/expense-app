@@ -1,7 +1,15 @@
-// === Data Definitions ===
 export const typesData = ['Expense', 'Investment', 'Income'];
-export const paymentModeData = ["💳 Credit Card", "🏛 Bank Account", "💵 Cash"];
-export const incomeCategoryType = ['💼 Interest', '📈 ROI', '💼 Salary', '💵 Reimbursement', '💳 Credit Exchange'];
+export const paymentModeData = ["💳 Credit Card", "🪪 UPI Credit Card", "🏛 Bank Account", "💵 Cash"];
+
+export const incomeCategoryType = {
+    '💼 Interest': ['🏦 Savings Account', '💰 P2P Lending', '💱 Bonds'],
+    '📈 Lending': ['📊 Friend'],
+    '📈 ROI': ['📊 Stocks', '🏠 Real Estate', '💹 Mutual Funds'],
+    '💼 Salary': ['🏢 Goto', '🏭 TV', '💻 Freelance'],
+    '💵 Reimbursement': ['🚗 Travel', '🍽 Food', '📦 Internet'],
+    '💳 Credit Exchange': ['💳 Credit Card']
+};
+
 export const investmentCategoryType = {
     '📈 Stocks': ['🇮🇳 Indian', '🇺🇸 USA'], '💹 Mutual Funds': ['🟡 Coin', '🌱 Groww']
 };
@@ -12,7 +20,7 @@ export const categoriesType = {
     '🛍 Shopping': ['👚 Clothing', '💻 Electronics', '🧸 Toys', '💄 Beauty Products', '⚽ Sporting Goods'],
     '🥗 Grocery': ['🥒 Vegetables', '🍉 Fruits', '🥡 Dairy', '📱 Online Grocery', '🍞 Bakery'],
     '🍽 Eating': ['🍽️ Restaurant', '📱 Online', '🍹 Beverages', '🍽 Takeaway'],
-    '🏕 Leisure': ['🌍 Travel', '🎭 Entertainment', '🏞️ Activities', '🎮 Gaming', '🎬 Movies', '🍻 Restaurant'],
+    '🏕 Leisure': ['🌍 Travel', '🎭 Entertainment', '🏡 Stay', '🎮 Gaming', '🎬 Movies', '🍻 Restaurant'],
     '🏠 Home': ['🏡 Utilities', '🛋️ Maid', '🔧 Items', '🏠 Home Improvement'],
     '🚗 Travel': ['⛽ Petrol', '🚖 Cab', '🚗 Tolls', '🗒 Tickets'],
     '🎁 Gift': ['🎉 Birthday', '💑 Anniversary', '🎄 Holiday', '👰 Wedding', '🎁 Gift Cards'],
@@ -24,6 +32,7 @@ export const categoriesType = {
     '👶 Family': ['👶 Baby', '👩 Wife']
 };
 
+// === Helpers ===
 export const getMainCategories = (categoryObject) => {
     if (!categoryObject || typeof categoryObject !== 'object') return [];
     return Object.keys(categoryObject);

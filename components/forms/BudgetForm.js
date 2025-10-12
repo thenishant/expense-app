@@ -1,27 +1,37 @@
 import React, {useState} from 'react';
-import {Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
-import Input from "../UI/Input";
+import {
+    Keyboard,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    TouchableWithoutFeedback,
+    View
+} from 'react-native';
 import Button from "../UI/Button";
 import CustomDatePicker from "../UI/DatePickerNative";
-import {convertToStandardFormat, getMonth, getYear} from "../../util/Date";
-import {GlobalStyles} from "../../constansts/styles";
-import ModalInputField from "../UI/ModalInputField";
-import {getMainCategories} from "../../data/Data";
+import {convertToStandardFormat, getCurrentDate, getMonth, getYear} from "../../util/Date";
+import {convertToTable} from "../../util/Table";
+import Input from "../UI/Input";
+import ModalComponent from "../UI/ModalComponent";
 import {removeEmojisOnForm} from "../../util/Emoji";
+import {categoriesType, getMainCategories} from "../../data/Data";
 
 function BudgetForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
+    const [modalData, setModalData] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
+    const [selectedInput, setSelectedInput] = useState('');
+    const [selectedMainCategory, setSelectedMainCategory] = useState('');
 
     const [inputs, setInputs] = useState({
         amount: {value: defaultValues?.amount?.toString() || '', isValid: true},
-        date: {value: new Date(), isValid: true},
-        category: {value: '', isValid: true},
-        year: {
-            value: new Date().getFullYear().toString(), isValid: true
-        },
-        month: {
-            value: new Date().toLocaleString('default', {month: 'short'}),
-        }
+        date: {value: defaultValues ? new Date(defaultValues.date) : getCurrentDate(), isValid: true},
+        type: {value: defaultValues?.type || '', isValid: true},
+        year: {value: new Date().getFullYear().toString(), isValid: true},
+        month: {value: new Date().toLocaleString('default', {month: 'short'}),},
+        category: {value: defaultValues?.category || '', isValid: true},
+        subCategory: {value: defaultValues?.subCategory || '', isValid: true},
+        paymentMode: {value: defaultValues?.paymentMode || '', isValid: true}
     });
 
     function changeHandler(inputIdentifier, enteredValue) {
@@ -46,17 +56,17 @@ function BudgetForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     function submitHandler() {
         Keyboard.dismiss();
 
-        const budgetData = {
-            amount: +inputs.amount.value,
+        const expenseData = {
+            amount: +inputs.amount.value, // date: inputs.date.value,
             date: convertToStandardFormat(inputs.date.value),
             month: inputs.month.value,
             category: inputs.category.value,
             year: +inputs.year.value,
         };
 
-        const amountIsValid = !isNaN(budgetData.amount) && budgetData.amount > 0;
-        const categoryIsValid = budgetData.category.trim().length > 0;
-        const yearIsValid = !isNaN(budgetData.year) && budgetData.year > 0;
+        const amountIsValid = !isNaN(expenseData.amount) && expenseData.amount > 0;
+        const categoryIsValid = expenseData.category.trim().length > 0;
+        const yearIsValid = !isNaN(expenseData.year) && expenseData.year > 0;
 
         if (!amountIsValid || !categoryIsValid || !yearIsValid) {
             setInputs((currentInput) => ({
@@ -67,86 +77,113 @@ function BudgetForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
             }));
             return;
         }
-        const dataWithoutEmojis = removeEmojisOnForm(budgetData);
-        onSubmit(dataWithoutEmojis); // Pass cleaned data to onSubmit
+        const dataWithoutEmojis = removeEmojisOnForm(expenseData);
+        onSubmit(dataWithoutEmojis);
     }
 
-    const formIsInvalid = !inputs.amount.isValid || !inputs.category.isValid || !inputs.year.isValid;
+    const categories = convertToTable(getMainCategories(categoriesType));
 
-    return (<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.form}>
-            <View style={styles.inputsRow}>
-                <Input
-                    style={styles.rowInput}
-                    label={"Amount"}
-                    inValid={!inputs.amount.isValid}
-                    textInputConfig={{
-                        keyboardType: 'decimal-pad',
-                        onChangeText: changeHandler.bind(this, 'amount'),
-                        value: inputs.amount.value,
-                        placeholder: "Enter amount",
-                    }}
-                />
-                <CustomDatePicker
-                    style={styles.rowInput}
-                    label={"Date"}
-                    onChange={dateChangeHandler}
-                    config={{
-                        value: inputs.date.value,
-                    }}
-                />
-            </View>
-            <View>
-                <ModalInputField
-                    label="Category"
-                    value={inputs.category.value}
-                    placeholder="Select category"
-                    data={getMainCategories()}
-                    onChange={value => changeHandler('category', value)}
-                />
-            </View>
-            <View style={styles.inputsRow}>
-                <Input
-                    style={styles.rowInput}
-                    label={"Month"}
-                    inValid={!inputs.month.isValid}
-                    textInputConfig={{
-                        editable: false, value: inputs.month.value, placeholder: "Month",
-                    }}
-                />
-                <Input
-                    style={styles.rowInput}
-                    label={"Year"}
-                    inValid={!inputs.year.isValid}
-                    textInputConfig={{
-                        editable: false, value: inputs.year.value, placeholder: "Year",
-                    }}
-                />
-            </View>
-            {formIsInvalid && (
-                <Text style={styles.errorText}>Invalid input values - please check your entered data</Text>)}
-            <View style={styles.buttons}>
-                <Button mode={'flat'} onPress={onCancel} style={styles.button}>Cancel</Button>
-                <Button onPress={submitHandler} style={styles.button}>{submitButtonLabel}</Button>
-            </View>
-        </View>
-    </TouchableWithoutFeedback>);
+    const openModal = (inputIdentifier, data) => {
+        setSelectedInput(inputIdentifier);
+        setModalData(data);
+        setModalVisible(true);
+    };
+
+    const handleItemClick = (selectedItem) => {
+        const selectedValue = selectedItem.trim();
+
+        const actions = {
+            category: () => {
+                changeHandler('category', selectedValue);
+                setSelectedMainCategory(categories);
+            }
+        };
+
+        (actions[selectedInput] || actions.default)();
+        setModalVisible(false);
+    };
+
+    return (<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+                <View style={styles.form}>
+                    <View style={styles.inputsRow}>
+                        <Input
+                            style={styles.rowInput}
+                            label="Enter amount"
+                            inValid={!inputs.amount.isValid}
+                            textInputConfig={{
+                                keyboardType: 'decimal-pad',
+                                onChangeText: (value) => changeHandler('amount', value),
+                                value: inputs.amount.value,
+                                onBlur: () => Keyboard.dismiss(),
+                            }}
+                        />
+                        <CustomDatePicker
+                            style={styles.rowInput}
+                            label="Date"
+                            onChange={dateChangeHandler}
+                            config={{value: inputs.date.value}}
+                        />
+                    </View>
+                    <View style={styles.inputsRow}>
+                        {['category'].map((field) => (<Input
+                            style={styles.rowInput}
+                            key={field}
+                            label={`Select ${field}`}
+                            inValid={!inputs[field].isValid}
+                            textInputConfig={{
+                                editable: false, value: inputs[field].value, onTouchStart: () => {
+                                    openModal(field, categories);
+                                },
+                            }}
+                        />))}
+                    </View>
+
+                    <View style={styles.inputsRow}>
+                        <Input
+                            style={styles.rowInput}
+                            label={"Month"}
+                            // inValid={!inputs.month.isValid}
+                            textInputConfig={{
+                                editable: false, value: inputs.month.value, placeholder: "Month",
+                            }}
+                        />
+                        <Input
+                            style={styles.rowInput}
+                            label={"Year"}
+                            // inValid={!inputs.year.isValid}
+                            textInputConfig={{
+                                editable: false, value: inputs.year.value, placeholder: "Year",
+                            }}
+                        />
+                    </View>
+
+                    <View style={styles.buttons}>
+                        <Button mode="flat" onPress={onCancel} style={styles.button}>Cancel</Button>
+                        <Button onPress={submitHandler} style={styles.button}>{submitButtonLabel}</Button>
+                    </View>
+
+                    <ModalComponent
+                        visible={modalVisible}
+                        data={modalData}
+                        onClose={() => setModalVisible(false)}
+                        onItemClick={handleItemClick}
+                        modalTitle="Select option"
+                    />
+                </View>
+            </ScrollView>
+        </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>);
 }
 
 export default BudgetForm;
 
 const styles = StyleSheet.create({
-    form: {
-        marginTop: 8,
-    }, inputsRow: {
-        flexDirection: "row", justifyContent: "space-between", marginBottom: 12,
-    }, rowInput: {
-        flex: 1, marginHorizontal: 5,
-    }, buttons: {
-        flexDirection: 'row', justifyContent: 'center', alignItems: "center", paddingRight: 50
-    }, button: {
-        minWidth: 120, marginHorizontal: 8
-    }, errorText: {
-        textAlign: "center", color: GlobalStyles.colors.error500, margin: 8
-    }
+    scrollContainer: {flexGrow: 1},
+    form: {marginTop: 8},
+    inputsRow: {flexDirection: "row", justifyContent: "flex-start", marginBottom: 5},
+    rowInput: {flex: 1, marginBottom: 5},
+    buttons: {flexDirection: 'row', justifyContent: 'center', alignItems: "center"},
+    button: {minWidth: 120, marginHorizontal: 8}
 });

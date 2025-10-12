@@ -27,7 +27,7 @@ function ToInvest() {
         }
     }, [summaryContext]);
 
-    return (<View style={styles.container}>
+    return (<View>
         <BigCard
             isHidden={false}
             isEditable={false}
@@ -39,8 +39,4 @@ function ToInvest() {
 
 export default ToInvest;
 
-const styles = StyleSheet.create({
-    container: {
-        borderRadius: 10
-    }
-});
+const styles = StyleSheet.create({});

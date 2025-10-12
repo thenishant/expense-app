@@ -10,10 +10,10 @@ import {
 } from 'react-native';
 import Button from "../UI/Button";
 import CustomDatePicker from "../UI/DatePickerNative";
-import {getCurrentDate} from "../../util/Date";
-import {convertToTable} from "../../util/Table";
 import Input from "../UI/Input";
 import ModalComponent from "../UI/ModalComponent";
+import {getCurrentDate} from "../../util/Date";
+import {convertToTable} from "../../util/Table";
 import {
     categoriesType,
     getMainCategories,
@@ -27,116 +27,58 @@ import {removeEmojisOnForm} from "../../util/Emoji";
 import {Type} from "../../util/category";
 
 function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
-    const [modalData, setModalData] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
-    const [selectedInput, setSelectedInput] = useState('');
-    const [subcategoryData, setSubcategoryData] = useState([]);
     const [subcategoryModalVisible, setSubcategoryModalVisible] = useState(false);
+    const [selectedInput, setSelectedInput] = useState('');
+    const [modalData, setModalData] = useState([]);
+    const [subcategoryData, setSubcategoryData] = useState([]);
     const [selectedMainCategory, setSelectedMainCategory] = useState('');
 
-    const [inputs, setInputs] = useState({
-        amount: {value: defaultValues?.amount?.toString() || '', isValid: true},
-        date: {value: defaultValues ? new Date(defaultValues.date) : getCurrentDate(), isValid: true},
-        type: {value: defaultValues?.type || '', isValid: true},
-        category: {value: defaultValues?.category || '', isValid: true},
-        subCategory: {value: defaultValues?.subCategory || '', isValid: true},
-        paymentMode: {value: defaultValues?.paymentMode || '', isValid: true}
-    });
+    const [amount, setAmount] = useState(defaultValues?.amount?.toString() || '');
+    const [date, setDate] = useState(defaultValues ? new Date(defaultValues.date) : getCurrentDate());
+    const [type, setType] = useState(defaultValues?.type || '');
+    const [category, setCategory] = useState(defaultValues?.category || '');
+    const [subCategory, setSubCategory] = useState(defaultValues?.subCategory || '');
+    const [paymentMode, setPaymentMode] = useState(defaultValues?.paymentMode || '');
 
-    const getCategoriesForType = (type) => {
-        switch (type) {
-            case Type.EXPENSE:
-                return getMainCategories(categoriesType);
-            case Type.INVESTMENT:
-                return getMainCategories(investmentCategoryType);
-            case Type.INCOME:
-                return incomeCategoryType;
-            default:
-                return [];
-        }
-    };
+    const getCategoryData = () => type === Type.EXPENSE ? categoriesType : type === Type.INVESTMENT ? investmentCategoryType : incomeCategoryType;
 
-    function changeHandler(inputIdentifier, enteredValue) {
-        setInputs((currentInput) => ({
-            ...currentInput, [inputIdentifier]: {
-                value: enteredValue, isValid: true
-            }, ...(inputIdentifier === 'type' ? {
-                paymentMode: {value: '', isValid: true},
-                category: {value: '', isValid: true},
-                subCategory: {value: '', isValid: true}
-            } : {})
-        }));
-
-        setModalVisible(false);
-        setSubcategoryModalVisible(false);
-    }
-
-    function submitHandler() {
-        Keyboard.dismiss();
-
-        const expenseData = {
-            amount: +inputs.amount.value,
-            date: inputs.date.value,
-            type: inputs.type.value,
-            category: inputs.category.value,
-            subCategory: inputs.subCategory.value,
-            paymentMode: inputs.paymentMode.value
-        };
-
-        const isValid = Object.entries({
-            amount: !isNaN(expenseData.amount) && expenseData.amount > 0,
-            category: expenseData.category.trim().length > 0,
-            type: inputs.type.value.trim().length > 0
-        }).reduce((acc, [key, valid]) => ({
-            ...acc, [key]: {...inputs[key], isValid: valid}
-        }), {});
-
-        if (!Object.values(isValid).every(field => field.isValid)) {
-            setInputs((currentInput) => ({...currentInput, ...isValid}));
-            return;
-        }
-        const dataWithoutEmojis = removeEmojisOnForm(expenseData);
-        onSubmit(dataWithoutEmojis);
-    }
-
-    const categories = convertToTable(getCategoriesForType(inputs.type.value));
-    const subcategories = convertToTable(getSubCategories(inputs.type.value === Type.EXPENSE ? categoriesType : inputs.type.value === Type.INVESTMENT ? investmentCategoryType : null, selectedMainCategory));
-
-    const openModal = (inputIdentifier, data) => {
-        setSelectedInput(inputIdentifier);
+    const openModal = (key, data) => {
+        setSelectedInput(key);
         setModalData(data);
         setModalVisible(true);
     };
 
-    const handleItemClick = (selectedItem) => {
-        const selectedValue = selectedItem.trim();
-
-        const actions = {
-            category: () => {
-                changeHandler('category', selectedValue);
-                setSelectedMainCategory(selectedValue);
-                // Set subcategories data for the modal
-                let subcats = [];
-                if (inputs.type.value === Type.EXPENSE) {
-                    subcats = getSubCategories(categoriesType, selectedValue);
-                } else if (inputs.type.value === Type.INVESTMENT) {
-                    subcats = getSubCategories(investmentCategoryType, selectedValue);
-                } else {
-                    subcats = [];
-                }
-                setSubcategoryData(convertToTable(subcats));
-                setSubcategoryModalVisible(subcats.length > 0);
-            }, subCategory: () => {
-                changeHandler('subCategory', selectedValue);
-                setSubcategoryModalVisible(false);
-            }, default: () => {
-                changeHandler(selectedInput, selectedValue);
-            }
-        };
-
-        (actions[selectedInput] || actions.default)();
+    const handleItemClick = (item) => {
+        if (selectedInput === 'type') {
+            setType(item);
+            setPaymentMode('');
+            setCategory('');
+            setSubCategory('');
+        } else if (selectedInput === 'category') {
+            setCategory(item);
+            setSelectedMainCategory(item);
+            const subs = convertToTable(getSubCategories(getCategoryData(), item));
+            setSubcategoryData(subs);
+            setSubcategoryModalVisible(subs.length > 0);
+        } else if (selectedInput === 'subCategory') {
+            setSubCategory(item);
+        } else if (selectedInput === 'paymentMode') {
+            setPaymentMode(item);
+        }
         setModalVisible(false);
     };
+
+    const submitHandler = () => {
+        const data = {
+            amount: +amount, date, type, category, subCategory, paymentMode
+        };
+
+        if (isNaN(data.amount) || data.amount <= 0 || !type || !category) return;
+        onSubmit(removeEmojisOnForm(data));
+    };
+
+    const categories = convertToTable(getMainCategories(getCategoryData()));
 
     return (<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -144,54 +86,58 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                 <View style={styles.form}>
                     <View style={styles.inputsRow}>
                         <Input
-                            style={styles.rowInput}
-                            label="Enter amount"
-                            inValid={!inputs.amount.isValid}
+                            label="Amount"
                             textInputConfig={{
-                                keyboardType: 'decimal-pad',
-                                onChangeText: (value) => changeHandler('amount', value),
-                                value: inputs.amount.value,
-                                onBlur: () => Keyboard.dismiss(),
+                                keyboardType: 'decimal-pad', value: amount, onChangeText: setAmount
                             }}
+                            style={styles.rowInput}
                         />
                         <CustomDatePicker
-                            style={styles.rowInput}
                             label="Date"
-                            onChange={(value) => changeHandler('date', value)}
-                            config={{value: inputs.date.value}}
+                            onChange={setDate}
+                            config={{value: date}}
+                            style={styles.rowInput}
                         />
                     </View>
+
                     <View style={styles.inputsRow}>
-                        {['type', 'paymentMode'].map((field) => (<Input
-                            style={styles.rowInput}
-                            key={field}
-                            label={`Select ${field}`}
-                            inValid={!inputs[field].isValid}
+                        <Input
+                            label="Type"
                             textInputConfig={{
                                 editable: false,
-                                value: inputs[field].value,
-                                onTouchStart: () => openModal(field, field === 'paymentMode' ? convertToTable(paymentModeData) : convertToTable(typesData)),
+                                value: type,
+                                onTouchStart: () => openModal('type', convertToTable(typesData))
                             }}
-                        />))}
-                    </View>
-                    <View style={styles.inputsRow}>
-                        {['category', 'subCategory'].map((field) => (<Input
                             style={styles.rowInput}
-                            key={field}
-                            label={`Select ${field}`}
-                            inValid={!inputs[field].isValid}
+                        />
+                        <Input
+                            label="Payment Mode"
                             textInputConfig={{
-                                editable: false, value: inputs[field].value, onTouchStart: () => {
-                                    if (field === 'category') {
-                                        openModal(field, categories);
-                                    } else if (field === 'subCategory') {
-                                        if (subcategories.length > 0) {
-                                            setSubcategoryModalVisible(true);
-                                        }
-                                    }
-                                },
+                                editable: false,
+                                value: paymentMode,
+                                onTouchStart: () => openModal('paymentMode', convertToTable(paymentModeData))
                             }}
-                        />))}
+                            style={styles.rowInput}
+                        />
+                    </View>
+
+                    <View style={styles.inputsRow}>
+                        <Input
+                            label="Category"
+                            textInputConfig={{
+                                editable: false, value: category, onTouchStart: () => openModal('category', categories)
+                            }}
+                            style={styles.rowInput}
+                        />
+                        <Input
+                            label="SubCategory"
+                            textInputConfig={{
+                                editable: false, value: subCategory, onTouchStart: () => {
+                                    if (subcategoryData.length > 0) setSubcategoryModalVisible(true);
+                                }
+                            }}
+                            style={styles.rowInput}
+                        />
                     </View>
 
                     <View style={styles.buttons}>
@@ -206,12 +152,13 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
                         onItemClick={handleItemClick}
                         modalTitle="Select option"
                     />
+
                     <ModalComponent
                         visible={subcategoryModalVisible}
                         data={subcategoryData}
                         onClose={() => setSubcategoryModalVisible(false)}
-                        onItemClick={(selectedSubItem) => {
-                            changeHandler('subCategory', selectedSubItem);
+                        onItemClick={(item) => {
+                            setSubCategory(item);
                             setSubcategoryModalVisible(false);
                         }}
                         modalTitle={`Select Sub-category of ${selectedMainCategory}`}
@@ -227,8 +174,8 @@ export default ExpenseForm;
 const styles = StyleSheet.create({
     scrollContainer: {flexGrow: 1},
     form: {marginTop: 8},
-    inputsRow: {flexDirection: "row", justifyContent: "flex-start", marginBottom: 5},
+    inputsRow: {flexDirection: 'row', marginBottom: 5},
     rowInput: {flex: 1, marginBottom: 5},
-    buttons: {flexDirection: 'row', justifyContent: 'center', alignItems: "center"},
+    buttons: {flexDirection: 'row', justifyContent: 'center', alignItems: 'center'},
     button: {minWidth: 120, marginHorizontal: 8}
 });
