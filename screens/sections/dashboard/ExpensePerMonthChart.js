@@ -1,9 +1,9 @@
 import React, {useContext} from "react";
+import PieChartWithLabel from "../../../components/charts/PieChartWithLabel";
 import {StyleSheet, View} from "react-native";
 import LoadingOverlay from "../../../components/UI/LoadingOverlay";
 import {CategoryContext} from "../../../store/category-context";
 import {ExpensesContext} from "../../../store/expenses-context";
-import PieChart from "../../../components/charts/PieChart";
 
 function ExpensePerMonthChart() {
     const categoryContext = useContext(CategoryContext);
@@ -19,11 +19,8 @@ function ExpensePerMonthChart() {
 
     return (<View style={styles.container}>
         {transformedData.length > 0 && (<View style={styles.chart}>
-            <PieChart
-                chartData={transformedData}
-                showInnerRadius={true}
-                chartTitleName="Expenses"
-                chartTitleCount={expenseContext.expenses.length}/>
+            <PieChartWithLabel chartData={transformedData} chartTitleName={'Expenses'}
+                               chartTitleCount={expenseContext.expenses.length}/>
         </View>)}
     </View>);
 }
