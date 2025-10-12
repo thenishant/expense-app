@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
+import {GlobalStyles} from "../../constansts/styles";
 
 function BigCard({
                      heading,
@@ -81,16 +82,15 @@ export default BigCard;
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "#fff",
-        margin: 10,
+        backgroundColor: GlobalStyles.colors.white500,
         borderRadius: 10,
         alignItems: "center",
         justifyContent: "space-between",
         flex: 1,
+        borderWidth: 0.5,
+        margin: 10,
         flexDirection: "row",
         paddingHorizontal: 20,
-        borderColor: 'black',
-        borderWidth: 0.5
     }, heading: {
         fontSize: 20, textAlign: "center", color: "#283618",
     }, amountContainer: {
@@ -98,8 +98,7 @@ const styles = StyleSheet.create({
     }, amount: {
         fontSize: 20, fontWeight: "bold", textAlign: "center", marginVertical: 10,
     }, input: {
-        fontSize: 20, fontWeight: "bold", textAlign: "center", marginVertical: 10, borderBottomWidth: 1, // Add a border for the input
-        borderBottomColor: "#ccc", color: "#283618", // Text color for the input
+        fontSize: 20, fontWeight: "bold", textAlign: "center", marginVertical: 10,
     }, toggleIcon: {
         marginLeft: 10,
     }, editIcon: {

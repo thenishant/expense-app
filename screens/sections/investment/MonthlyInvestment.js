@@ -1,33 +1,40 @@
-import React, {useEffect, useState} from 'react';
-import {Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
-import {GlobalStyles} from '../../../constansts/styles';
-import Summary from './Summary';
+import React, {useEffect, useState} from "react";
+import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {GlobalStyles} from "../../../constansts/styles";
+import Summary from "./Summary";
 import InvestmentModal from "../../../components/UI/InvestmentModel";
+
+const boxWidth = Dimensions.get("window").width / 5; // optimized width
 
 const MonthlyInvestment = ({data}) => {
     const [markedMonths, setMarkedMonths] = useState({});
+    const [monthPercents, setMonthPercents] = useState({});
     const [selectedMonthData, setSelectedMonthData] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
-        const updatedMarkedMonths = {};
+        const updatedColors = {};
+        const updatedPercents = {};
 
-        const getColorByPercent = (percent) => [{max: 25, color: GlobalStyles.colors.red200}, {
-            max: 75, color: GlobalStyles.colors.yellow200
-        }, {max: 90, color: GlobalStyles.colors.orange300}, {
-            max: 150, color: GlobalStyles.colors.green100
-        },].find(({max}) => percent <= max)?.color || GlobalStyles.colors.gray300;
+        const getColorByPercent = (percent) => {
+            const colors = [{max: 25, color: GlobalStyles.colors.red200}, {
+                max: 75, color: GlobalStyles.colors.yellow200
+            }, {max: 90, color: GlobalStyles.colors.orange300}, {max: 150, color: GlobalStyles.colors.green100},];
+            return colors.find(({max}) => percent <= max)?.color || GlobalStyles.colors.gray300;
+        };
 
-        data.months.forEach(({month, investmentPlan}) => {
+        data?.months?.forEach(({month, investmentPlan}) => {
             const percent = investmentPlan?.percentInvested ?? 0;
-            updatedMarkedMonths[month] = getColorByPercent(percent);
+            updatedColors[month] = getColorByPercent(percent);
+            updatedPercents[month] = percent;
         });
 
-        setMarkedMonths(updatedMarkedMonths);
+        setMarkedMonths(updatedColors);
+        setMonthPercents(updatedPercents);
     }, [data]);
 
     const openModal = (month) => {
-        const monthData = data.months.find((m) => m.month === month);
+        const monthData = data?.months?.find((m) => m.month === month);
         if (monthData) {
             setSelectedMonthData(monthData);
             setModalVisible(true);
@@ -36,88 +43,95 @@ const MonthlyInvestment = ({data}) => {
 
     const closeModal = () => {
         setModalVisible(false);
-        setTimeout(() => {
-            setSelectedMonthData(null);
-        }, 200);
+        setSelectedMonthData(null);
     };
 
+    const modalActions = [{label: "Edit", icon: "pencil", onPress: () => console.log("Edit pressed")},];
+
+    const legendColors = [{color: GlobalStyles.colors.red200, label: "<=25%"}, {
+        color: GlobalStyles.colors.yellow200, label: "26-75%"
+    }, {color: GlobalStyles.colors.orange300, label: "76-90%"}, {color: GlobalStyles.colors.green100, label: ">90%"},];
+
     return (<>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-            <View style={styles.monthsContainer}>
+        <View style={styles.card}>
+            <View style={styles.headerRow}>
                 <Text style={styles.title}>Monthly Summary</Text>
-                <View style={styles.monthBoxesWrapper}>
-                    {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',].map((month, index) => {
-                        const monthColor = markedMonths[month] || GlobalStyles.colors.gray300;
-                        return (<TouchableOpacity
-                            key={index}
-                            style={[styles.monthBox, {backgroundColor: monthColor}]}
-                            onPress={() => openModal(month)}
-                        >
-                            <Text style={styles.monthText}>{month}</Text>
-                        </TouchableOpacity>);
-                    })}
-                </View>
-                <View style={styles.textContainer}>
-                    <Text style={styles.text}>{`Amount Investment:`}</Text>
-                    <Text style={styles.amountText}>{GlobalStyles.characters.rupee}{data.investment}</Text>
-                </View>
+                <Text style={styles.amount}>
+                    {GlobalStyles.characters.rupee}
+                    {data?.investment ?? 0}
+                </Text>
             </View>
-        </ScrollView>
+
+            <View style={styles.monthBoxesWrapper}>
+                {["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",].map((month) => {
+                    const monthColor = markedMonths[month] || GlobalStyles.colors.gray300;
+                    const percent = monthPercents[month] ?? 0;
+                    return (<TouchableOpacity
+                        key={month}
+                        style={[styles.monthBox, {backgroundColor: monthColor}]}
+                        onPress={() => openModal(month)}
+                    >
+                        <Text style={styles.monthText}>{month}</Text>
+                        <Text style={styles.percentText}>{percent}%</Text>
+                    </TouchableOpacity>);
+                })}
+            </View>
+
+            {/* Legend */}
+            <View style={styles.legendWrapper}>
+                {legendColors.map(({color, label}) => (<View key={label} style={styles.legendItem}>
+                    <View style={[styles.legendColor, {backgroundColor: color}]}/>
+                    <Text style={styles.legendLabel}>{label}</Text>
+                </View>))}
+            </View>
+        </View>
 
         <InvestmentModal
             visible={modalVisible}
             onClose={closeModal}
-            title={`${selectedMonthData?.month} ${selectedMonthData?.year} Investment`}>
+            title={selectedMonthData ? `${selectedMonthData.month} ${selectedMonthData.year} Investment` : ""}
+            actions={modalActions}
+        >
             {selectedMonthData && <Summary data={selectedMonthData}/>}
         </InvestmentModal>
     </>);
 };
 
-const boxWidth = Dimensions.get('window').width / 4;
+export default MonthlyInvestment;
 
 const styles = StyleSheet.create({
-    scrollContent: {
-        margin: 10,
-    }, monthsContainer: {
-        flexDirection: 'column',
-        flexWrap: 'wrap',
+    card: {
         backgroundColor: GlobalStyles.colors.white500,
         borderRadius: 12,
         shadowColor: GlobalStyles.colors.black50,
-        shadowOpacity: 0.1,
+        shadowOpacity: 0.05,
         shadowRadius: 4,
         elevation: 2,
         borderWidth: 0.5,
         borderColor: GlobalStyles.colors.black50,
-        justifyContent: 'center',
-        alignItems: 'center',
+        padding: 10,
+        margin: 10,
+    }, headerRow: {
+        flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 8,
     }, title: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 8,
-        color: GlobalStyles.colors.black700,
-        alignSelf: 'flex-start',
-        paddingTop: 10,
-        paddingLeft: 15
+        fontSize: 16, fontWeight: "bold", color: GlobalStyles.colors.black700,
+    }, amount: {
+        fontSize: 15, fontWeight: "bold", color: GlobalStyles.colors.black700,
     }, monthBoxesWrapper: {
-        flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start', paddingHorizontal: 10
+        flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between",
     }, monthBox: {
-        width: boxWidth, height: 35, justifyContent: 'center', alignItems: 'center', margin: 8, borderRadius: 8,
+        width: boxWidth, height: 45, justifyContent: "center", alignItems: "center", marginBottom: 8, borderRadius: 6,
     }, monthText: {
-        fontSize: 16, fontWeight: '600', color: GlobalStyles.colors.white500,
-    }, textContainer: {
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        marginBottom: 10,
-        alignSelf: 'flex-start',
-        paddingTop: 5,
-        fontWeight: 'bold',
-        paddingLeft: 20
-    }, text: {
-        fontSize: 16, color: "#444",
-    }, amountText: {
-        fontSize: 16, fontWeight: 'bold', color: "#444",
-    }
+        fontSize: 15, fontWeight: "600", color: GlobalStyles.colors.white500,
+    }, percentText: {
+        fontSize: 13, color: GlobalStyles.colors.white500, fontWeight: "500",
+    }, legendWrapper: {
+        flexDirection: "row", justifyContent: "space-around", marginTop: 10,
+    }, legendItem: {
+        flexDirection: "row", alignItems: "center",
+    }, legendColor: {
+        width: 12, height: 12, borderRadius: 3, marginRight: 4,
+    }, legendLabel: {
+        fontSize: 12, color: "#333",
+    },
 });
-
-export default MonthlyInvestment;
