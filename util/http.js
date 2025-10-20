@@ -74,3 +74,21 @@ export async function getInvestmentPlans() {
     const response = await axios.get(buildUrl(apiEndpoints.allInvestmentPlans));
     return response.data;
 }
+
+export async function getCategories() {
+    const response = await axios.get(buildUrl(apiEndpoints.categories));
+    return response.data;
+}
+
+export async function postCategories(categoryData) {
+    try {
+        const response = await axios.post(buildUrl(apiEndpoints.categories), categoryData);
+        return response.data; // this is the parsed JSON
+    } catch (error) {
+        // Return a standardized error object
+        if (error.response && error.response.data) {
+            return {error: error.response.data.error || "Something went wrong"};
+        }
+        return {error: "Network error. Please try again."};
+    }
+}

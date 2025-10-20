@@ -3,14 +3,7 @@ import {Dimensions, FlatList, Text, TouchableOpacity, View} from 'react-native';
 import {VictoryPie} from 'victory-native';
 import {GlobalStyles} from "../../constansts/styles";
 
-function PieChart({
-                      chartData,
-                      centerData,
-                      showLabels = false,
-                      chartTitleName = null,
-                      chartTitleCount = null,
-                      showInnerRadius = false
-                  }) {
+function PieChart({chartData, centerData}) {
     const [selectedCategory, setSelectedCategory] = useState(null);
 
     function setSelectCategoryByName(name) {
@@ -26,11 +19,11 @@ function PieChart({
         const renderItem = ({item}) => {
             return (<TouchableOpacity style={{
                 flexDirection: 'row',
-                height: showInnerRadius ? 33 : 40,
+                height: 40,
                 paddingHorizontal: 8,
                 borderRadius: 10,
                 backgroundColor: (selectedCategory && selectedCategory.x === item.x) ? item.color : '#ffffff',
-                width: showInnerRadius ? 360 : 350
+                width: 350
             }}
                                       onPress={() => {
                                           let categoryName = item.x
@@ -56,24 +49,7 @@ function PieChart({
                     justifyContent: 'flex-end',
                     color: (selectedCategory && selectedCategory.x === item.x) ? 'white' : '#194868'
                 }}>
-                    <Text
-                        style={{color: (selectedCategory && selectedCategory.x === item.x) ? 'white' : '#194868'}}>{GlobalStyles.characters.rupee}{item.y}</Text>
-                </View>
-                <View style={{
-                    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'
-                }}>
-                    <Text
-                        style={{color: (selectedCategory && selectedCategory.x === item.x) ? 'white' : '#194868'}}>{item.percent}{GlobalStyles.characters.percent}</Text>
-                </View>
-                <View style={{
-                    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'
-                }}>
-                    <Text>{item.percent}{GlobalStyles.characters.percent}</Text>
-                </View>
-                <View style={{
-                    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'
-                }}>
-                    <Text>{item.percent}{GlobalStyles.characters.percent}</Text>
+                    <Text>{GlobalStyles.characters.rupee}{item.y}</Text>
                 </View>
                 <View style={{
                     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'
@@ -83,7 +59,7 @@ function PieChart({
             </TouchableOpacity>)
         }
 
-        return (<View style={showInnerRadius ? {} : {padding: 8}}>
+        return (<View style={{padding: 8}}>
             <FlatList scrollEnabled={false} data={data} renderItem={renderItem} keyExtractor={item => `${item.x}`}/>
         </View>)
     }
@@ -92,9 +68,9 @@ function PieChart({
         <VictoryPie
             data={chartData}
             radius={({datum}) => (selectedCategory && selectedCategory.x === datum.x) ? width * 0.4 : width * 0.4 - 10}
-            innerRadius={showInnerRadius ? 70 : 0}
-            labelRadius={({innerRadius}) => (width * (showInnerRadius ? 0.4 : 0.3) + innerRadius) / 2.5}
-            style={{labels: {fill: showLabels ? "black" : "transparent"}}}
+            // innerRadius={70}
+            labelRadius={({innerRadius}) => (width * 0.3 + innerRadius) / 2.5}
+
             colorScale={chartData.map(item => item.color)}
             events={[{
                 target: "data", eventHandlers: {
@@ -112,11 +88,10 @@ function PieChart({
         <View>
             {renderExpenseSummary()}
         </View>
-        {(chartTitleName || chartTitleCount) && (
-            <View style={{position: 'absolute', top: '-2%', left: showInnerRadius ? undefined : '42%'}}>
-                {chartTitleCount && <Text style={{textAlign: 'center', fontSize: 18}}>{chartTitleCount}</Text>}
-                {chartTitleName && <Text style={{textAlign: 'center', fontSize: 16}}>{chartTitleName}</Text>}
-            </View>)}
+        <View style={{position: 'absolute', top: '-2%', left: '42%'}}>
+            {/*<Text style={{textAlign: 'center', fontWeight: 'bold',fontSize: 20}}>{chartData.length}</Text>*/}
+            {/*<Text style={{textAlign: 'center', fontWeight: 'bold'}}>Expenses</Text>*/}
+        </View>
     </View>);
 }
 

@@ -1,7 +1,6 @@
 export const apiEndpoints = {
     transactionsInAMonth: 'expense/transactions',
     summary: 'expense/summary',
-    allCategories: 'category/getAllCategories',
     createExpense: 'expense/create',
     createCategory: 'category/new',
     categoryTransactions: 'expense/categoryTransactions',
@@ -10,9 +9,11 @@ export const apiEndpoints = {
     allBudget: 'budget/budgets',
     createInvestmentPlan: 'investment/create-plan',
     allInvestmentPlans: 'investment/get-investments',
+
+    //Category
+    categories: 'category/categories',
 };
 
 export function buildUrl(apiEndpoint) {
     return `${process.env.EXPO_PUBLIC_EXPRESS_URL}${apiEndpoint}`
 }
-

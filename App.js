@@ -17,6 +17,8 @@ import {ExpensesContextProvider} from "./store/expenses-context";
 import CategoryContextProvider from "./store/category-context";
 import {BudgetContextProvider} from "./store/budget-context";
 import {SummaryContextProvider} from "./store/summary-context";
+import More from "./screens/More";
+import CategoryForm from "./components/forms/CategoryForm";
 
 const RootStack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -97,7 +99,7 @@ function ExpensesOverview() {
         />
         <BottomTabs.Screen
             name="More"
-            component={AllExpenses}
+            component={More}
             options={{
                 title: "More",
                 tabBarLabel: "More",
@@ -141,6 +143,11 @@ export default function App() {
                                     name="ManageInvestment"
                                     component={ManageInvestment}
                                     options={{presentation: "modal"}}
+                                />
+                                <RootStack.Screen
+                                    name="CategoryForm"
+                                    component={CategoryForm}
+                                    options={{title: "Add Category", presentation: "transparentModal"}}
                                 />
                             </RootStack.Navigator>
                         </NavigationContainer>
