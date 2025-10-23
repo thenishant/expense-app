@@ -19,6 +19,7 @@ import {BudgetContextProvider} from "./store/budget-context";
 import {SummaryContextProvider} from "./store/summary-context";
 import More from "./screens/More";
 import CategoryForm from "./components/forms/CategoryForm";
+import AccountForm from "./components/forms/AccountForm";
 
 const RootStack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -148,6 +149,11 @@ export default function App() {
                                     name="CategoryForm"
                                     component={CategoryForm}
                                     options={{title: "Add Category", presentation: "transparentModal"}}
+                                />
+                                <RootStack.Screen
+                                    name="AccountForm"
+                                    component={AccountForm}
+                                    options={{title: "Add Account", presentation: "transparentModal"}}
                                 />
                             </RootStack.Navigator>
                         </NavigationContainer>

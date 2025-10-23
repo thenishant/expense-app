@@ -1,111 +1,88 @@
-import {useState} from "react";
-import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
-import {postCategories} from "../../util/http";
+import React, {useState} from "react";
+import {Alert, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {createCategory} from "../../util/http";
 
-function CategoryForm({navigation}) {
+export default function CategoryForm({navigation}) {
     const [type, setType] = useState("");
     const [category, setCategory] = useState("");
     const [subCategory, setSubCategory] = useState("");
-    const [error, setError] = useState("");
-
-    // Check if all fields are filled
-    const isFormValid = type.trim() && category.trim() && subCategory.trim();
 
     const handleSubmit = async () => {
-        if (!isFormValid) {
-            setError("Please fill all fields");
+        if (!type || !category || !subCategory) {
+            Alert.alert("Error", "All fields are required");
             return;
         }
 
-        const newCategory = {type, category, subCategory};
-        setError("");
+        try {
+            const data = await createCategory({type, category, subCategory});
 
-        const data = await postCategories(newCategory);
-
-        if (data.error) {
-            setError(data.error); // show backend error above buttons
-            return;
+            if (data.error) {
+                Alert.alert("Error", data.error || "Something went wrong");
+            } else {
+                Alert.alert("Success", "Category created successfully!");
+                setType("");
+                setCategory("");
+                setSubCategory("");
+            }
+        } catch (err) {
+            Alert.alert("Error", "Unable to connect to server");
+            console.error(err);
         }
-
-        console.log("Category created:", data);
-        navigation.goBack(); // navigate back after success
     };
 
     const handleCancel = () => {
         navigation.goBack();
     };
 
-    // Clear error on any input change
-    const handleChange = (setter) => (text) => {
-        setter(text);
-        if (error) setError("");
-    };
-
     return (<View style={styles.container}>
-        <Text style={styles.title}>Add New Category</Text>
-
+        <Text style={styles.label}>Type</Text>
         <TextInput
             style={styles.input}
-            placeholder="Type (e.g. Expense, Income)"
+            placeholder="Enter type (e.g. Expense, Income)"
             value={type}
-            onChangeText={handleChange(setType)}
+            onChangeText={setType}
         />
 
+        <Text style={styles.label}>Category</Text>
         <TextInput
             style={styles.input}
-            placeholder="Category (e.g. Bills, Food)"
+            placeholder="Enter category (e.g. Bills, Food)"
             value={category}
-            onChangeText={handleChange(setCategory)}
+            onChangeText={setCategory}
         />
 
+        <Text style={styles.label}>Subcategory</Text>
         <TextInput
             style={styles.input}
-            placeholder="Subcategory (e.g. Mobile, Groceries)"
+            placeholder="Enter subcategory (e.g. Mobile, Groceries)"
             value={subCategory}
-            onChangeText={handleChange(setSubCategory)}
+            onChangeText={setSubCategory}
         />
-
-        {/* Error message */}
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
         <View style={styles.buttonContainer}>
             <TouchableOpacity
-                style={[styles.button, styles.submit, !isFormValid && styles.disabled]}
+                style={[styles.button, {backgroundColor: "#28A745", marginRight: 5}]}
                 onPress={handleSubmit}
-                disabled={!isFormValid}
             >
-                <Text style={styles.buttonText}>Submit</Text>
+                <Text style={styles.buttonText}>Create Category</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.button, styles.cancel]} onPress={handleCancel}>
+            <TouchableOpacity
+                style={[styles.button, {backgroundColor: "#dc3545", marginLeft: 5}]}
+                onPress={handleCancel}
+            >
                 <Text style={styles.buttonText}>Cancel</Text>
             </TouchableOpacity>
         </View>
     </View>);
 }
 
-export default CategoryForm;
-
 const styles = StyleSheet.create({
-    container: {
-        flex: 1, backgroundColor: "#fff", padding: 20, justifyContent: "center",
-    }, title: {
-        fontSize: 22, fontWeight: "600", textAlign: "center", marginBottom: 24,
-    }, input: {
-        borderWidth: 1, borderColor: "#ccc", borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 16,
-    }, errorText: {
-        color: "red", fontSize: 14, textAlign: "center", marginBottom: 12,
-    }, buttonContainer: {
-        flexDirection: "row", justifyContent: "space-between", marginTop: 12,
-    }, button: {
-        flex: 1, paddingVertical: 14, borderRadius: 8, alignItems: "center", marginHorizontal: 5,
-    }, submit: {
-        backgroundColor: "#007AFF",
-    }, disabled: {
-        backgroundColor: "#a0cfff",
-    }, cancel: {
-        backgroundColor: "#999",
-    }, buttonText: {
-        color: "#fff", fontWeight: "600", fontSize: 16,
-    },
+    container: {padding: 20, flex: 1, backgroundColor: "#fff"},
+    title: {fontSize: 22, fontWeight: "600", textAlign: "center", marginBottom: 24},
+    label: {marginTop: 10, marginBottom: 5, fontWeight: "bold", fontSize: 16},
+    input: {borderWidth: 1, borderColor: "#ccc", borderRadius: 5, padding: 10},
+    buttonContainer: {flexDirection: "row", marginTop: 30},
+    button: {flex: 1, padding: 15, borderRadius: 5, alignItems: "center"},
+    buttonText: {color: "#fff", fontWeight: "bold", fontSize: 16},
 });

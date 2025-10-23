@@ -2,7 +2,6 @@ export const apiEndpoints = {
     transactionsInAMonth: 'expense/transactions',
     summary: 'expense/summary',
     createExpense: 'expense/create',
-    createCategory: 'category/new',
     categoryTransactions: 'expense/categoryTransactions',
     monthlyTransactions: 'expense/getMonthlyTransactions',
     createBudget: 'budget/create',
@@ -11,7 +10,8 @@ export const apiEndpoints = {
     allInvestmentPlans: 'investment/get-investments',
 
     //Category
-    categories: 'category/categories',
+    createCategory: 'category/create',
+    getCategories: 'category/categories',
 };
 
 export function buildUrl(apiEndpoint) {

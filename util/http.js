@@ -76,16 +76,15 @@ export async function getInvestmentPlans() {
 }
 
 export async function getCategories() {
-    const response = await axios.get(buildUrl(apiEndpoints.categories));
+    const response = await axios.get(buildUrl(apiEndpoints.getCategories));
     return response.data;
 }
 
-export async function postCategories(categoryData) {
+export async function createCategory(categoryData) {
     try {
-        const response = await axios.post(buildUrl(apiEndpoints.categories), categoryData);
-        return response.data; // this is the parsed JSON
+        const response = await axios.post(buildUrl(apiEndpoints.createCategory), categoryData);
+        return response.data;
     } catch (error) {
-        // Return a standardized error object
         if (error.response && error.response.data) {
             return {error: error.response.data.error || "Something went wrong"};
         }
