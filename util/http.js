@@ -91,3 +91,15 @@ export async function createCategory(categoryData) {
         return {error: "Network error. Please try again."};
     }
 }
+
+export async function createAccount(accountData) {
+    try {
+        const response = await axios.post(buildUrl(apiEndpoints.createAccount), accountData);
+        return response.data;
+    } catch (error) {
+        if (error.response && error.response.data) {
+            return {error: error.response.data.error || "Something went wrong"};
+        }
+        return {error: "Network error. Please try again."};
+    }
+}

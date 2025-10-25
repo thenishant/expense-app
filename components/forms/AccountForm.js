@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {Alert, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {createAccount} from "../../util/http";
 
 const accountTypes = ["Savings", "Current", "Business"];
 
@@ -15,16 +16,10 @@ export default function AccountForm({navigation}) {
         }
 
         try {
-            const response = await fetch("http://localhost:5000/create", {
-                method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({
-                    accountName, accountType, initialBalance: Number(initialBalance),
-                }),
-            });
+            const data = await createAccount({accountName, accountType, initialBalance: Number(initialBalance)});
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                Alert.alert("Error", data.error || "Something went wrong");
+            if (data.error) {
+                Alert.alert("Error", data.error);
             } else {
                 Alert.alert("Success", "Account created successfully!");
                 setAccountName("");

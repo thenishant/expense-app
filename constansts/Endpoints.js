@@ -12,6 +12,9 @@ export const apiEndpoints = {
     //Category
     createCategory: 'category/create',
     getCategories: 'category/categories',
+
+    //Account
+    createAccount: 'account/create',
 };
 
 export function buildUrl(apiEndpoint) {
