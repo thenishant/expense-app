@@ -1,22 +1,23 @@
 import React, {useContext, useEffect, useState} from "react";
 import BigCard from "../../../components/UI/BIgCard";
-import {SummaryContext} from "../../../store/summary-context";
+import {AccountContext} from "../../../store/AccountContext";
 
 function AccountBalance() {
-    const summaryContext = useContext(SummaryContext);
+    const accountContext = useContext(AccountContext);
     const [isFetching, setIsFetching] = useState(true);
     const [error, setError] = useState('');
     const [balance, setBalance] = useState(0);
 
     useEffect(() => {
-
         try {
-            setBalance(summaryContext.summary.effectiveBalance);
+            const totalBalance = accountContext?.accounts?.reduce((sum, acc) => sum + (acc.currentBalance || 0), 0);
+            setBalance(totalBalance || 0);
         } catch (err) {
             setError('Error loading data');
+        } finally {
+            setIsFetching(false);
         }
-        setIsFetching(false)
-    }, [summaryContext]);
+    }, [accountContext]);
 
     if (isFetching) {
         return <BigCard heading="Balance" amount="Loading..."/>;
