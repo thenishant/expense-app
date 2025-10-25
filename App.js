@@ -20,6 +20,7 @@ import {SummaryContextProvider} from "./store/summary-context";
 import More from "./screens/More";
 import CategoryForm from "./components/forms/CategoryForm";
 import AccountForm from "./components/forms/AccountForm";
+import AccountContextProvider from "./store/AccountContext";
 
 const RootStack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -117,46 +118,48 @@ export default function App() {
             <CategoryContextProvider>
                 <BudgetContextProvider>
                     <SummaryContextProvider>
-                        <NavigationContainer>
-                            <RootStack.Navigator
-                                screenOptions={{
-                                    headerStyle: {
-                                        backgroundColor: GlobalStyles.colors.primary500,
-                                    }, headerTintColor: "white",
-                                }}
-                            >
-                                <RootStack.Screen
-                                    name="ExpensesOverview"
-                                    component={ExpensesOverview}
-                                    options={{headerShown: false}}
-                                />
-                                <RootStack.Screen
-                                    name="ManageExpense"
-                                    component={ManageExpense}
-                                    options={{presentation: "modal"}}
-                                />
-                                <RootStack.Screen
-                                    name="ManageBudget"
-                                    component={ManageBudget}
-                                    options={{presentation: "modal"}}
-                                />
-                                <RootStack.Screen
-                                    name="ManageInvestment"
-                                    component={ManageInvestment}
-                                    options={{presentation: "modal"}}
-                                />
-                                <RootStack.Screen
-                                    name="CategoryForm"
-                                    component={CategoryForm}
-                                    options={{title: "Add Category", presentation: "transparentModal"}}
-                                />
-                                <RootStack.Screen
-                                    name="AccountForm"
-                                    component={AccountForm}
-                                    options={{title: "Add Account", presentation: "transparentModal"}}
-                                />
-                            </RootStack.Navigator>
-                        </NavigationContainer>
+                        <AccountContextProvider>
+                            <NavigationContainer>
+                                <RootStack.Navigator
+                                    screenOptions={{
+                                        headerStyle: {
+                                            backgroundColor: GlobalStyles.colors.primary500,
+                                        }, headerTintColor: "white",
+                                    }}
+                                >
+                                    <RootStack.Screen
+                                        name="ExpensesOverview"
+                                        component={ExpensesOverview}
+                                        options={{headerShown: false}}
+                                    />
+                                    <RootStack.Screen
+                                        name="ManageExpense"
+                                        component={ManageExpense}
+                                        options={{presentation: "modal"}}
+                                    />
+                                    <RootStack.Screen
+                                        name="ManageBudget"
+                                        component={ManageBudget}
+                                        options={{presentation: "modal"}}
+                                    />
+                                    <RootStack.Screen
+                                        name="ManageInvestment"
+                                        component={ManageInvestment}
+                                        options={{presentation: "modal"}}
+                                    />
+                                    <RootStack.Screen
+                                        name="CategoryForm"
+                                        component={CategoryForm}
+                                        options={{title: "Add Category", presentation: "transparentModal"}}
+                                    />
+                                    <RootStack.Screen
+                                        name="AccountForm"
+                                        component={AccountForm}
+                                        options={{title: "Add Account", presentation: "transparentModal"}}
+                                    />
+                                </RootStack.Navigator>
+                            </NavigationContainer>
+                        </AccountContextProvider>
                     </SummaryContextProvider>
                 </BudgetContextProvider>
             </CategoryContextProvider>

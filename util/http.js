@@ -24,7 +24,8 @@ export async function getTransactionsResponse(month, year) {
             date: new Date(key.date),
             desc: key.desc,
             type: key.type,
-            paymentMode: key.paymentMode
+            paymentMode: key.paymentMode,
+            account: key.account,
         }))
 }
 
@@ -102,4 +103,9 @@ export async function createAccount(accountData) {
         }
         return {error: "Network error. Please try again."};
     }
+}
+
+export async function getAllAccounts() {
+    const response = await axios.get(buildUrl(apiEndpoints.getAllAccounts));
+    return response.data;
 }

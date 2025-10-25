@@ -2,7 +2,13 @@ import React, {useContext, useEffect, useState} from "react";
 import {RefreshControl, ScrollView, StyleSheet} from "react-native";
 import MonthYearHeader from "../components/UI/HeaderWithArrow";
 import ExpensePerMonthChart from "./sections/dashboard/ExpensePerMonthChart";
-import {getBudgetForMonth, getCategoryTransactionResponse, getSummary, getTransactionsResponse} from "../util/http";
+import {
+    getAllAccounts,
+    getBudgetForMonth,
+    getCategoryTransactionResponse,
+    getSummary,
+    getTransactionsResponse
+} from "../util/http";
 import {ExpensesContext} from "../store/expenses-context";
 import {CategoryContext} from "../store/category-context";
 import {BudgetContext} from "../store/budget-context";
@@ -12,6 +18,7 @@ import PaymentModePerMonth from "./sections/dashboard/PaymentMode";
 import CardSection from "./sections/dashboard/CardSection";
 import {SummaryContext} from "../store/summary-context";
 import BankBalance from "./sections/dashboard/BankBalance";
+import {AccountContext} from "../store/AccountContext";
 
 function DashBoard() {
     const [refreshing, setRefreshing] = useState(false);
@@ -22,6 +29,7 @@ function DashBoard() {
     const categoryContext = useContext(CategoryContext);
     const budgetContext = useContext(BudgetContext);
     const summaryContext = useContext(SummaryContext);
+    const accountContext = useContext(AccountContext);
 
     useEffect(() => {
         const month = getMonth(selectedMonth);
@@ -31,16 +39,23 @@ function DashBoard() {
             setIsFetching(true);
             const hasPlans = (context) => context.plans && context.plans.length > 0;
 
-            if (hasPlans(expensesContext) && hasPlans(categoryContext) && hasPlans(budgetContext) && hasPlans(summaryContext)) {
+            if (hasPlans(expensesContext) && hasPlans(categoryContext) && hasPlans(budgetContext) && hasPlans(summaryContext) && hasPlans(accountContext)) {
                 return;
             }
 
             try {
-                const [expensesResponse, categoryResponse, budgetResponse, summaryResponse] = await Promise.all([getTransactionsResponse(month, year), getCategoryTransactionResponse(month, year), getBudgetForMonth(month, year), getSummary(year)])
+                const [expensesResponse, categoryResponse, budgetResponse, summaryResponse, accountResponse] = await Promise.all([
+                    getTransactionsResponse(month, year),
+                    getCategoryTransactionResponse(month, year),
+                    getBudgetForMonth(month, year),
+                    getSummary(year),
+                    getAllAccounts()
+                ])
 
                 expensesContext.setExpenses(expensesResponse);
                 categoryContext.setCategory(categoryResponse);
                 summaryContext.setSummary(summaryResponse)
+                accountContext.setAccounts(accountResponse)
 
                 const calculateSpentVsBudget = (budget, spent) => {
                     return budget.map((budgetItem) => {

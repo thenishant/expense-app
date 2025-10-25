@@ -15,6 +15,7 @@ export const apiEndpoints = {
 
     //Account
     createAccount: 'account/create',
+    getAllAccounts: 'account/accounts',
 };
 
 export function buildUrl(apiEndpoint) {
