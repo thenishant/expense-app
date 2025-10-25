@@ -17,7 +17,7 @@ import IncomeVsExpenseChart from "./sections/dashboard/IncomeVsExpenseChart";
 import PaymentModePerMonth from "./sections/dashboard/PaymentMode";
 import CardSection from "./sections/dashboard/CardSection";
 import {SummaryContext} from "../store/summary-context";
-import BankBalance from "./sections/dashboard/BankBalance";
+import AccountBalance from "./sections/dashboard/AccountBalance";
 import {AccountContext} from "../store/AccountContext";
 
 function DashBoard() {
@@ -100,7 +100,7 @@ function DashBoard() {
         style={styles.container}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
         <MonthYearHeader onChange={handleMonthChange}/>
-        <BankBalance/>
+        <AccountBalance/>
         <CardSection selectedMonth={selectedMonth}/>
         <ExpensePerMonthChart selectedMonth={selectedMonth}/>
         <IncomeVsExpenseChart/>

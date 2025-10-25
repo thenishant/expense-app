@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import BigCard from "../../../components/UI/BIgCard";
 import {SummaryContext} from "../../../store/summary-context";
 
-function BankBalance() {
+function AccountBalance() {
     const summaryContext = useContext(SummaryContext);
     const [isFetching, setIsFetching] = useState(true);
     const [error, setError] = useState('');
@@ -33,4 +33,4 @@ function BankBalance() {
     />);
 }
 
-export default BankBalance;
+export default AccountBalance;
