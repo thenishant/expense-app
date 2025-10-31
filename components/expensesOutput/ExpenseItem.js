@@ -11,7 +11,15 @@ function ExpenseItem({id, amount, date, type, category, subCategory}) {
         navigation.navigate("ManageExpense", {expenseId: id})
     }
 
-    const backgroundColor = type === "Expense" ? GlobalStyles.colors.red100 : type === "Income" ? GlobalStyles.colors.green100 : GlobalStyles.colors.yellow100;
+    const backgroundColor =
+        type === "Expense"
+            ? GlobalStyles.colors.red100
+            : type === "Income"
+                ? GlobalStyles.colors.green100
+                : type === "Transfer"
+                    ? GlobalStyles.colors.orange100
+                    : GlobalStyles.colors.yellow100;
+
 
     return (<Pressable onPress={expensePressHandler} style={({pressed}) => pressed && styles.pressed}>
         <View style={[styles.expenseItem, {backgroundColor}]}>

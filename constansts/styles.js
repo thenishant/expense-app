@@ -30,7 +30,7 @@ export const GlobalStyles = {
         yellow200: "#ffd53e",
 
         orange50: "#e6b8a2",
-        orange100: "#774936",
+        orange100: "#fb8b24",
         orange200: "#e76f51",
         orange300: "#ff8800"
 
