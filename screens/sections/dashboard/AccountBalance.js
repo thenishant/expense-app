@@ -10,7 +10,7 @@ function AccountBalance() {
 
     useEffect(() => {
         try {
-            const totalBalance = accountContext?.accounts?.reduce((sum, acc) => sum + (acc.currentBalance || 0), 0);
+            const totalBalance = accountContext?.accounts?.totalBalance;
             setBalance(totalBalance || 0);
         } catch (err) {
             setError('Error loading data');

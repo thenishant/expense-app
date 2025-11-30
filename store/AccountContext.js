@@ -1,10 +1,10 @@
 import React, {createContext, useReducer} from "react";
 
 export const AccountContext = createContext({
-    accounts: [], addAccount: ({accountName, accountType, initialBalance, currentBalance}) => {
-    }, setAccounts: (accounts) => {
-    }, updateAccount: (id, data) => {
-    }, deleteAccount: (id) => {
+    accounts: [], addAccount: () => {
+    }, setAccounts: () => {
+    }, updateAccount: () => {
+    }, deleteAccount: () => {
     },
 });
 
@@ -12,12 +12,15 @@ function accountReducer(state, action) {
     switch (action.type) {
         case "ADD":
             return [action.payload, ...state];
+
         case "SET":
-            return action.payload.reverse();
+            return action.payload;
+
         case "UPDATE":
-            return state.map((acc) => acc._id === action.payload.id ? {...acc, ...action.payload.data} : acc);
+            return state.map((acc) => acc.id === action.payload.id ? {...acc, ...action.payload.data} : acc);
+
         case "DELETE":
-            return state.filter((acc) => acc._id !== action.payload);
+            return state.filter((acc) => acc.id !== action.payload);
 
         default:
             return state;
@@ -47,7 +50,9 @@ function AccountContextProvider({children}) {
         accounts: accountState, addAccount, setAccounts, updateAccount, deleteAccount,
     };
 
-    return (<AccountContext.Provider value={value}>{children}</AccountContext.Provider>);
+    return (<AccountContext.Provider value={value}>
+        {children}
+    </AccountContext.Provider>);
 }
 
 export default AccountContextProvider;
