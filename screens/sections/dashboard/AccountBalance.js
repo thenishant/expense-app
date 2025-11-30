@@ -1,37 +1,51 @@
 import React, {useContext, useEffect, useState} from "react";
-import BigCard from "../../../components/UI/BIgCard";
+import {StyleSheet, Text, View} from "react-native";
 import {AccountContext} from "../../../store/AccountContext";
+import {Ionicons} from "@expo/vector-icons";
+import BigCard from "../../../components/UI/BIgCard";
 
 function AccountBalance() {
-    const accountContext = useContext(AccountContext);
-    const [isFetching, setIsFetching] = useState(true);
-    const [error, setError] = useState('');
+    const {accounts} = useContext(AccountContext);
     const [balance, setBalance] = useState(0);
 
     useEffect(() => {
-        try {
-            const totalBalance = accountContext?.accounts?.totalBalance;
-            setBalance(totalBalance || 0);
-        } catch (err) {
-            setError('Error loading data');
-        } finally {
-            setIsFetching(false);
-        }
-    }, [accountContext]);
+        setBalance(accounts?.totalBalance || 0);
+    }, [accounts]);
 
-    if (isFetching) {
-        return <BigCard heading="Balance" amount="Loading..."/>;
-    }
+    const currentBalances = accounts?.currentBalances || [];
 
-    if (error) {
-        return <BigCard heading="Balance" amount={error}/>;
-    }
-
-    return (<BigCard
-        isEditable={false}
-        amount={balance}
-        heading="Balance"
-    />);
+    return (<View>
+        <BigCard
+            heading="Balance"
+            amount={balance}
+            isEditable={false}
+            // rightIcon={<Ionicons name="chevron-collapse-outline" size={25}/>}
+            expandableContent={<View style={styles.list}>
+                {currentBalances.map((acc) => (<View key={acc.accountName} style={styles.row}>
+                    <Text style={styles.name}>{acc.accountName}</Text>
+                    <Text style={styles.amt}>
+                        ₹ {acc.currentBalance.toLocaleString()}
+                    </Text>
+                </View>))}
+            </View>}
+        />
+    </View>);
 }
+
+const styles = StyleSheet.create({
+    list: {
+        paddingTop: 0,
+    }, row: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: "#eee",
+    }, name: {
+        fontSize: 16, fontWeight: "500",
+    }, amt: {
+        fontSize: 16, fontWeight: "700",
+    },
+});
 
 export default AccountBalance;
