@@ -5,12 +5,14 @@ import {
     Platform,
     ScrollView,
     StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
     TouchableWithoutFeedback,
     View,
 } from "react-native";
-import Button from "../UI/Button";
-import CustomDatePicker from "../UI/DatePickerNative";
-import Input from "../UI/Input";
+
+import DateTimePicker from "@react-native-community/datetimepicker";
 import ModalComponent from "../UI/ModalComponent";
 import {getCurrentDate} from "../../util/Date";
 import {convertToTable} from "../../util/Table";
@@ -24,10 +26,10 @@ import {
     typesData,
 } from "../../data/Data";
 import {removeEmojisOnForm} from "../../util/Emoji";
-import {Type} from "../../util/category";
 import {AccountContext} from "../../store/AccountContext";
+import {Type} from "../../util/category";
 
-function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
+export default function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [subcategoryModalVisible, setSubcategoryModalVisible] = useState(false);
     const [selectedInput, setSelectedInput] = useState("");
@@ -37,21 +39,28 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
 
     const [amount, setAmount] = useState(defaultValues?.amount?.toString() || "");
     const [date, setDate] = useState(defaultValues ? new Date(defaultValues.date) : getCurrentDate());
+    const [showDatePicker, setShowDatePicker] = useState(false);
+
     const [type, setType] = useState(defaultValues?.type || "");
     const [category, setCategory] = useState(defaultValues?.category || "");
     const [subCategory, setSubCategory] = useState(defaultValues?.subCategory || "");
     const [paymentMode, setPaymentMode] = useState(defaultValues?.paymentMode || "");
-    const [account, setAccount] = useState(defaultValues?.account || "");
+    const [fromAccount, setFromAccount] = useState(defaultValues?.fromAccount || "");
+    const [toAccount, setToAccount] = useState(defaultValues?.toAccount || "");
+
     const accountContext = useContext(AccountContext);
 
-    const getCategoryData = () => {
+    const categories = convertToTable(getMainCategories(getCategoryData()));
+    const accounts = convertToTable(accountContext.accounts.map(a => a.accountName));
+
+    function getCategoryData() {
         if (type === Type.EXPENSE) return categoriesType;
         if (type === Type.INVESTMENT) return investmentCategoryType;
         return incomeCategoryType;
-    };
+    }
 
-    const openModal = (inputKey, data) => {
-        setSelectedInput(inputKey);
+    const openModal = (key, data) => {
+        setSelectedInput(key);
         setModalData(data);
         setModalVisible(true);
     };
@@ -74,134 +83,259 @@ function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
 
         if (selectedInput === "subCategory") setSubCategory(item);
         if (selectedInput === "paymentMode") setPaymentMode(item);
-        if (selectedInput === "Account") setAccount(item);
+        if (selectedInput === "fromAccount") setFromAccount(item);
+        if (selectedInput === "toAccount") setToAccount(item);
 
         setModalVisible(false);
     };
 
+    const onChangeDate = (_, selectedDate) => {
+        if (Platform.OS === "android") setShowDatePicker(false);
+        if (selectedDate) setDate(selectedDate);
+    };
+
     const submitHandler = () => {
         const data = {
-            amount: +amount, date, type, category, subCategory, paymentMode, account
+            amount: +amount, date, type, category, subCategory, paymentMode, fromAccount, toAccount,
         };
 
-        if (isNaN(data.amount) || data.amount <= 0 || !type || !category) return;
+        if (type === Type.TRANSFER) {
+            delete data.category;
+            delete data.subCategory;
+            delete data.paymentMode;
+        } else if (type === Type.INCOME) {
+            delete data.paymentMode;
+        }
+
+        if (isNaN(data.amount) || data.amount <= 0 || !type) return;
+        if (type !== Type.TRANSFER && !category) return;
+        if (!fromAccount) return;
+
         onSubmit(removeEmojisOnForm(data));
     };
 
-    const categories = convertToTable(getMainCategories(getCategoryData()));
-
-    return (<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+    return (<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{flex: 1}}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <ScrollView
-                contentContainerStyle={styles.scrollContainer}
-                keyboardShouldPersistTaps="handled"
-            >
-                <View style={styles.form}>
-                    <View style={styles.inputsRow}>
-                        <Input
-                            label="Amount"
-                            textInputConfig={{
-                                keyboardType: "decimal-pad", value: amount, onChangeText: setAmount,
-                            }}
-                            style={styles.rowInput}
-                        />
-                        <CustomDatePicker
-                            label="Date"
-                            onChange={setDate}
-                            config={{value: date}}
-                            style={styles.rowInput}
+            <ScrollView contentContainerStyle={styles.container}>
+
+                {/* ---------------- Row 1: Amount | Date ---------------- */}
+                <View style={styles.row}>
+                    <View style={styles.col}>
+                        <Text style={styles.label}>Amount</Text>
+                        <TextInput
+                            style={styles.input}
+                            keyboardType="decimal-pad"
+                            value={amount}
+                            onChangeText={setAmount}
                         />
                     </View>
 
-                    <View style={styles.inputsRow}>
-                        <Input
-                            label="Type"
-                            textInputConfig={{
-                                editable: false,
-                                value: type,
-                                onTouchStart: () => openModal("type", convertToTable(typesData)),
-                            }}
-                            style={styles.rowInput}
-                        />
-                        <Input
-                            label="Payment Mode"
-                            textInputConfig={{
-                                editable: false,
-                                value: paymentMode,
-                                onTouchStart: () => openModal("paymentMode", convertToTable(paymentModeData)),
-                            }}
-                            style={styles.rowInput}
-                        />
+                    <View style={styles.col}>
+                        <Text style={styles.label}>Date</Text>
+                        <TouchableOpacity
+                            style={styles.input}
+                            onPress={() => setShowDatePicker(true)}
+                        >
+                            <Text>{date.toDateString()}</Text>
+                        </TouchableOpacity>
                     </View>
-                    <Input
-                        label="Account"
-                        textInputConfig={{
-                            editable: false,
-                            value: account,
-                            onTouchStart: () => openModal("Account", convertToTable(accountContext.accounts.map(a => a.accountName))),
-                        }}
-                        style={styles.rowInput}
-                    />
-
-                    <View style={styles.inputsRow}>
-                        <Input
-                            label="Category"
-                            textInputConfig={{
-                                editable: false, value: category, onTouchStart: () => openModal("category", categories),
-                            }}
-                            style={styles.rowInput}
-                        />
-                        <Input
-                            label="SubCategory"
-                            textInputConfig={{
-                                editable: false, value: subCategory, onTouchStart: () => {
-                                    if (subcategoryData.length > 0) setSubcategoryModalVisible(true);
-                                },
-                            }}
-                            style={styles.rowInput}
-                        />
-                    </View>
-
-                    <View style={styles.buttons}>
-                        <Button mode="flat" onPress={onCancel} style={styles.button}>
-                            Cancel
-                        </Button>
-                        <Button onPress={submitHandler} style={styles.button}>
-                            {submitButtonLabel}
-                        </Button>
-                    </View>
-
-                    <ModalComponent
-                        visible={modalVisible}
-                        data={modalData}
-                        onClose={() => setModalVisible(false)}
-                        onItemClick={handleItemClick}
-                        modalTitle="Select option"
-                    />
-
-                    <ModalComponent
-                        visible={subcategoryModalVisible}
-                        data={subcategoryData}
-                        onClose={() => setSubcategoryModalVisible(false)}
-                        onItemClick={(item) => {
-                            setSubCategory(item);
-                            setSubcategoryModalVisible(false);
-                        }}
-                        modalTitle={`Select Sub-category of ${selectedMainCategory}`}
-                    />
                 </View>
+
+                {/* iOS/Android Date Picker (outside the rows to avoid UI breaking) */}
+                {showDatePicker && (<View style={styles.datePickerWrapper}>
+                    <DateTimePicker
+                        value={date}
+                        mode="date"
+                        display={Platform.OS === "ios" ? "spinner" : "default"}
+                        onChange={onChangeDate}
+                    />
+
+                    {Platform.OS === "ios" && (<TouchableOpacity
+                        style={styles.doneButton}
+                        onPress={() => setShowDatePicker(false)}
+                    >
+                        <Text style={styles.doneButtonText}>Done</Text>
+                    </TouchableOpacity>)}
+                </View>)}
+
+                {/* ---------------- Row 2: Type | Payment Mode ---------------- */}
+                <View style={styles.row}>
+                    <View style={styles.col}>
+                        <Text style={styles.label}>Type</Text>
+                        <TextInput
+                            style={styles.input}
+                            editable={false}
+                            value={type}
+                            onTouchStart={() => openModal("type", convertToTable(typesData))}
+                        />
+                    </View>
+
+                    <View style={styles.col}>
+                        <Text style={styles.label}>Payment Mode</Text>
+                        <TextInput
+                            style={styles.input}
+                            editable={false}
+                            value={paymentMode}
+                            onTouchStart={() => openModal("paymentMode", convertToTable(paymentModeData))}
+                        />
+                    </View>
+                </View>
+
+                {/* ---------------- Row 3: From | To Account ---------------- */}
+                {type === Type.TRANSFER && (<View style={styles.row}>
+                    <View style={styles.col}>
+                        <Text style={styles.label}>From Account</Text>
+                        <TextInput
+                            style={styles.input}
+                            editable={false}
+                            value={fromAccount}
+                            onTouchStart={() => openModal("fromAccount", accounts)}
+                        />
+                    </View>
+
+                    <View style={styles.col}>
+                        <Text style={styles.label}>To Account</Text>
+                        <TextInput
+                            style={styles.input}
+                            editable={false}
+                            value={toAccount}
+                            onTouchStart={() => openModal("toAccount", accounts)}
+                        />
+                    </View>
+                </View>)}
+
+                {type !== Type.TRANSFER && (<View style={styles.row}>
+                    <View style={styles.col}>
+                        <Text style={styles.label}>From Account</Text>
+                        <TextInput
+                            style={styles.input}
+                            editable={false}
+                            value={fromAccount}
+                            onTouchStart={() => openModal("fromAccount", accounts)}
+                        />
+                    </View>
+
+                    <View style={styles.col}/>
+                </View>)}
+
+                {/* ---------------- Row 4: Category | Subcategory ---------------- */}
+                {type !== Type.TRANSFER && (<View style={styles.row}>
+                    <View style={styles.col}>
+                        <Text style={styles.label}>Category</Text>
+                        <TextInput
+                            style={styles.input}
+                            editable={false}
+                            value={category}
+                            onTouchStart={() => openModal("category", categories)}
+                        />
+                    </View>
+
+                    <View style={styles.col}>
+                        <Text style={styles.label}>Subcategory</Text>
+                        <TextInput
+                            style={styles.input}
+                            editable={false}
+                            value={subCategory}
+                            onTouchStart={() => {
+                                if (subcategoryData.length > 0) setSubcategoryModalVisible(true);
+                            }}
+                        />
+                    </View>
+                </View>)}
+
+                {/* ---------------- Buttons ---------------- */}
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                        style={[styles.button, {backgroundColor: "#dc3545", marginRight: 5}]}
+                        onPress={onCancel}
+                    >
+                        <Text style={styles.buttonText}>Cancel</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={[styles.button, {backgroundColor: "#28A745", marginLeft: 5}]}
+                        onPress={submitHandler}
+                    >
+                        <Text style={styles.buttonText}>{submitButtonLabel}</Text>
+                    </TouchableOpacity>
+                </View>
+
+                {/* ---------------- Modals ---------------- */}
+                <ModalComponent
+                    visible={modalVisible}
+                    data={modalData}
+                    onClose={() => setModalVisible(false)}
+                    onItemClick={handleItemClick}
+                    modalTitle="Select option"
+                />
+
+                <ModalComponent
+                    visible={subcategoryModalVisible}
+                    data={subcategoryData}
+                    onClose={() => setSubcategoryModalVisible(false)}
+                    onItemClick={(item) => {
+                        setSubCategory(item);
+                        setSubcategoryModalVisible(false);
+                    }}
+                    modalTitle={`Select Sub-category of ${selectedMainCategory}`}
+                />
+
             </ScrollView>
         </TouchableWithoutFeedback>
     </KeyboardAvoidingView>);
 }
 
-export default ExpenseForm;
-
 const styles = StyleSheet.create({
-    scrollContainer: {flexGrow: 1},
-    form: {marginTop: 8},
-    inputsRow: {flexDirection: "row", marginBottom: 5},
-    rowInput: {flex: 1, marginBottom: 5},
-    buttons: {flexDirection: "row", justifyContent: "center", alignItems: "center"},
-    button: {minWidth: 120, marginHorizontal: 8},
+    container: {padding: 20, flexGrow: 1, backgroundColor: "#fff"},
+
+    row: {
+        flexDirection: "row", justifyContent: "space-between", marginBottom: 15,
+    },
+
+    col: {
+        flex: 1, marginHorizontal: 5,
+    },
+
+    label: {
+        marginBottom: 5, fontWeight: "bold", fontSize: 16,
+    },
+
+    input: {
+        borderWidth: 1, borderColor: "#ccc", borderRadius: 5, padding: 12, backgroundColor: "#fff",
+    },
+
+    datePickerWrapper: {
+        backgroundColor: "#fff",
+        marginTop: -10,
+        marginBottom: 10,
+        borderRadius: 10,
+        padding: 10,
+        borderWidth: 1,
+        borderColor: "#ccc",
+    },
+
+    doneButton: {
+        marginTop: 8,
+        alignSelf: "flex-end",
+        paddingHorizontal: 20,
+        paddingVertical: 8,
+        backgroundColor: "#28A745",
+        borderRadius: 5,
+    },
+
+    doneButtonText: {
+        color: "white", fontWeight: "600",
+    },
+
+    buttonContainer: {
+        flexDirection: "row", marginTop: 30,
+    },
+
+    button: {
+        flex: 1, padding: 15, borderRadius: 5, alignItems: "center",
+    },
+
+    buttonText: {
+        color: "#fff", fontWeight: "bold", fontSize: 16,
+    },
 });

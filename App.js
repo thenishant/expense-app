@@ -135,7 +135,7 @@ export default function App() {
                                     <RootStack.Screen
                                         name="ManageExpense"
                                         component={ManageExpense}
-                                        options={{presentation: "modal"}}
+                                        options={{presentation: "transparentModal"}}
                                     />
                                     <RootStack.Screen
                                         name="ManageBudget"

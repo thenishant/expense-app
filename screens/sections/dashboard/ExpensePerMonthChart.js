@@ -5,30 +5,46 @@ import {CategoryContext} from "../../../store/category-context";
 import {ExpensesContext} from "../../../store/expenses-context";
 import PieChart from "../../../components/charts/PieChart";
 
+// Golden Angle Neon Fintech Palette
+function categoryToColor(_, index) {
+    const goldenAngle = 137.508;
+    const hue = (index * goldenAngle) % 360;
+    return `hsl(${hue}, 90%, 55%)`;
+}
+
+// ✅ Truncate labels to prevent layout breaking
+function trimLabel(label, max = 14) {
+    return label.length > max ? label.slice(0, max) + "…" : label;
+}
+
 function ExpensePerMonthChart() {
-    const categoryContext = useContext(CategoryContext);
-    const expenseContext = useContext(ExpensesContext)
+    const catCtx = useContext(CategoryContext);
+    const expenseCtx = useContext(ExpensesContext);
 
-    const categoryColors = ["#f15bb5", "#fee440", "#00bbf9", "#00f5d4", "#f79256", "#90fe00", "#cc17ff", "#ff0000", "#adb5bd"];
+    if (!catCtx.category.length) return <LoadingOverlay/>;
 
-    const transformedData = categoryContext.category.map((item, index) => ({
-        x: item.category, y: item.amount, color: categoryColors[index % categoryColors.length], percent: item.percentage
-    })).sort((a, b) => b.y - a.y);
-
-    if (!transformedData.length) return <LoadingOverlay/>;
+    const chartData = catCtx.category
+        .map((item, index) => ({
+            x: trimLabel(item.category),
+            y: item.amount,
+            percent: item.percentage,
+            color: categoryToColor(item.category, index),
+        }))
+        .sort((a, b) => b.y - a.y);
 
     return (<View style={styles.container}>
-        {transformedData.length > 0 && (<View style={styles.chart}>
-            <PieChart chartData={transformedData} chartTitleName={'Expenses'}
-                      chartTitleCount={expenseContext.expenses.length}/>
-        </View>)}
+        <PieChart
+            chartData={chartData}
+            title="Expenses"
+            total={expenseCtx.expenses.length}
+        />
     </View>);
 }
 
 export default ExpensePerMonthChart;
 
 const styles = StyleSheet.create({
-    chart: {flex: 1, alignItems: 'center', justifyContent: 'center'}, container: {
-        backgroundColor: '#ffffff', margin: 8, borderRadius: 20, alignItems: 'center', justifyContent: 'center', flex: 1
-    }
+    container: {
+        backgroundColor: "#fff", margin: 10, borderRadius: 18, paddingVertical: 5, flex: 1, justifyContent: "center"
+    },
 });

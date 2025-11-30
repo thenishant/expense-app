@@ -1,4 +1,4 @@
-export const typesData = ['Expense', 'Investment', 'Income'];
+export const typesData = ['Expense', 'Investment', 'Income', 'Transfer'];
 export const paymentModeData = ["💳 Credit Card", "🪪 UPI Credit Card", "🏛 Bank Account", "💵 Cash"];
 
 export const incomeCategoryType = {
@@ -8,6 +8,10 @@ export const incomeCategoryType = {
     '💼 Salary': ['🏢 Goto', '🏭 TV', '💻 Freelance'],
     '💵 Reimbursement': ['🚗 Travel', '🍽 Food', '📦 Internet'],
     '💳 Credit Exchange': ['💳 Credit Card']
+};
+
+export const transferCategoryType = {
+    '🏛 Bank': ['🏦 HDFC', '🏦 Axis', '🏦 SBI'],
 };
 
 export const investmentCategoryType = {

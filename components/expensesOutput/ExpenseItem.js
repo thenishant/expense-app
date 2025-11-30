@@ -4,11 +4,10 @@ import {useNavigation} from "@react-navigation/native";
 import {getFormattedDate} from "../../util/Date";
 
 function ExpenseItem({id, amount, date, type, category, subCategory}) {
-
     const navigation = useNavigation();
 
     function expensePressHandler() {
-        navigation.navigate("ManageExpense", {expenseId: id})
+        navigation.navigate("ManageExpense", {expenseId: id});
     }
 
     const backgroundColor =
@@ -20,24 +19,39 @@ function ExpenseItem({id, amount, date, type, category, subCategory}) {
                     ? GlobalStyles.colors.orange100
                     : GlobalStyles.colors.yellow100;
 
+    // description logic
+    const description =
+        type === "Transfer"
+            ? "Transfer"
+            : subCategory
+                ? `${subCategory} - ${category}`
+                : category;
 
-    return (<Pressable onPress={expensePressHandler} style={({pressed}) => pressed && styles.pressed}>
-        <View style={[styles.expenseItem, {backgroundColor}]}>
-            <View>
-                <Text
-                    style={[styles.textBase, styles.desc]}>{subCategory === "" ? category : subCategory + " - " + category}</Text>
-                <Text style={styles.textBase}>{getFormattedDate(date)}</Text>
-                <Text style={styles.textBase}>{category}</Text>
+    return (
+        <Pressable
+            onPress={expensePressHandler}
+            style={({pressed}) => pressed && styles.pressed}
+        >
+            <View style={[styles.expenseItem, {backgroundColor}]}>
+                <View>
+                    <Text style={[styles.textBase, styles.desc]}>{description}</Text>
+                    <Text style={styles.textBase}>{getFormattedDate(date)}</Text>
+                    {type !== "Transfer" && (
+                        <Text style={styles.textBase}>{category}</Text>
+                    )}
+                </View>
+                <View style={styles.amountContainer}>
+                    <Text style={styles.amount}>
+                        {GlobalStyles.characters.rupee}
+                        {amount}
+                    </Text>
+                </View>
             </View>
-            <View style={styles.amountContainer}>
-                <Text style={styles.amount}>{GlobalStyles.characters.rupee}{amount}</Text>
-            </View>
-        </View>
-    </Pressable>)
-
+        </Pressable>
+    );
 }
 
-export default ExpenseItem
+export default ExpenseItem;
 
 const styles = StyleSheet.create({
     expenseItem: {
@@ -49,16 +63,29 @@ const styles = StyleSheet.create({
         shadowColor: GlobalStyles.colors.gray500,
         shadowRadius: 4,
         shadowOffset: {width: 1, height: 1},
-        shadowOpacity: 0.4
-    }, textBase: {
-        color: GlobalStyles.colors.black50
-    }, desc: {
-        fontSize: 16, marginBottom: 4, fontWeight: "bold"
-    }, amountContainer: {
-        paddingHorizontal: 15, backgroundColor: "white", justifyContent: "center", alignItems: 'center', borderRadius: 4
-    }, amount: {
-        color: GlobalStyles.colors.black50, fontWeight: "bold", fontSize: 15
-    }, pressed: {
-        opacity: 0.75
-    }
+        shadowOpacity: 0.4,
+    },
+    textBase: {
+        color: GlobalStyles.colors.black50,
+    },
+    desc: {
+        fontSize: 16,
+        marginBottom: 4,
+        fontWeight: "bold",
+    },
+    amountContainer: {
+        paddingHorizontal: 15,
+        backgroundColor: "white",
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 4,
+    },
+    amount: {
+        color: GlobalStyles.colors.black50,
+        fontWeight: "bold",
+        fontSize: 15,
+    },
+    pressed: {
+        opacity: 0.75,
+    },
 });

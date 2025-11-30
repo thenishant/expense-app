@@ -83,7 +83,7 @@ export default ManageExpense
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1, padding: 24, backgroundColor: GlobalStyles.colors.gray500
+        flex: 1, padding: 0, backgroundColor: GlobalStyles.colors.gray500
     }, deleteContainer: {
         marginTop: 16,
         paddingTop: 8,

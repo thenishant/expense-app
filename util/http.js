@@ -15,7 +15,7 @@ export async function createBudget(expenseData) {
 
 export async function getTransactionsResponse(month, year) {
     const response = await axios.get(EXPRESS_URL + `expense/transactions?month=${month}&year=${year}`);
-    return (response.data.transactions['Expense'] || []).concat(response.data.transactions['Income'] || []).concat(response.data.transactions['Investment'] || [])
+    return (response.data.transactions['Expense'] || []).concat(response.data.transactions['Income'] || []).concat(response.data.transactions['Investment'] || []).concat(response.data.transactions['Transfer'] || [])
         .map(key => ({
             id: key._id,
             amount: key.amount,
@@ -25,7 +25,8 @@ export async function getTransactionsResponse(month, year) {
             desc: key.desc,
             type: key.type,
             paymentMode: key.paymentMode,
-            account: key.account,
+            fromAccount: key.fromAccount,
+            toAccount: key.toAccount,
         }))
 }
 
@@ -53,6 +54,11 @@ export async function deleteExpense(id) {
 
 export async function getCategoryTransactionResponse(month, year) {
     const response = await axios.get(buildUrl(`${apiEndpoints.categoryTransactions}?month=${month}&year=${year}`));
+    return response.data;
+}
+
+export async function getAllCategories() {
+    const response = await axios.get(buildUrl(apiEndpoints.getCategories));
     return response.data;
 }
 

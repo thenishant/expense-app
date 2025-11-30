@@ -11,7 +11,12 @@ function categoryReducer(state, action) {
         case 'ADD':
             return [action.payload, ...state];
         case 'SET':
-            return action.payload.reverse();
+            if (Array.isArray(action.payload)) {
+                return action.payload.reverse();
+            } else if (typeof action.payload === "object" && action.payload !== null) {
+                return action.payload;
+            }
+            return state;
         default:
             return state;
     }
