@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     }, modalOverlayTouchable: {
         flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.6)',
     }, modalContent: {
-        height: '33%',
+        height: '38%',
         backgroundColor: GlobalStyles.colors.white500,
         borderTopLeftRadius: 16,
         borderTopRightRadius: 16,
