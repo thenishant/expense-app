@@ -51,7 +51,7 @@ export default function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defa
     const accountContext = useContext(AccountContext);
 
     const categories = convertToTable(getMainCategories(getCategoryData()));
-    const accounts = convertToTable(accountContext.accounts.map(a => a.accountName));
+    const accounts = convertToTable((accountContext.accounts.accounts ?? []).map(a => a.accountName));
 
     function getCategoryData() {
         if (type === Type.EXPENSE) return categoriesType;
