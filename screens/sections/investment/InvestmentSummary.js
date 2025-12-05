@@ -7,44 +7,51 @@ import {GlobalStyles} from "../../../constansts/styles";
 
 const screenWidth = Dimensions.get("window").width - 40; // for sparkline
 
-function Summary({data = null}) {
+const InvestmentSummary = ({month, yearly = null}) => {
     const summaryContext = useContext(SummaryContext);
     const [itemWidth, setItemWidth] = useState(null);
     const [summaryToShow, setSummaryToShow] = useState(null);
     const [showPercent, setShowPercent] = useState(false);
-    const [expanded, setExpanded] = useState(false);
-    const [tooltipVisible, setTooltipVisible] = useState(false);
 
     useEffect(() => {
-        const sourceData = data || summaryContext?.summary;
-
-        if (sourceData) {
-            const currentMonth = getCurrentMonth();
-            const previousMonth = getPreviousMonth();
-            const currentYear = getYear();
-
-            let currentData, previousData;
-
-            if (sourceData?.months) {
-                currentData = sourceData.months.find(m => m.month === currentMonth && m.year === currentYear);
-                previousData = sourceData.months.find(m => m.month === previousMonth && m.year === currentYear);
-            } else currentData = sourceData;
-
-            const shouldUsePrevious = !currentData?.investmentPlan?.percentToInvest || currentData.investmentPlan.percentToInvest === 0;
-
-            setSummaryToShow(shouldUsePrevious ? previousData : currentData);
-        } else {
-            console.error("No summary data available");
+        // If month is passed (modal case), use it directly
+        if (month) {
+            setSummaryToShow(month);
+            return;
         }
-    }, [summaryContext, data]);
+
+        // Otherwise fall back to dashboard summary
+        const sourceData = summaryContext?.summary;
+        if (!sourceData) return;
+
+        const currentMonth = getCurrentMonth();
+        const currentYear = getYear();
+        const previousMonth = getPreviousMonth();
+
+        const currentData = sourceData.months.find(m => m.month === currentMonth && m.year === currentYear);
+        const previousData = sourceData.months.find(m => m.month === previousMonth && m.year === currentYear);
+
+        const shouldUsePrevious = !currentData?.investmentPlan?.percentToInvest || currentData.investmentPlan.percentToInvest === 0;
+
+        setSummaryToShow(shouldUsePrevious ? previousData : currentData);
+    }, [month, summaryContext]);
+
 
     if (!summaryToShow) return null;
 
-    const amountToInvest = summaryToShow?.investmentPlan?.suggestedInvestment;
-    const amountInvested = summaryToShow?.investment;
-    const amountLeft = summaryToShow?.investmentPlan?.investmentLeft;
+    const amountToInvest = summaryToShow?.investmentPlan?.amountToInvest;
+    const invested = summaryToShow?.investment;
+    const amountLeftToInvest = summaryToShow?.investmentPlan?.amountLeftToInvest;
     const percentInvested = summaryToShow?.investmentPlan?.percentInvested ?? 0;
+    const percentLeftToInvest = summaryToShow?.investmentPlan?.percentLeftToInvest ?? 0;
     const progress = amountToInvest > 0 ? percentInvested / 100 : 0;
+
+    const format = (showPercent, value, percent) => {
+        const safeValue = Number.isFinite(value) ? value : 0;
+        const safePercent = Number.isFinite(percent) ? percent : 0;
+
+        return showPercent ? `${safePercent}%` : `${GlobalStyles.characters.rupee}${safeValue}`;
+    };
 
     return (<View style={styles.container}>
         <View style={styles.summaryBox} onLayout={(event) => setItemWidth(event.nativeEvent.layout.width)}>
@@ -56,21 +63,16 @@ function Summary({data = null}) {
                 </TouchableOpacity>
             </View>
 
-            {/* Amounts */}
-            <View style={styles.textContainer}>
-                <Text style={styles.text}>Invested:</Text>
-                <Text style={styles.amountText}>{showPercent ? `${percentInvested}%` : `₹${amountInvested}`}</Text>
-            </View>
-            <View style={styles.textContainer}>
-                <Text style={styles.text}>To Invest:</Text>
-                <Text
-                    style={styles.amountText}>{showPercent ? `${((amountToInvest / amountInvested) * 100).toFixed(1)}%` : `₹${amountToInvest}`}</Text>
-            </View>
-            <View style={styles.textContainer}>
-                <Text style={styles.text}>Amount Left:</Text>
-                <Text
-                    style={styles.amountText}>{showPercent ? `${((amountLeft / amountToInvest) * 100).toFixed(1)}%` : `₹${amountLeft}`}</Text>
-            </View>
+            {/* MONTH FIELDS */}
+            <Row label="Amount to Invest" value={amountToInvest}/>
+            <Row label="Invested" value={format(showPercent, invested, percentInvested)}/>
+            <Row label="Amount Left" value={format(showPercent, amountLeftToInvest, percentLeftToInvest)}/>
+
+            {/* YEARLY SECTION */}
+            {yearly ? (<>
+                <Row label="Yearly Invested" value={`₹${yearly.totals.investment}`}/>
+                <Row label="Yearly Left" value={`₹${yearly.investmentLeftToInvest}`}/>
+            </>) : null}
 
             <ProgressBar
                 options={{progress, height: 15, width: itemWidth ? itemWidth - 20 : 0}}
@@ -80,7 +82,12 @@ function Summary({data = null}) {
     </View>);
 }
 
-export default Summary;
+const Row = ({label, value}) => (<View style={styles.row}>
+    <Text style={styles.rowLabel}>{label}</Text>
+    <Text style={styles.rowValue}>{value}</Text>
+</View>);
+
+export default InvestmentSummary;
 
 const styles = StyleSheet.create({
     container: {margin: 10},
@@ -102,4 +109,9 @@ const styles = StyleSheet.create({
     text: {fontSize: 16, color: GlobalStyles.colors.black700},
     amountText: {fontSize: 16, fontWeight: 'bold', color: GlobalStyles.colors.black700},
     progressBar: {marginVertical: 8},
+    row: {
+        flexDirection: "row", justifyContent: "space-between", paddingVertical: 6
+    },
+    rowLabel: {fontSize: 16, color: "#444"},
+    rowValue: {fontSize: 16, fontWeight: "bold"}
 });

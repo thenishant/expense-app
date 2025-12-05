@@ -1,7 +1,7 @@
 import React, {useContext, useLayoutEffect} from "react";
 import {ScrollView, StyleSheet, View} from "react-native";
 import ToInvest from "./sections/investment/ToInvest";
-import Summary from "./sections/investment/Summary";
+import InvestmentSummary from "./sections/investment/InvestmentSummary";
 import MonthlyInvestment from "./sections/investment/MonthlyInvestment";
 import {SummaryContext} from "../store/summary-context";
 import InvestmentByCategory from "./sections/investment/InvestmentByCategory";
@@ -15,7 +15,7 @@ function Investment({route, navigation}) {
     return (<ScrollView>
         <View style={styles.container}>
             <ToInvest/>
-            <Summary/>
+            <InvestmentSummary yearly={summaryContext.summary.yearly} />
             <MonthlyInvestment data={summaryContext?.summary}/>
             <InvestmentByCategory/>
         </View>

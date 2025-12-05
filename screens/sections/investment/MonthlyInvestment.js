@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 import {GlobalStyles} from '../../../constansts/styles';
-import Summary from './Summary';
+import InvestmentSummary from './InvestmentSummary';
 import InvestmentModal from "../../../components/UI/InvestmentModel";
 
 const MonthlyInvestment = ({data}) => {
@@ -57,10 +57,6 @@ const MonthlyInvestment = ({data}) => {
                         </TouchableOpacity>);
                     })}
                 </View>
-                <View style={styles.textContainer}>
-                    <Text style={styles.text}>{`Amount Investment:`}</Text>
-                    <Text style={styles.amountText}>{GlobalStyles.characters.rupee}{data.investment}</Text>
-                </View>
             </View>
         </ScrollView>
 
@@ -68,7 +64,9 @@ const MonthlyInvestment = ({data}) => {
             visible={modalVisible}
             onClose={closeModal}
             title={`${selectedMonthData?.month} ${selectedMonthData?.year} Investment`}>
-            {selectedMonthData && <Summary data={selectedMonthData}/>}
+            {selectedMonthData &&
+                <InvestmentSummary month={selectedMonthData}/>
+            }
         </InvestmentModal>
     </>);
 };
@@ -91,6 +89,7 @@ const styles = StyleSheet.create({
         borderColor: GlobalStyles.colors.black50,
         justifyContent: 'center',
         alignItems: 'center',
+        paddingVertical: 10
     }, title: {
         fontSize: 18,
         fontWeight: 'bold',
