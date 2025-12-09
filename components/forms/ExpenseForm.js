@@ -5,15 +5,10 @@ import {
     Platform,
     ScrollView,
     StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
     TouchableWithoutFeedback,
-    View,
+    View
 } from "react-native";
 
-import DateTimePicker from "@react-native-community/datetimepicker";
-import ModalComponent from "../UI/ModalComponent";
 import {getCurrentDate} from "../../util/Date";
 import {convertToTable} from "../../util/Table";
 import {
@@ -23,319 +18,195 @@ import {
     incomeCategoryType,
     investmentCategoryType,
     paymentModeData,
-    typesData,
+    typesData
 } from "../../data/Data";
+
 import {removeEmojisOnForm} from "../../util/Emoji";
 import {AccountContext} from "../../store/AccountContext";
 import {Type} from "../../util/category";
 
+import SelectField from "../UI/SelectField";
+import FormRow from "../UI/FormRow";
+import InputField from "../UI/InputField";
+import {DangerButton, PrimaryButton} from "../UI/Button";
+import ModalSelector from "../UI/ModalSelector";
+import CalendarCard from "../UI/CalenderPicker";
+
 export default function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
-    const [modalVisible, setModalVisible] = useState(false);
-    const [subcategoryModalVisible, setSubcategoryModalVisible] = useState(false);
-    const [selectedInput, setSelectedInput] = useState("");
-    const [modalData, setModalData] = useState([]);
-    const [subcategoryData, setSubcategoryData] = useState([]);
-    const [selectedMainCategory, setSelectedMainCategory] = useState("");
+    const [form, setForm] = useState({
+        amount: defaultValues?.amount?.toString() || "",
+        date: defaultValues ? new Date(defaultValues.date) : getCurrentDate(),
+        type: defaultValues?.type || "",
+        category: defaultValues?.category || "",
+        subCategory: defaultValues?.subCategory || "",
+        paymentMode: defaultValues?.paymentMode || "",
+        fromAccount: defaultValues?.fromAccount || "",
+        toAccount: defaultValues?.toAccount || "",
+    });
 
-    const [amount, setAmount] = useState(defaultValues?.amount?.toString() || "");
-    const [date, setDate] = useState(defaultValues ? new Date(defaultValues.date) : getCurrentDate());
-    const [showDatePicker, setShowDatePicker] = useState(false);
-
-    const [type, setType] = useState(defaultValues?.type || "");
-    const [category, setCategory] = useState(defaultValues?.category || "");
-    const [subCategory, setSubCategory] = useState(defaultValues?.subCategory || "");
-    const [paymentMode, setPaymentMode] = useState(defaultValues?.paymentMode || "");
-    const [fromAccount, setFromAccount] = useState(defaultValues?.fromAccount || "");
-    const [toAccount, setToAccount] = useState(defaultValues?.toAccount || "");
-
+    const [modal, setModal] = useState({visible: false, key: "", data: []});
+    const [subModal, setSubModal] = useState({visible: false, data: []});
+    const [showCalendar, setShowCalendar] = useState(false);
     const accountContext = useContext(AccountContext);
+    const accounts = convertToTable((accountContext?.accounts?.accounts ?? []).map(a => a.accountName));
 
-    const categories = convertToTable(getMainCategories(getCategoryData()));
-    const accounts = convertToTable((accountContext.accounts.accounts ?? []).map(a => a.accountName));
-
-    function getCategoryData() {
-        if (type === Type.EXPENSE) return categoriesType;
-        if (type === Type.INVESTMENT) return investmentCategoryType;
+    const update = (key, value) => setForm((prev) => ({...prev, [key]: value}));
+    const getCategoryList = () => {
+        if (form.type === Type.EXPENSE) return categoriesType;
+        if (form.type === Type.INVESTMENT) return investmentCategoryType;
         return incomeCategoryType;
-    }
-
-    const openModal = (key, data) => {
-        setSelectedInput(key);
-        setModalData(data);
-        setModalVisible(true);
     };
 
-    const handleItemClick = (item) => {
-        if (selectedInput === "type") {
-            setType(item);
-            setCategory("");
-            setSubCategory("");
-            setPaymentMode("");
+    const openModal = (key, data) => setModal({visible: true, key, data});
+
+    const handleSelect = (item) => {
+        if (modal.key === "type") {
+            update("type", item);
+            update("category", "");
+            update("subCategory", "");
         }
 
-        if (selectedInput === "category") {
-            setCategory(item);
-            setSelectedMainCategory(item);
-            const subCats = convertToTable(getSubCategories(getCategoryData(), item));
-            setSubcategoryData(subCats);
-            setSubcategoryModalVisible(subCats.length > 0);
+        if (modal.key === "category") {
+            update("category", item);
+            const subs = convertToTable(getSubCategories(getCategoryList(), item));
+            if (subs.length) setSubModal({visible: true, data: subs});
         }
+        if (modal.key === "subCategory") update("subCategory", item);
+        if (modal.key === "paymentMode") update("paymentMode", item);
+        if (modal.key === "fromAccount") update("fromAccount", item);
+        if (modal.key === "toAccount") update("toAccount", item);
 
-        if (selectedInput === "subCategory") setSubCategory(item);
-        if (selectedInput === "paymentMode") setPaymentMode(item);
-        if (selectedInput === "fromAccount") setFromAccount(item);
-        if (selectedInput === "toAccount") setToAccount(item);
-
-        setModalVisible(false);
-    };
-
-    const onChangeDate = (_, selectedDate) => {
-        if (Platform.OS === "android") setShowDatePicker(false);
-        if (selectedDate) setDate(selectedDate);
+        setModal({...modal, visible: false});
     };
 
     const submitHandler = () => {
-        const data = {
-            amount: +amount, date, type, category, subCategory, paymentMode, fromAccount, toAccount,
-        };
+        const payload = {...form, amount: +form.amount};
 
-        if (type === Type.TRANSFER) {
-            delete data.category;
-            delete data.subCategory;
-            delete data.paymentMode;
-        } else if (type === Type.INCOME) {
-            delete data.paymentMode;
-        }
-
-        if (isNaN(data.amount) || data.amount <= 0 || !type) return;
-        if (type !== Type.TRANSFER && !category) return;
-        if (!fromAccount) return;
-
-        onSubmit(removeEmojisOnForm(data));
+        if (form.type === Type.TRANSFER) {
+            delete payload.category;
+            delete payload.subCategory;
+            delete payload.paymentMode;
+        } else if (form.type === Type.INCOME) delete payload.paymentMode;
+        if (+form.amount <= 0 || !form.type) return;
+        if (!form.fromAccount) return;
+        if (form.type !== Type.TRANSFER && !form.category) return;
+        onSubmit(removeEmojisOnForm(payload));
     };
 
-    return (<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{flex: 1}}>
+    return (<KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.wrapper}
+    >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <ScrollView contentContainerStyle={styles.container}>
-
-                {/* ---------------- Row 1: Amount | Date ---------------- */}
-                <View style={styles.row}>
-                    <View style={styles.col}>
-                        <Text style={styles.label}>Amount</Text>
-                        <TextInput
-                            style={styles.input}
+            <View style={styles.screenBackground}>
+                <ScrollView contentContainerStyle={styles.container}>
+                    <FormRow>
+                        <InputField
+                            label="Amount"
+                            value={form.amount}
+                            onChangeText={(v) => update("amount", v)}
                             keyboardType="decimal-pad"
-                            value={amount}
-                            onChangeText={setAmount}
                         />
-                    </View>
 
-                    <View style={styles.col}>
-                        <Text style={styles.label}>Date</Text>
-                        <TouchableOpacity
-                            style={styles.input}
-                            onPress={() => setShowDatePicker(true)}
-                        >
-                            <Text>{date.toDateString()}</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-
-                {/* iOS/Android Date Picker (outside the rows to avoid UI breaking) */}
-                {showDatePicker && (<View style={styles.datePickerWrapper}>
-                    <DateTimePicker
-                        value={date}
-                        mode="date"
-                        display={Platform.OS === "ios" ? "spinner" : "default"}
-                        onChange={onChangeDate}
-                    />
-
-                    {Platform.OS === "ios" && (<TouchableOpacity
-                        style={styles.doneButton}
-                        onPress={() => setShowDatePicker(false)}
-                    >
-                        <Text style={styles.doneButtonText}>Done</Text>
-                    </TouchableOpacity>)}
-                </View>)}
-
-                {/* ---------------- Row 2: Type | Payment Mode ---------------- */}
-                <View style={styles.row}>
-                    <View style={styles.col}>
-                        <Text style={styles.label}>Type</Text>
-                        <TextInput
-                            style={styles.input}
-                            editable={false}
-                            value={type}
-                            onTouchStart={() => openModal("type", convertToTable(typesData))}
+                        <SelectField
+                            label="Date"
+                            value={form.date.toDateString()}
+                            placeholder="Pick date"
+                            onPress={() => setShowCalendar(true)}
                         />
-                    </View>
+                    </FormRow>
 
-                    <View style={styles.col}>
-                        <Text style={styles.label}>Payment Mode</Text>
-                        <TextInput
-                            style={styles.input}
-                            editable={false}
-                            value={paymentMode}
-                            onTouchStart={() => openModal("paymentMode", convertToTable(paymentModeData))}
+                    <FormRow>
+                        <SelectField
+                            label="Type"
+                            value={form.type}
+                            onPress={() => openModal("type", convertToTable(typesData))}
                         />
-                    </View>
-                </View>
 
-                {/* ---------------- Row 3: From | To Account ---------------- */}
-                {type === Type.TRANSFER && (<View style={styles.row}>
-                    <View style={styles.col}>
-                        <Text style={styles.label}>From Account</Text>
-                        <TextInput
-                            style={styles.input}
-                            editable={false}
-                            value={fromAccount}
-                            onTouchStart={() => openModal("fromAccount", accounts)}
+                        <SelectField
+                            label="Payment Mode"
+                            value={form.paymentMode}
+                            onPress={() => openModal("paymentMode", convertToTable(paymentModeData))}
                         />
-                    </View>
+                    </FormRow>
 
-                    <View style={styles.col}>
-                        <Text style={styles.label}>To Account</Text>
-                        <TextInput
-                            style={styles.input}
-                            editable={false}
-                            value={toAccount}
-                            onTouchStart={() => openModal("toAccount", accounts)}
+                    <FormRow>
+                        <SelectField
+                            label="From Account"
+                            value={form.fromAccount}
+                            onPress={() => openModal("fromAccount", accounts)}
                         />
-                    </View>
-                </View>)}
 
-                {type !== Type.TRANSFER && (<View style={styles.row}>
-                    <View style={styles.col}>
-                        <Text style={styles.label}>From Account</Text>
-                        <TextInput
-                            style={styles.input}
-                            editable={false}
-                            value={fromAccount}
-                            onTouchStart={() => openModal("fromAccount", accounts)}
+                        {form.type === Type.TRANSFER ? (<SelectField
+                            label="To Account"
+                            value={form.toAccount}
+                            onPress={() => openModal("toAccount", accounts)}
+                        />) : (<View style={{flex: 1, marginHorizontal: 5}}/>)}
+                    </FormRow>
+
+                    {form.type !== Type.TRANSFER && (<FormRow>
+                        <SelectField
+                            label="Category"
+                            value={form.category}
+                            onPress={() => openModal("category", convertToTable(getMainCategories(getCategoryList())))}
                         />
-                    </View>
 
-                    <View style={styles.col}/>
-                </View>)}
-
-                {/* ---------------- Row 4: Category | Subcategory ---------------- */}
-                {type !== Type.TRANSFER && (<View style={styles.row}>
-                    <View style={styles.col}>
-                        <Text style={styles.label}>Category</Text>
-                        <TextInput
-                            style={styles.input}
-                            editable={false}
-                            value={category}
-                            onTouchStart={() => openModal("category", categories)}
+                        <SelectField
+                            label="Subcategory"
+                            value={form.subCategory}
+                            onPress={() => subModal.data.length && setSubModal({...subModal, visible: true})}
                         />
+                    </FormRow>)}
+
+                    <View style={styles.buttons}>
+                        <DangerButton title="Cancel" onPress={onCancel}/>
+                        <PrimaryButton title={submitButtonLabel} onPress={submitHandler}/>
                     </View>
+                </ScrollView>
 
-                    <View style={styles.col}>
-                        <Text style={styles.label}>Subcategory</Text>
-                        <TextInput
-                            style={styles.input}
-                            editable={false}
-                            value={subCategory}
-                            onTouchStart={() => {
-                                if (subcategoryData.length > 0) setSubcategoryModalVisible(true);
-                            }}
-                        />
-                    </View>
-                </View>)}
-
-                {/* ---------------- Buttons ---------------- */}
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity
-                        style={[styles.button, {backgroundColor: "#dc3545", marginRight: 5}]}
-                        onPress={onCancel}
-                    >
-                        <Text style={styles.buttonText}>Cancel</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={[styles.button, {backgroundColor: "#28A745", marginLeft: 5}]}
-                        onPress={submitHandler}
-                    >
-                        <Text style={styles.buttonText}>{submitButtonLabel}</Text>
-                    </TouchableOpacity>
-                </View>
-
-                {/* ---------------- Modals ---------------- */}
-                <ModalComponent
-                    visible={modalVisible}
-                    data={modalData}
-                    onClose={() => setModalVisible(false)}
-                    onItemClick={handleItemClick}
-                    modalTitle="Select option"
+                <CalendarCard
+                    visible={showCalendar}
+                    date={form.date}
+                    onChange={(d) => update("date", d)}
+                    onClose={() => setShowCalendar(false)}
                 />
 
-                <ModalComponent
-                    visible={subcategoryModalVisible}
-                    data={subcategoryData}
-                    onClose={() => setSubcategoryModalVisible(false)}
-                    onItemClick={(item) => {
-                        setSubCategory(item);
-                        setSubcategoryModalVisible(false);
+                <ModalSelector
+                    visible={modal.visible}
+                    title="Select option"
+                    data={modal.data}
+                    onClose={() => setModal({...modal, visible: false})}
+                    onSelect={handleSelect}
+                />
+
+                <ModalSelector
+                    visible={subModal.visible}
+                    title="Select Subcategory"
+                    data={subModal.data}
+                    onClose={() => setSubModal({...subModal, visible: false})}
+                    onSelect={(item) => {
+                        update("subCategory", item);
+                        setSubModal({...subModal, visible: false});
                     }}
-                    modalTitle={`Select Sub-category of ${selectedMainCategory}`}
                 />
-
-            </ScrollView>
+            </View>
         </TouchableWithoutFeedback>
     </KeyboardAvoidingView>);
 }
 
 const styles = StyleSheet.create({
-    container: {padding: 20, flexGrow: 1, backgroundColor: "#fff"},
-
-    row: {
-        flexDirection: "row", justifyContent: "space-between", marginBottom: 15,
-    },
-
-    col: {
-        flex: 1, marginHorizontal: 5,
-    },
-
-    label: {
-        marginBottom: 5, fontWeight: "bold", fontSize: 16,
-    },
-
-    input: {
-        borderWidth: 1, borderColor: "#ccc", borderRadius: 5, padding: 12, backgroundColor: "#fff",
-    },
-
-    datePickerWrapper: {
-        backgroundColor: "#fff",
-        marginTop: -10,
-        marginBottom: 10,
-        borderRadius: 10,
-        padding: 10,
-        borderWidth: 1,
-        borderColor: "#ccc",
-    },
-
-    doneButton: {
-        marginTop: 8,
-        alignSelf: "flex-end",
-        paddingHorizontal: 20,
-        paddingVertical: 8,
-        backgroundColor: "#28A745",
-        borderRadius: 5,
-    },
-
-    doneButtonText: {
-        color: "white", fontWeight: "600",
-    },
-
-    buttonContainer: {
-        flexDirection: "row", marginTop: 30,
-    },
-
-    button: {
-        flex: 1, padding: 15, borderRadius: 5, alignItems: "center",
-    },
-
-    buttonText: {
-        color: "#fff", fontWeight: "bold", fontSize: 16,
-    },
+    wrapper: {flex: 1},
+    screenBackground: {flex: 1, backgroundColor: "#F3F4F6"},
+    container: {padding: 20, flexGrow: 1},
+    buttons: {flexDirection: "row", marginTop: 25},
+    calendarOverlay: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0,0,0,0.3)"
+    }
 });

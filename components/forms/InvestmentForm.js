@@ -4,7 +4,7 @@ import Input from "../UI/Input";
 import Button from "../UI/Button";
 import {GlobalStyles} from "../../constansts/styles";
 import {getMonth, getYear} from "../../util/Date";
-import CustomDatePicker from "../UI/DatePickerNative";
+import CustomDatePicker from "../UI/CalenderPicker";
 
 function InvestmentForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
     const initialDate = defaultValues?.date ? new Date(defaultValues.date) : new Date();

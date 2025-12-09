@@ -9,7 +9,7 @@ import {
     View
 } from 'react-native';
 import Button from "../UI/Button";
-import CustomDatePicker from "../UI/DatePickerNative";
+import CustomDatePicker from "../UI/CalenderPicker";
 import {convertToStandardFormat, getCurrentDate, getMonth, getYear} from "../../util/Date";
 import {convertToTable} from "../../util/Table";
 import Input from "../UI/Input";

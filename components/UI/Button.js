@@ -1,28 +1,22 @@
-import {Pressable, StyleSheet, Text, View} from "react-native";
-import {GlobalStyles} from "../../constansts/styles";
+import React from "react";
+import {StyleSheet, Text, TouchableOpacity} from "react-native";
 
-function Button({children, onPress, mode, style}) {
-    return (<View style={style}>
-        <Pressable onPress={onPress} style={({pressed}) => pressed && styles.pressed}>
-            <View style={[styles.button, mode === 'flat' && styles.flat]}>
-                <Text style={[styles.buttonText, mode === 'flat' && styles.flatText]}>{children}</Text>
-            </View>
-        </Pressable>
-    </View>)
+export function PrimaryButton({title, onPress}) {
+    return (<TouchableOpacity style={[styles.button, styles.primary]} onPress={onPress}>
+        <Text style={styles.text}>{title}</Text>
+    </TouchableOpacity>);
 }
 
-export default Button
+export function DangerButton({title, onPress}) {
+    return (<TouchableOpacity style={[styles.button, styles.danger]} onPress={onPress}>
+        <Text style={styles.text}>{title}</Text>
+    </TouchableOpacity>);
+}
 
 const styles = StyleSheet.create({
     button: {
-        borderRadius: 4, padding: 8, backgroundColor: GlobalStyles.colors.primary500, marginTop: 8
-    }, flat: {
-        backgroundColor: 'transparent'
-    }, buttonText: {
-        color: "white", textAlign: 'center', fontSize: 17
-    }, flatText: {
-        color: GlobalStyles.colors.primary700,
-    }, pressed: {
-        opacity: 0.75, backgroundColor: 'transparent', borderRadius: 4,
-    }
+        flex: 1, padding: 15, borderRadius: 8, alignItems: "center", marginHorizontal: 5,
+    }, primary: {backgroundColor: "#28A745"}, danger: {backgroundColor: "#D9534F"}, text: {
+        color: "#fff", fontWeight: "bold", fontSize: 16,
+    },
 });
