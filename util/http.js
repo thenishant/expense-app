@@ -58,7 +58,8 @@ export async function getCategoryTransactionResponse(month, year) {
 }
 
 export async function getAllCategories() {
-    const response = await axios.get(buildUrl(apiEndpoints.getCategories));
+    const url = buildUrl(apiEndpoints.getAllCategories);
+    const response = await axios.get(url);
     return response.data;
 }
 
@@ -79,11 +80,6 @@ export async function createInvestmentPlan(data) {
 
 export async function getInvestmentPlans() {
     const response = await axios.get(buildUrl(apiEndpoints.allInvestmentPlans));
-    return response.data;
-}
-
-export async function getCategories() {
-    const response = await axios.get(buildUrl(apiEndpoints.getCategories));
     return response.data;
 }
 

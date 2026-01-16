@@ -66,16 +66,9 @@ function ManageExpense({route, navigation}) {
             onCancel={cancelHandler}
             submitButtonLabel={isEditing ? 'Update' : 'Add'}
             onSubmit={confirmHandler}
+            onDelete={isEditing ? deleteExpenseHandler : null}
             defaultValues={selectedExpense}
         />
-        {isEditing && (<View style={styles.deleteContainer}>
-            <IconButton
-                icon={'trash'}
-                color={GlobalStyles.colors.error500}
-                size={36}
-                onPress={deleteExpenseHandler}
-            />
-        </View>)}
     </View>)
 }
 

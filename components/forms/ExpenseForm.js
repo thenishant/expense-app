@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
     Keyboard,
     KeyboardAvoidingView,
@@ -11,15 +11,7 @@ import {
 
 import {getCurrentDate} from "../../util/Date";
 import {convertToTable} from "../../util/Table";
-import {
-    categoriesType,
-    getMainCategories,
-    getSubCategories,
-    incomeCategoryType,
-    investmentCategoryType,
-    paymentModeData,
-    typesData
-} from "../../data/Data";
+import {getMainCategories, getSubCategories, paymentModeData, typesData} from "../../data/Data";
 
 import {removeEmojisOnForm} from "../../util/Emoji";
 import {AccountContext} from "../../store/AccountContext";
@@ -31,8 +23,11 @@ import InputField from "../UI/InputField";
 import {DangerButton, PrimaryButton} from "../UI/Button";
 import ModalSelector from "../UI/ModalSelector";
 import CalendarCard from "../UI/CalenderPicker";
+import {getAllCategories} from "../../util/http";
+import IconButton from "../UI/IconButton";
+import {GlobalStyles} from "../../constansts/styles";
 
-export default function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues}) {
+export default function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defaultValues, onDelete}) {
     const [form, setForm] = useState({
         amount: defaultValues?.amount?.toString() || "",
         date: defaultValues ? new Date(defaultValues.date) : getCurrentDate(),
@@ -51,10 +46,18 @@ export default function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defa
     const accounts = convertToTable((accountContext?.accounts?.accounts ?? []).map(a => a.accountName));
 
     const update = (key, value) => setForm((prev) => ({...prev, [key]: value}));
+    const [allCategories, setAllCategories] = useState(null);
+
+    useEffect(() => {
+        getAllCategories().then(setAllCategories);
+    }, []);
+
     const getCategoryList = () => {
-        if (form.type === Type.EXPENSE) return categoriesType;
-        if (form.type === Type.INVESTMENT) return investmentCategoryType;
-        return incomeCategoryType;
+        if (!allCategories) return {};
+
+        if (form.type === Type.EXPENSE) return allCategories.Expense;
+        if (form.type === Type.INVESTMENT) return allCategories.Investment;
+        return allCategories.Income;
     };
 
     const openModal = (key, data) => setModal({visible: true, key, data});
@@ -162,6 +165,15 @@ export default function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defa
                         <DangerButton title="Cancel" onPress={onCancel}/>
                         <PrimaryButton title={submitButtonLabel} onPress={submitHandler}/>
                     </View>
+
+                    {onDelete && (<View style={styles.deleteContainer}>
+                        <IconButton
+                            icon="trash"
+                            color={GlobalStyles.colors.error500}
+                            size={32}
+                            onPress={onDelete}
+                        />
+                    </View>)}
                 </ScrollView>
 
                 <CalendarCard
@@ -197,7 +209,7 @@ export default function ExpenseForm({onCancel, onSubmit, submitButtonLabel, defa
 const styles = StyleSheet.create({
     wrapper: {flex: 1},
     screenBackground: {flex: 1, backgroundColor: "#F3F4F6"},
-    container: {padding: 20, flexGrow: 1},
+    container: {padding: 20},
     buttons: {flexDirection: "row", marginTop: 25},
     calendarOverlay: {
         position: "absolute",
@@ -208,5 +220,8 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "rgba(0,0,0,0.3)"
+    },
+    deleteContainer: {
+        marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: "#fa0522", alignItems: "center"
     }
 });

@@ -11,7 +11,7 @@ export const apiEndpoints = {
 
     //Category
     createCategory: 'category/create',
-    getCategories: 'category/categories',
+    getAllCategories: 'category/categories',
 
     //Account
     createAccount: 'account/create',
